@@ -1,11 +1,12 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kharisma_sales_app/pages/login/login_customer_page.dart';
+import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/utils/apps_colors.dart';
 
 class LoginSalesPage extends StatelessWidget {
-  const LoginSalesPage({super.key});
+  LoginSalesPage({super.key});
+
+  var isHidePassword = true.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -55,19 +56,24 @@ class LoginSalesPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
-                      TextFormField(
-                        obscureText: true, // field password
-                        decoration: InputDecoration(
-                          labelText: 'Insert Token',
-                          prefixIcon: Icon(Icons.lock),
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.visibility),
-                            onPressed: () {},
+                      Obx(
+                        () => TextFormField(
+                          obscureText: isHidePassword.value, // field password
+                          decoration: InputDecoration(
+                            labelText: 'Insert Token',
+                            prefixIcon: Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              icon: Icon(isHidePassword.value ? Icons.visibility : Icons.visibility_off),
+                              onPressed: () {
+                                isHidePassword.value = !isHidePassword.value;
+                              },
+                            ),
                           ),
+                          // lainnya properti TextFormField
                         ),
-                        // lainnya properti TextFormField
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.05),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.06,
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -101,7 +107,7 @@ class LoginSalesPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.off(() => LoginCustomerPage());
+                            Get.offNamed(RoutesName.loginCustomer);
                           },
                           child: Text('Login as Customer'),
                           style: ButtonStyle(
@@ -119,6 +125,7 @@ class LoginSalesPage extends StatelessWidget {
           ),
         ),
       ),
-    );;
+    );
+    ;
   }
 }

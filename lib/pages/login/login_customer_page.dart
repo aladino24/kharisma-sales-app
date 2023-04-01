@@ -1,12 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kharisma_sales_app/pages/login/forgot_password_page.dart';
-import 'package:kharisma_sales_app/pages/login/login_sales_page.dart';
+import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/utils/apps_colors.dart';
 
 class LoginCustomerPage extends StatelessWidget {
-  const LoginCustomerPage({super.key});
+  LoginCustomerPage({super.key});
+
+  var isHidePassword = true.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,10 @@ class LoginCustomerPage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Padding(
-                padding: const EdgeInsets.only(left: 45, top: 25, right: 45),
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.1, 
+                  top: 25, 
+                  right: MediaQuery.of(context).size.width * 0.1),
                 child: Container(
                   alignment: Alignment.topLeft,
                   child: Column(
@@ -71,39 +75,47 @@ class LoginCustomerPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
-                      TextFormField(
-                        obscureText: true, // field password
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: Icon(Icons.lock),
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.visibility),
-                            onPressed: () {},
+                      Obx(
+                        () => TextFormField(
+                          obscureText: isHidePassword.value, // field password
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            prefixIcon: Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                isHidePassword.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                isHidePassword.value = !isHidePassword.value;
+                              },
+                            ),
                           ),
+                          // lainnya properti TextFormField
                         ),
-                        // lainnya properti TextFormField
                       ),
                       SizedBox(height: 10),
-                       Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            RichText(
-                              text: TextSpan(children: [
-                                TextSpan(
-                                    text: " Forgot Password?",
-                                    style: TextStyle(
-                                      color: AppsColors.loginColorPrimary,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Get.to(() => ForgotPasswordPage());
-                                      }),
-                              ]),
-                            ),
-                          ],
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                  text: " Forgot Password?",
+                                  style: TextStyle(
+                                    color: AppsColors.loginColorPrimary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Get.toNamed(RoutesName.forgotPassword);
+                                    }),
+                            ]),
+                          ),
+                        ],
+                      ),
                       SizedBox(height: 20),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.06,
@@ -138,7 +150,7 @@ class LoginCustomerPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.off(() => LoginSalesPage());
+                            Get.offNamed(RoutesName.loginSales);
                           },
                           child: Text('Login as Sales'),
                           style: ButtonStyle(
