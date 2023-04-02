@@ -122,7 +122,7 @@ class LoginCustomerPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Add your login logic here
+                            Get.toNamed(RoutesName.home);
                           },
                           child: Text('Login'),
                           style: ButtonStyle(
