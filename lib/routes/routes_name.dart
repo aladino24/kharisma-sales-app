@@ -8,4 +8,7 @@ abstract class RoutesName{
 
   // Home
   static const home = '/home';
+
+  // Product
+  static const detailProduct = '/detail-product';
 }

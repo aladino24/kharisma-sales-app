@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       title: "Kharisma Sales App",
       home: LoginCustomerPage(),
       initialRoute: '/',
+      defaultTransition: Transition.noTransition,
       getPages: AppsRoutes.pages,
     );
   }

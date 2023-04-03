@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/utils/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
@@ -94,139 +96,144 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.all(5),
                   itemCount: 5,
                   itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              blurRadius: 5,
-                              offset: const Offset(0, 0),
-                            )
-                          ]),
-                      child: Column(
-                        children: [
-                          Container(
-                            // heigh sesuai dengan tinggi parent * 0.5
-                            height: 165,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: AppsColors.imageProductBackground,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15.0),
-                                  topRight: Radius.circular(15.0),
-                                )),
-                            child: Image.asset(
-                              'assets/images/product.png',
-                              fit: BoxFit.cover,
+                    return GestureDetector(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                blurRadius: 5,
+                                offset: const Offset(0, 0),
+                              )
+                            ]),
+                        child: Column(
+                          children: [
+                            Container(
+                              // heigh sesuai dengan tinggi parent * 0.5
+                              height: 165,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  color: AppsColors.imageProductBackground,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0),
+                                  )),
+                              child: Image.asset(
+                                'assets/images/product.png',
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.topLeft,
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.topLeft,
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Product Name",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppsColors
+                                              .loginFontColorPrimaryDark),
+                                    ),
+                                    Text(
+                                      "Seller Price : Rp 2.500",
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: AppsColors
+                                              .loginFontColorPrimaryDark),
+                                    ),
+                                    Text(
+                                      "Customer Price : Rp 3.500",
+                                      style: TextStyle(
+                                          fontSize: 13, color: Colors.red),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                  left: 10, right: 10, bottom: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "Product Name",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppsColors
-                                            .loginFontColorPrimaryDark),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.15,
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: AppsColors.ratingProduct,
+                                      // radius
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                        Text(
+                                          "4.7",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 15),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  Text(
-                                    "Seller Price : Rp 2.500",
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: AppsColors
-                                            .loginFontColorPrimaryDark),
-                                  ),
-                                  Text(
-                                    "Customer Price : Rp 3.500",
-                                    style: TextStyle(
-                                        fontSize: 13, color: Colors.red),
-                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.15,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                              color: AppsColors
+                                                  .imageProductBackground,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(100),
+                                              )),
+                                          child: Icon(Icons.favorite,
+                                              color: Colors.red, size: 18),
+                                        ),
+                                        Container(
+                                          width: 28,
+                                          height: 28,
+                                          child: Icon(
+                                              Icons.add_shopping_cart_outlined,
+                                              color: Colors.white,
+                                              size: 17),
+                                          decoration: BoxDecoration(
+                                              color: AppsColors.loginColorPrimary,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(100),
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 10, right: 10, bottom: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.15,
-                                  padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: AppsColors.ratingProduct,
-                                    // radius
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.white,
-                                        size: 18,
-                                      ),
-                                      Text(
-                                        "4.7",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 15),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.15,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        width: 28,
-                                        height: 28,
-                                        decoration: BoxDecoration(
-                                            color: AppsColors
-                                                .imageProductBackground,
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(100),
-                                            )),
-                                        child: Icon(Icons.favorite,
-                                            color: Colors.red, size: 18),
-                                      ),
-                                      Container(
-                                        width: 28,
-                                        height: 28,
-                                        child: Icon(
-                                            Icons.add_shopping_cart_outlined,
-                                            color: Colors.white,
-                                            size: 17),
-                                        decoration: BoxDecoration(
-                                            color: AppsColors.loginColorPrimary,
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(100),
-                                            )),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      onTap: (){
+                        Get.toNamed(RoutesName.detailProduct, );
+                      },
                     );
                   }),
             )
