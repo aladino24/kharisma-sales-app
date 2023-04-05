@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:kharisma_sales_app/utils/apps_colors.dart';
 
 class MainHeader extends StatelessWidget {
@@ -59,12 +59,12 @@ class MainHeader extends StatelessWidget {
             ),
           )),
           const SizedBox(width: 10),
-          Badge(
+          badge.Badge(
             // badgeContent: const Text(
             //   "1",
             //   style: TextStyle(color: Colors.white),
             // ),
-            badgeStyle: BadgeStyle(
+            badgeStyle: badge.BadgeStyle(
                 badgeColor: AppsColors.loginColorPrimary,
                 padding: const EdgeInsets.symmetric(horizontal: 4)),
             child: const Icon(
@@ -74,12 +74,12 @@ class MainHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Badge(
+          badge.Badge(
             // badgeContent: const Text(
             //   "1",
             //   style: TextStyle(color: Colors.white),
             // ),
-            badgeStyle: BadgeStyle(
+            badgeStyle: badge.BadgeStyle(
                 badgeColor: AppsColors.loginColorPrimary,
                 padding: const EdgeInsets.symmetric(horizontal: 4)),
             child: const Icon(
@@ -89,7 +89,7 @@ class MainHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Badge(
+          badge.Badge(
             badgeContent: const Text(
               "1",
               style: TextStyle(
@@ -97,7 +97,7 @@ class MainHeader extends StatelessWidget {
                 fontSize: 9,
               ),
             ),
-            badgeStyle: BadgeStyle(
+            badgeStyle: badge.BadgeStyle(
               badgeColor: AppsColors.loginColorPrimary,
               elevation: 0,
             ),

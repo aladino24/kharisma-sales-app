@@ -213,7 +213,7 @@ class DetailProductPage extends StatelessWidget {
                                                 Border.all(color: Colors.grey),
                                           ),
                                           child: Center(
-                                            child: Icon(Icons.add),
+                                            child: Icon(Icons.remove),
                                           ),
                                         ),
                                         Container(
@@ -248,7 +248,7 @@ class DetailProductPage extends StatelessWidget {
                                                 Border.all(color: Colors.grey),
                                           ),
                                           child: Center(
-                                            child: Icon(Icons.remove),
+                                            child: Icon(Icons.add),
                                           ),
                                         ),
                                       ],
