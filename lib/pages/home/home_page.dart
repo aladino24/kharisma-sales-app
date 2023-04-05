@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/utils/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
+import 'package:kharisma_sales_app/widgets/rating_star.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -162,34 +163,7 @@ class HomePage extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.15,
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: AppsColors.ratingProduct,
-                                      // radius
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Icon(
-                                          Icons.star,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                        Text(
-                                          "4.7",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 15),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                  RatingStar(),
                                   Container(
                                     width:
                                         MediaQuery.of(context).size.width * 0.15,
@@ -243,3 +217,4 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
