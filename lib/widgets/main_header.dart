@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badge;
-import 'package:kharisma_sales_app/controllers/main_header_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/utils/apps_colors.dart';
 import 'package:get/get.dart';
@@ -121,7 +121,7 @@ class MainHeader extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 controller.selectNotificationIcon();
-                Get.toNamed('/notif-product');
+                Get.toNamed(RoutesName.notificationProduct);
               },
               child: badge.Badge(
                   badgeContent: const Text(
@@ -144,13 +144,25 @@ class MainHeader extends StatelessWidget {
                   )),
             ),
             const SizedBox(width: 10),
-            Container(
-              height: 46,
-              width: 46,
-              padding: const EdgeInsets.all(12),
-              child: const Icon(
-                Icons.menu,
-                color: Colors.grey,
+            GestureDetector(
+              onTap: () {
+                controller.profleIcon();
+                Get.toNamed(RoutesName.profile);
+              },
+              child: badge.Badge(
+                // badgeContent: const Text(
+                //   "1",
+                //   style: TextStyle(color: Colors.white),
+                // ),
+                badgeStyle: badge.BadgeStyle(
+                    badgeColor: AppsColors.loginColorPrimary,
+                    padding: const EdgeInsets.symmetric(horizontal: 4)),
+                child: Icon(
+                    Icons.person_2_outlined,
+                    color: controller.isProfileSelected.value
+                        ? AppsColors.loginColorPrimary
+                        : Colors.grey,
+                )
               ),
             ),
           ],

@@ -4,6 +4,7 @@ class MainHeaderController extends GetxController{
   var isBookmarkIconSelected = false.obs;
   var isCartIconSelected = false.obs;
   var isNotificationIconSelected = false.obs;
+  var isProfileSelected = false.obs;
   var shouldReload = false.obs;
 
 
@@ -11,7 +12,7 @@ class MainHeaderController extends GetxController{
     isBookmarkIconSelected.value = true;
     isCartIconSelected.value = false;
     isNotificationIconSelected.value = false;
-
+    isProfileSelected.value = false;
     update();
   }
 
@@ -19,7 +20,7 @@ class MainHeaderController extends GetxController{
     isBookmarkIconSelected.value = false;
     isCartIconSelected.value = true;
     isNotificationIconSelected.value = false;
-
+    isProfileSelected.value = false;
     update();
   }
 
@@ -27,8 +28,18 @@ class MainHeaderController extends GetxController{
     isBookmarkIconSelected.value = false;
     isCartIconSelected.value = false;
     isNotificationIconSelected.value = true;
+    isProfileSelected.value = false;
     update();
 
+    // print("Halo");
+  }
+
+  void profleIcon(){
+    isBookmarkIconSelected.value = false;
+    isCartIconSelected.value = false;
+    isNotificationIconSelected.value = false;
+    isProfileSelected.value = true;
+    update();
     // print("Halo");
   }
 
