@@ -126,6 +126,5 @@ class LoginSalesPage extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

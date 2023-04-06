@@ -11,13 +11,17 @@ class HomePage extends StatelessWidget {
 
   final myController = Get.put(MainHeaderController());
 
+  void handleUserAction() {
+    myController.selectAllIcon();
+    myController.update(); 
+  }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         myController.selectAllIcon();
-        print("Hallo");
+        // print("Hallo");
         return true;
       },
       child: Scaffold(
@@ -25,12 +29,13 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Obx(() {
+              Obx(() {
                 myController.selectAllIcon();
                 return MainHeader(
                   iconBookmark: myController.isBookmarkIconSelected.value,
                   iconCart: myController.isCartIconSelected.value,
-                  iconNotification: myController.isNotificationIconSelected.value,
+                  iconNotification:
+                      myController.isNotificationIconSelected.value,
                   key: UniqueKey(),
                 );
               }),
@@ -115,8 +120,7 @@ class HomePage extends StatelessWidget {
                     padding: const EdgeInsets.all(5),
                     itemCount: 5,
                     itemBuilder: (context, index) {
-                      return GestureDetector(
-                        child: Container(
+                      return Container(
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15),
@@ -129,62 +133,74 @@ class HomePage extends StatelessWidget {
                               ]),
                           child: Column(
                             children: [
-                              Container(
-                                // heigh sesuai dengan tinggi parent * 0.5
-                                height: 165,
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                    color: AppsColors.imageProductBackground,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
-                                    )),
-                                child: Image.asset(
-                                  'assets/images/product.png',
-                                  fit: BoxFit.cover,
+                              GestureDetector(
+                                child: Container(
+                                  // heigh sesuai dengan tinggi parent * 0.5
+                                  height: 165,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                      color: AppsColors.imageProductBackground,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15.0),
+                                        topRight: Radius.circular(15.0),
+                                      )),
+                                  child: Image.asset(
+                                    'assets/images/product.png',
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
+                                onTap: (){
+                                  Get.toNamed(RoutesName.detailProduct);
+                                },
                               ),
                               Expanded(
-                                child: Container(
-                                  alignment: Alignment.topLeft,
-                                  padding: EdgeInsets.all(10),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Product Name",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                            color: AppsColors
-                                                .loginFontColorPrimaryDark),
-                                      ),
-                                      Text(
-                                        "Seller Price : Rp 2.500",
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: AppsColors
-                                                .loginFontColorPrimaryDark),
-                                      ),
-                                      Text(
-                                        "Customer Price : Rp 3.500",
-                                        style: TextStyle(
-                                            fontSize: 13, color: Colors.red),
-                                      ),
-                                    ],
+                                child: GestureDetector(
+                                  child: Container(
+                                    alignment: Alignment.topLeft,
+                                    padding: EdgeInsets.all(10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Product Name",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppsColors
+                                                  .loginFontColorPrimaryDark),
+                                        ),
+                                        Text(
+                                          "Seller Price : Rp 2.500",
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: AppsColors
+                                                  .loginFontColorPrimaryDark),
+                                        ),
+                                        Text(
+                                          "Customer Price : Rp 3.500",
+                                          style: TextStyle(
+                                              fontSize: 13, color: Colors.red),
+                                        ),
+                                      ],
+                                    ),
                                   ),
+                                  onTap: (){
+                                    Get.toNamed(RoutesName.detailProduct);
+                                  },
                                 ),
                               ),
                               Container(
                                 padding: EdgeInsets.only(
                                     left: 10, right: 10, bottom: 10),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     RatingStar(),
                                     Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.15,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.15,
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -205,11 +221,13 @@ class HomePage extends StatelessWidget {
                                             width: 28,
                                             height: 28,
                                             child: Icon(
-                                                Icons.add_shopping_cart_outlined,
+                                                Icons
+                                                    .add_shopping_cart_outlined,
                                                 color: Colors.white,
                                                 size: 17),
                                             decoration: BoxDecoration(
-                                                color: AppsColors.loginColorPrimary,
+                                                color: AppsColors
+                                                    .loginColorPrimary,
                                                 borderRadius: BorderRadius.all(
                                                   Radius.circular(100),
                                                 )),
@@ -222,11 +240,7 @@ class HomePage extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
-                        onTap: (){
-                          Get.toNamed(RoutesName.detailProduct, );
-                        },
-                      );
+                        );
                     }),
               )
             ],
@@ -236,4 +250,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
