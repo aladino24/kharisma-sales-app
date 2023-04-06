@@ -18,7 +18,10 @@ class DiskonProduct extends StatelessWidget {
             top: 2, bottom: 2, left: 6, right: 6),
         child: Text(
           "15% OFF",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
         ),
       ),
     );

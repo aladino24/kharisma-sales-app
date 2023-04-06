@@ -4,6 +4,9 @@ import 'package:kharisma_sales_app/pages/home/home_page.dart';
 import 'package:kharisma_sales_app/pages/login/forgot_password_page.dart';
 import 'package:kharisma_sales_app/pages/login/login_customer_page.dart';
 import 'package:kharisma_sales_app/pages/login/login_sales_page.dart';
+import 'package:kharisma_sales_app/pages/product/cart_product_page.dart';
+import 'package:kharisma_sales_app/pages/product/save_product_page.dart';
+import 'package:kharisma_sales_app/pages/product/notification_product_page.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 
 class AppsRoutes{
@@ -12,6 +15,9 @@ class AppsRoutes{
     GetPage(name: RoutesName.loginSales, page: () => LoginSalesPage()),
     GetPage(name: RoutesName.forgotPassword, page: () => ForgotPasswordPage()),
     GetPage(name: RoutesName.home, page: ()=> HomePage()),
-    GetPage(name: RoutesName.detailProduct,  page: () => DetailProductPage())
+    GetPage(name: RoutesName.detailProduct,  page: () => DetailProductPage()),
+    GetPage(name: RoutesName.cartProduct, page: () => CartProductPage()),
+    GetPage(name: RoutesName.saveProduct, page: () => SaveProductPage()),
+    GetPage(name: RoutesName.notificationProduct, page: () => NotificationProductPage())
   ];
 }

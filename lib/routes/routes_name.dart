@@ -11,4 +11,7 @@ abstract class RoutesName{
 
   // Product
   static const detailProduct = '/detail-product';
+  static const cartProduct = '/cart-product';
+  static const saveProduct = '/save-product';
+  static const notificationProduct = '/notif-product';
 }

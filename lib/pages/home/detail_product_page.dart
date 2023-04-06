@@ -27,7 +27,11 @@ class DetailProductPage extends StatelessWidget {
       body: SafeArea(
           child: Column(
         children: [
-          MainHeader(),
+          MainHeader(
+            iconBookmark: false,
+            iconCart: false,
+            iconNotification: false,
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
