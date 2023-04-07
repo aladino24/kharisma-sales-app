@@ -49,7 +49,7 @@ class LoginController extends GetxController {
       );
       // Membersihkan token dan data pengguna dari penyimpanan lokal
       await clearAuthData();
-      Get.offNamed(RoutesName.loginCustomer);
+      Get.offAllNamed(RoutesName.loginCustomer);
     } catch (e) {
       print(e);
     }
@@ -90,5 +90,5 @@ class LoginController extends GetxController {
     return UserModel.fromJson(jsonMap);
   }
 
-  
+
 }
