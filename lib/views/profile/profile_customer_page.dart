@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kharisma_sales_app/utils/apps_colors.dart';
+import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/login_controller.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/controllers/components/tabbar_controller.dart';
+import 'package:kharisma_sales_app/models/user_model.dart';
 
 class ProfileCustomerPage extends StatelessWidget {
   ProfileCustomerPage({Key? key}) : super(key: key);
 
   final MyTabController tabController = Get.put(MyTabController());
+  final LoginController loginController = Get.put(LoginController());
+  final LoginController userController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class ProfileCustomerPage extends StatelessWidget {
                   children: [
                     Container(
                       width: Get.width * 0.9,
-                      height: 380,
+                      height: 405,
                       margin: EdgeInsets.only(top: 20),
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -55,24 +59,34 @@ class ProfileCustomerPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Admin",
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                                Text(
-                                  "admin@gmail.com",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppsColors.loginFontColorSecondary),
-                                )
-                              ],
-                            ),
-                          ),
-              
+                          FutureBuilder<UserModel?>(
+                              future: userController.getUserModel(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                }
+                                final userModel = snapshot.data;
+                                return Container(
+                                  margin: EdgeInsets.only(top: 20),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "${userModel?.nama ?? 'Anonymous'}",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      Text(
+                                        "${userModel?.email ?? ''}",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: AppsColors
+                                                .loginFontColorSecondary),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }),
+
                           // button edit profile
                           Container(
                             margin: EdgeInsets.only(top: 10),
@@ -89,7 +103,25 @@ class ProfileCustomerPage extends StatelessWidget {
                               ),
                             ),
                           ),
-              
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            width: Get.width * 0.75,
+                            height: 30,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                loginController.logout();
+                              },
+                              child: Text("Logout"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    AppsColors.loginFontColorSecondary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ),
+                          ),
+
                           Container(
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -98,7 +130,8 @@ class ProfileCustomerPage extends StatelessWidget {
                                   ListTile(
                                     title: Text(
                                       'Menu',
-                                      style: TextStyle(fontWeight: FontWeight.w700),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700),
                                     ),
                                     tileColor: Colors.red,
                                     trailing: Icon(Icons.arrow_forward_ios),
@@ -106,7 +139,8 @@ class ProfileCustomerPage extends StatelessWidget {
                                   ListTile(
                                     title: Text(
                                       'Layanan',
-                                      style: TextStyle(fontWeight: FontWeight.w700),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700),
                                     ),
                                     tileColor: Colors.red,
                                     trailing: Icon(Icons.arrow_forward_ios),
@@ -118,7 +152,7 @@ class ProfileCustomerPage extends StatelessWidget {
                         ],
                       ),
                     ),
-              
+
                     // tab bar
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 8),
@@ -156,29 +190,29 @@ class ProfileCustomerPage extends StatelessWidget {
                         labelPadding: EdgeInsets.symmetric(horizontal: 2.0),
                       ),
                     ),
-              
+
                     Container(
                       height: 20, // set tinggi container sesuai kebutuhan
                       child: TabBarView(
-                          controller: tabController.tabController,
-                          children: [
-                            // konten tab starters
-                            Center(
-                              child: Text("Lagi Diproses sabar"),
-                            ),
-                            // konten tab main course
-                            Center(
-                              child: Text("Tunggu ya dikirim"),
-                            ),
-                            // konten tab desserts
-                            Center(
-                              child: Text("Rating"),
-                            ),
-                            Center(
-                              child: Text("Failed"),
-                            ),
-                          ],
-                        ),
+                        controller: tabController.tabController,
+                        children: [
+                          // konten tab starters
+                          Center(
+                            child: Text("Lagi Diproses sabar"),
+                          ),
+                          // konten tab main course
+                          Center(
+                            child: Text("Tunggu ya dikirim"),
+                          ),
+                          // konten tab desserts
+                          Center(
+                            child: Text("Rating"),
+                          ),
+                          Center(
+                            child: Text("Failed"),
+                          ),
+                        ],
+                      ),
                     )
                   ],
                 ),

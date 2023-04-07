@@ -5,7 +5,6 @@ class MainHeaderController extends GetxController{
   var isCartIconSelected = false.obs;
   var isNotificationIconSelected = false.obs;
   var isProfileSelected = false.obs;
-  var shouldReload = false.obs;
 
 
   void selectBookmarkIcon(){
@@ -47,7 +46,6 @@ class MainHeaderController extends GetxController{
     isBookmarkIconSelected.value = false;
     isCartIconSelected.value = false;
     isNotificationIconSelected.value = false;
-    shouldReload.value = !shouldReload.value;
   }
   
 }

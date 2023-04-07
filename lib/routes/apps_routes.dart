@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
-import 'package:kharisma_sales_app/pages/home/detail_product_page.dart';
-import 'package:kharisma_sales_app/pages/home/home_page.dart';
-import 'package:kharisma_sales_app/pages/login/forgot_password_page.dart';
-import 'package:kharisma_sales_app/pages/login/login_customer_page.dart';
-import 'package:kharisma_sales_app/pages/login/login_sales_page.dart';
-import 'package:kharisma_sales_app/pages/product/cart_product_page.dart';
-import 'package:kharisma_sales_app/pages/product/save_product_page.dart';
-import 'package:kharisma_sales_app/pages/product/notification_product_page.dart';
-import 'package:kharisma_sales_app/pages/profile/profile_customer_page.dart';
+import 'package:kharisma_sales_app/views/home/detail_product_page.dart';
+import 'package:kharisma_sales_app/views/home/home_page.dart';
+import 'package:kharisma_sales_app/views/login/forgot_password_page.dart';
+import 'package:kharisma_sales_app/views/login/login_customer_page.dart';
+import 'package:kharisma_sales_app/views/login/login_sales_page.dart';
+import 'package:kharisma_sales_app/views/product/cart_product_page.dart';
+import 'package:kharisma_sales_app/views/product/save_product_page.dart';
+import 'package:kharisma_sales_app/views/product/notification_product_page.dart';
+import 'package:kharisma_sales_app/views/profile/profile_customer_page.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 
 class AppsRoutes{

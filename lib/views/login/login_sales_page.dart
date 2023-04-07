@@ -1,11 +1,10 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
-import 'package:kharisma_sales_app/utils/apps_colors.dart';
+import 'package:kharisma_sales_app/constants/apps_colors.dart';
 
-class LoginCustomerPage extends StatelessWidget {
-  LoginCustomerPage({super.key});
+class LoginSalesPage extends StatelessWidget {
+  LoginSalesPage({super.key});
 
   var isHidePassword = true.obs;
 
@@ -33,29 +32,18 @@ class LoginCustomerPage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Padding(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.1, 
-                  top: 25, 
-                  right: MediaQuery.of(context).size.width * 0.1),
+                padding: const EdgeInsets.only(left: 45, top: 25, right: 45),
                 child: Container(
                   alignment: Alignment.topLeft,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Login",
+                        "Login Sales",
                         style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        "Customer",
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
@@ -68,25 +56,14 @@ class LoginCustomerPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Username',
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                      ),
-                      SizedBox(height: 20),
                       Obx(
                         () => TextFormField(
                           obscureText: isHidePassword.value, // field password
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: 'Insert Token',
                             prefixIcon: Icon(Icons.lock),
                             suffixIcon: IconButton(
-                              icon: Icon(
-                                isHidePassword.value
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
+                              icon: Icon(isHidePassword.value ? Icons.visibility : Icons.visibility_off),
                               onPressed: () {
                                 isHidePassword.value = !isHidePassword.value;
                               },
@@ -95,34 +72,14 @@ class LoginCustomerPage extends StatelessWidget {
                           // lainnya properti TextFormField
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
-                                  text: " Forgot Password?",
-                                  style: TextStyle(
-                                    color: AppsColors.loginColorPrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Get.toNamed(RoutesName.forgotPassword);
-                                    }),
-                            ]),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.05),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.06,
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.toNamed(RoutesName.home);
+                            // Add your login logic here
                           },
                           child: Text('Login'),
                           style: ButtonStyle(
@@ -150,9 +107,9 @@ class LoginCustomerPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.offNamed(RoutesName.loginSales);
+                            Get.offNamed(RoutesName.loginCustomer);
                           },
-                          child: Text('Login as Sales'),
+                          child: Text('Login as Customer'),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 AppsColors.loginFontColorSecondary),
