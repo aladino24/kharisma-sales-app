@@ -32,7 +32,6 @@ class ProfileCustomerPage extends StatelessWidget {
                   children: [
                     Container(
                       width: Get.width * 0.9,
-                      height: 405,
                       margin: EdgeInsets.only(top: 20),
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -103,47 +102,91 @@ class ProfileCustomerPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            width: Get.width * 0.75,
-                            height: 30,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                loginController.logout();
-                              },
-                              child: Text("Logout"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    AppsColors.loginFontColorSecondary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                            ),
-                          ),
 
                           Container(
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Column(
                                 children: [
-                                  ListTile(
+                                  ExpansionTile(
                                     title: Text(
                                       'Menu',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700),
                                     ),
-                                    tileColor: Colors.red,
-                                    trailing: Icon(Icons.arrow_forward_ios),
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          'Alamat Pengiriman',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        tileColor: AppsColors.loginColorPrimary,
+                                        leading: Icon(Icons.location_on),
+                                      ),
+                                      ListTile(
+                                        title: Text(
+                                          'Voucher',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        leading: Icon(Icons.book_online),
+                                      ),
+                                      ListTile(
+                                        title: Text(
+                                          'Wishlist',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        leading: Icon(Icons.favorite),
+                                      ),
+                                      ListTile(
+                                        title: Text(
+                                          'Notification',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        leading: Icon(Icons.notifications),
+                                      ),
+                                      
+                                      ListTile(
+                                        title: Text(
+                                          'Logout',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        leading: Icon(Icons.logout),
+                                        onTap: () async{
+                                          loginController.logout();
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                  ListTile(
+                                  ExpansionTile(
                                     title: Text(
                                       'Layanan',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700),
                                     ),
-                                    tileColor: Colors.red,
-                                    trailing: Icon(Icons.arrow_forward_ios),
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          'Kebijakan Privasi',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        tileColor: AppsColors.loginColorPrimary,
+                                        leading: Icon(Icons.lock),
+                                      ),
+                                      ListTile(
+                                        title: Text(
+                                          'Syarat Ketentuan',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        leading: Icon(Icons.article),
+                                      ),
+                                      ListTile(
+                                        title: Text(
+                                          'Hubungi Kami',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        leading: Icon(Icons.call),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

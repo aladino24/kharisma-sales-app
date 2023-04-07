@@ -94,7 +94,7 @@ class MainHeader extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 14),
             GestureDetector(
               onTap: () {
                 controller.selectCartIcon();
@@ -117,7 +117,7 @@ class MainHeader extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 14),
             GestureDetector(
               onTap: () {
                 controller.selectNotificationIcon();
@@ -128,7 +128,7 @@ class MainHeader extends StatelessWidget {
                     "1",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 9,
+                      fontSize: 8,
                     ),
                   ),
                   badgeStyle: badge.BadgeStyle(
@@ -143,7 +143,7 @@ class MainHeader extends StatelessWidget {
                     size: 25,
                   )),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 14),
             GestureDetector(
               onTap: () {
                 controller.profleIcon();
@@ -158,7 +158,7 @@ class MainHeader extends StatelessWidget {
                     badgeColor: AppsColors.loginColorPrimary,
                     padding: const EdgeInsets.symmetric(horizontal: 4)),
                 child: Icon(
-                    Icons.person_2_outlined,
+                    Icons.dehaze,
                     color: controller.isProfileSelected.value
                         ? AppsColors.loginColorPrimary
                         : Colors.grey,

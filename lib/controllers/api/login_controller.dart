@@ -9,17 +9,54 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class LoginController extends GetxController {
-  final emailController = TextEditingController();
+  final emailCustomerController = TextEditingController();
+  final emailSalesController = TextEditingController();
   final passwordController = TextEditingController();
+  final tokenController = TextEditingController();
   var isLoading = false.obs;
+
+  @override
+  void onClose() {
+    emailCustomerController.dispose();
+    emailSalesController.dispose();
+    passwordController.dispose();
+    tokenController.dispose();
+    super.onClose();
+  }
 
   static final String apiUrl = 'https://kharismastationerykupang.com/api/';
 
-  Future<void> login() async {
+  Future<void> loginCustomer() async {
     try {
       isLoading(true);
-      final response = await ApiLoginService.login(
-          emailController.text, passwordController.text);
+      final response = await ApiLoginService.loginCustomer(
+          emailCustomerController.text, passwordController.text);
+      // print(response['data']['token']);
+      final token = response['data']['token'];
+      final user = response['data']['user'];
+      final UserModel userModels = UserModel.fromJson(user);
+
+      await saveToken(token);
+      await saveAuthData(userModels);
+      isLoading(false);
+      Get.offNamed(RoutesName.home);
+    } catch (e) {
+      print(e);
+      isLoading(false);
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> loginSales() async {
+    try {
+      isLoading(true);
+      final response = await ApiLoginService.loginSales(
+          emailSalesController.text, tokenController.text);
       // print(response['data']['token']);
       final token = response['data']['token'];
       final user = response['data']['user'];

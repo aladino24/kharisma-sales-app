@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kharisma_sales_app/controllers/api/login_controller.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginSalesPage extends StatelessWidget {
   LoginSalesPage({super.key});
+
+  final LoginController loginController = Get.put(LoginController());
 
   var isHidePassword = true.obs;
 
@@ -56,14 +60,34 @@ class LoginSalesPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
+                      TextFormField(
+                        controller: loginController.emailSalesController,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Email can't be empty";
+                          } else if (!GetUtils.isEmail(value)) {
+                            return 'Email tidak valid';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: Icon(Icons.person),
+                        ),
+                      ),
+                      SizedBox(height: 20),
                       Obx(
                         () => TextFormField(
+                          controller: loginController.tokenController,
                           obscureText: isHidePassword.value, // field password
                           decoration: InputDecoration(
                             labelText: 'Insert Token',
                             prefixIcon: Icon(Icons.lock),
                             suffixIcon: IconButton(
-                              icon: Icon(isHidePassword.value ? Icons.visibility : Icons.visibility_off),
+                              icon: Icon(isHidePassword.value
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
                               onPressed: () {
                                 isHidePassword.value = !isHidePassword.value;
                               },
@@ -77,16 +101,34 @@ class LoginSalesPage extends StatelessWidget {
                       Container(
                         height: MediaQuery.of(context).size.height * 0.06,
                         width: MediaQuery.of(context).size.width * 0.8,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Add your login logic here
-                          },
-                          child: Text('Login'),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                AppsColors.loginColorPrimary),
-                          ),
-                        ),
+                        child: Obx(() => loginController.isLoading.value
+                            ? ElevatedButton(
+                                onPressed: () {},
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          AppsColors.loginColorPrimary),
+                                ),
+                              )
+                            : ElevatedButton(
+                                onPressed: () async {
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  loginController.loginSales().then(
+                                      (value) async => {
+                                            await prefs.setString(
+                                                'role', 'sales')
+                                          });
+                                },
+                                child: Text('Login'),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          AppsColors.loginColorPrimary),
+                                ),
+                              )),
                       ),
                       SizedBox(height: 10),
                       Container(

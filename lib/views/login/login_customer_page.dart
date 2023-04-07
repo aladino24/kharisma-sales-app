@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/login_controller.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginCustomerPage extends StatelessWidget {
   LoginCustomerPage({super.key});
@@ -72,7 +73,7 @@ class LoginCustomerPage extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       TextFormField(
-                        controller: loginController.emailController,
+                        controller: loginController.emailCustomerController,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -153,7 +154,10 @@ class LoginCustomerPage extends StatelessWidget {
                               )
                             : ElevatedButton(
                                 onPressed: () async {
-                                  loginController.login();
+                                  final prefs = await SharedPreferences.getInstance();
+                                  loginController.loginCustomer().then((value) async => {
+                                      await prefs.setString('role', 'customer')
+                                  });
                                 },
                                 child: Text('Login'),
                                 style: ButtonStyle(

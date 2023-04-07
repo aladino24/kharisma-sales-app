@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class ApiLoginService {
   static final String apiUrl = 'https://kharismastationerykupang.com/api/';
 
-  static Future<Map<String, dynamic>> login(
+  static Future<Map<String, dynamic>> loginCustomer(
       String email, String password) async {
     String login_url = apiUrl + 'ecom/login';
 
@@ -21,4 +21,26 @@ class ApiLoginService {
       throw Exception('Failed to login');
     }
   }
+
+  static Future<Map<String, dynamic>> loginSales(String email, String token) async {
+    String login_url = apiUrl + 'ecom/login';
+
+    final response = await http.post(
+      Uri.parse(login_url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(<String, String>{'sales_email': email, 'keylog': token}),
+    );
+    // print(jsonDecode(response.body));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to login');
+    }
+  }
+
+
+
+
+
 }
