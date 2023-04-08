@@ -9,12 +9,8 @@ import 'package:kharisma_sales_app/widgets/rating_star.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  final myController = Get.put(MainHeaderController());
+  final MainHeaderController myController = Get.put(MainHeaderController());
 
-  void handleUserAction() {
-    myController.selectAllIcon();
-    myController.update(); 
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +41,7 @@ class HomePage extends StatelessWidget {
               Container(
                 // width * 0.5
                 height: 60,
-                width: MediaQuery.of(context).size.width * 0.75,
+                width: Get.width * 0.75,
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: 10, bottom: 10),
                 child: Row(
