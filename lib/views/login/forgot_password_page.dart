@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/forgot_password_controller.dart';
+import 'package:get/get.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
-  const ForgotPasswordPage({super.key});
+  ForgotPasswordPage({super.key});
+
+  final ForgotPasswordController forgotPasswordController = Get.put(ForgotPasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,8 @@ class ForgotPasswordPage extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * 0.25,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/images/Password_Monochromatic.png'),
+                        image: AssetImage(
+                            'assets/images/Password_Monochromatic.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -61,6 +66,16 @@ class ForgotPasswordPage extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       TextFormField(
+                        controller: forgotPasswordController.emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Email can't be empty";
+                          } else if (!GetUtils.isEmail(value)) {
+                            return 'Email tidak valid';
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           labelText: 'Email/Phone Number',
                           prefixIcon: Icon(Icons.alternate_email),
@@ -68,19 +83,32 @@ class ForgotPasswordPage extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Add your login logic here
-                          },
-                          child: Text('Submit'),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                AppsColors.loginColorPrimary),
-                          ),
-                        ),
-                      ),
+                          height: MediaQuery.of(context).size.height * 0.06,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child:
+                              Obx(() => forgotPasswordController.isLoading.value
+                                  ? ElevatedButton(
+                                      onPressed: () {},
+                                      child: CircularProgressIndicator(
+                                        color: AppsColors.loginFontColorSecondary,
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                AppsColors.loginColorPrimary),
+                                      ),
+                                    )
+                                  : ElevatedButton(
+                                      onPressed: () {
+                                        forgotPasswordController.forgotPassword();
+                                      },
+                                      child: Text('Submit'),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                AppsColors.loginColorPrimary),
+                                      ),
+                                    ))),
                       SizedBox(height: 10),
                     ],
                   ),

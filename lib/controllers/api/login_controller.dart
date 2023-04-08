@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/models/user_model.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_login_service.dart';
+import 'package:kharisma_sales_app/services/api_url.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,8 +23,6 @@ class LoginController extends GetxController {
     tokenController.dispose();
     super.onClose();
   }
-
-  static final String apiUrl = 'https://kharismastationerykupang.com/api/';
 
   Future<void> loginCustomer() async {
     try {
@@ -79,9 +77,10 @@ class LoginController extends GetxController {
   }
 
   Future<void> logout() async {
+    
     try {
       await http.post(
-        Uri.parse(ApiLoginService.apiUrl + 'ecom/logout'),
+        Uri.parse( ApiUrl.apiUrl + 'ecom/logout'),
         headers: {'Authorization': 'Bearer $getToken()'},
       );
       // Membersihkan token dan data pengguna dari penyimpanan lokal

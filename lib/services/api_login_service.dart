@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:kharisma_sales_app/services/api_url.dart';
 
 class ApiLoginService {
-  static final String apiUrl = 'https://kharismastationerykupang.com/api/';
+  
 
   static Future<Map<String, dynamic>> loginCustomer(
       String email, String password) async {
-    String login_url = apiUrl + 'ecom/login';
+    String login_url = ApiUrl.apiUrl + 'ecom/login';
 
     final response = await http.post(
       Uri.parse(login_url),
@@ -23,7 +24,7 @@ class ApiLoginService {
   }
 
   static Future<Map<String, dynamic>> loginSales(String email, String token) async {
-    String login_url = apiUrl + 'ecom/login';
+    String login_url = ApiUrl.apiUrl + 'ecom/login';
 
     final response = await http.post(
       Uri.parse(login_url),

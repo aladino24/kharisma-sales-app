@@ -5,11 +5,14 @@ import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/widgets/rating_star.dart';
+import 'package:kharisma_sales_app/controllers/components/detail_product_controller.dart';
 
 class DetailProductPage extends StatelessWidget {
   DetailProductPage({super.key});
 
   CarouselController? carouselController = CarouselController();
+  final DetailProductController detailProductController =
+      Get.put(DetailProductController());
 
   void previousImage() {
     carouselController!.previousPage(
@@ -190,84 +193,100 @@ class DetailProductPage extends StatelessWidget {
                           ),
 
                           // Quantity product
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "Quantity",
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 16,
-                                    color: AppsColors.loginFontColorPrimaryDark,
+                          GetBuilder<DetailProductController>(
+                            builder: (controller) => Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Quantity",
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 16,
+                                      color:
+                                          AppsColors.loginFontColorPrimaryDark,
+                                    ),
                                   ),
-                                ),
-                                //table disini
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8.0),
-                                  child: Container(
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            border:
-                                                Border.all(color: Colors.grey),
-                                          ),
-                                          child: Center(
-                                            child: Icon(Icons.remove),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 40,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          child: Container(
+                                  //table disini
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, right: 8.0),
+                                    child: Container(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 30,
+                                            height: 30,
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                   color: Colors.grey),
                                             ),
                                             child: Center(
-                                              child: Text(
-                                                "15",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 15,
+                                              child: GestureDetector(
+                                                child: Icon(Icons.remove),
+                                                onTap: () {
+                                                  detailProductController
+                                                      .decrement();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 40,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.grey),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  "${detailProductController.quantity.value}",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 15,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            border:
-                                                Border.all(color: Colors.grey),
-                                          ),
-                                          child: Center(
-                                            child: Icon(Icons.add),
-                                          ),
-                                        ),
-                                      ],
+                                          Container(
+                                            width: 30,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                            ),
+                                            child: Center(
+                                              child: GestureDetector(
+                                                child: Icon(Icons.add),
+                                                onTap: () {
+                                                  detailProductController
+                                                      .increment();
+                                                },
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Text(
-                                  "( Stock : 100 )",
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 12,
-                                    color: AppsColors.loginFontColorPrimaryDark,
+                                  Text(
+                                    "( Stock : 100 )",
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 12,
+                                      color:
+                                          AppsColors.loginFontColorPrimaryDark,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
 
@@ -326,7 +345,7 @@ class DetailProductPage extends StatelessWidget {
                           ),
 
                           // Varian product
-                          Container(
+                          Obx(() => Container(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -346,56 +365,83 @@ class DetailProductPage extends StatelessWidget {
                                         width: 90,
                                         height: 30,
                                         decoration: BoxDecoration(
-                                          color: AppsColors.loginColorPrimary,
+                                          color: detailProductController.variant.value =='Hitam'
+                                              ? AppsColors.loginColorPrimary
+                                              : Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(10),
                                           border: Border.all(
-                                              color:
-                                                  AppsColors.loginColorPrimary),
+                                              color: detailProductController.variant.value == 'Hitam'
+                                                  ? AppsColors.loginColorPrimary
+                                                  : AppsColors
+                                                      .loginFontColorSecondary),
                                         ),
-                                        child: Center(
-                                            child: Text(
-                                          "Hitam",
-                                          style: TextStyle(color: Colors.white),
-                                        )),
+                                        child: InkWell(
+                                          child: Center(
+                                              child: Text(
+                                            "Hitam",
+                                            style: TextStyle(
+                                                color: detailProductController.variant.value == 'Hitam'
+                                                    ? Colors.white
+                                                    : AppsColors.loginFontColorSecondary
+                                              ),
+                                          )),
+                                          onTap: () => detailProductController.setVariant('Hitam'),
+                                        ),
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(right: 5),
                                         width: 90,
                                         height: 30,
                                         decoration: BoxDecoration(
+                                          color: detailProductController.variant.value == 'Merah'
+                                              ? AppsColors.loginColorPrimary
+                                              : Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(10),
                                           border: Border.all(
-                                              color: AppsColors
-                                                  .loginFontColorSecondary),
+                                              color: detailProductController.variant.value == 'Merah'
+                                                  ? AppsColors.loginColorPrimary
+                                                  : AppsColors.loginFontColorSecondary),
                                         ),
-                                        child: Center(
-                                            child: Text(
-                                          "Merah",
-                                          style: TextStyle(
-                                              color: AppsColors
-                                                  .loginFontColorSecondary),
-                                        )),
+                                        child: InkWell(
+                                          child: Center(
+                                              child: Text(
+                                            "Merah",
+                                            style: TextStyle(
+                                                color: detailProductController.variant.value == 'Merah'
+                                                      ? Colors.white
+                                                      : AppsColors.loginFontColorSecondary),
+                                          )),
+                                          onTap: () => detailProductController.setVariant('Merah'),
+                                        ),
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(right: 5),
                                         width: 90,
                                         height: 30,
                                         decoration: BoxDecoration(
+                                          color: detailProductController.variant.value == 'Putih'
+                                              ? AppsColors.loginColorPrimary
+                                              : Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(10),
                                           border: Border.all(
-                                              color: AppsColors
-                                                  .loginFontColorSecondary),
+                                              color: detailProductController.variant.value == 'Putih'
+                                                  ? AppsColors.loginColorPrimary
+                                                  : AppsColors.loginFontColorSecondary),
                                         ),
-                                        child: Center(
-                                            child: Text(
-                                          "Putih",
-                                          style: TextStyle(
-                                              color: AppsColors
-                                                  .loginFontColorSecondary),
-                                        )),
+                                        child: InkWell(
+                                          child: Center(
+                                              child: Text(
+                                            "Putih",
+                                            style: TextStyle(
+                                                color: detailProductController.variant.value == 'Putih'
+                                                      ? Colors.white
+                                                      : AppsColors.loginFontColorSecondary),
+                                          )),
+                                          onTap: () => detailProductController.setVariant('Putih'),
+                                        ),
                                       )
                                     ],
                                   ),
@@ -403,6 +449,7 @@ class DetailProductPage extends StatelessWidget {
                               ],
                             ),
                           ),
+                        ),
 
                           // Detail Product description
                           Container(
@@ -435,224 +482,6 @@ class DetailProductPage extends StatelessWidget {
                             ),
                           ),
 
-                          // Informasi Order
-                          Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            width: Get.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  color: AppsColors.loginFontColorSecondary,
-                                  width: 1.2),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    "Informasi Order",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8.0),
-                                  child: Divider(
-                                    color: AppsColors.loginFontColorSecondary,
-                                    thickness: 2,
-                                  ),
-                                ),
-
-                                // Alamat Pengiriman
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, top: 10, right: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(bottom: 10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Dikirim Ke",
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.location_on,
-                                                        color: AppsColors
-                                                            .loginColorPrimary,
-                                                      ),
-                                                      Text(
-                                                        "Jl. Ahmad Yani No. 37, Suraba... ",
-                                                        style: TextStyle(
-                                                            color: AppsColors
-                                                                .loginColorPrimary),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                // icon edit
-                                                Icon(
-                                                  Icons.edit,
-                                                  color: AppsColors
-                                                      .loginFontColorSecondary,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      // Ongkir
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(bottom: 10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Ongkir",
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.fire_truck_rounded,
-                                                  color: AppsColors
-                                                      .loginColorPrimary,
-                                                ),
-                                                Text(
-                                                  " Reguler 15.000",
-                                                  style: TextStyle(
-                                                      color: AppsColors
-                                                          .loginColorPrimary),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      // Estimasi Sampai
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(bottom: 10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Estimasi Tiba",
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.calendar_month_rounded,
-                                                  color: AppsColors
-                                                      .loginColorPrimary,
-                                                ),
-                                                Text(
-                                                  " 07-10 April 2023",
-                                                  style: TextStyle(
-                                                      color: AppsColors
-                                                          .loginColorPrimary),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                                  child: Divider(
-                                    color: AppsColors.loginFontColorSecondary,
-                                    thickness: 2,
-                                  ),
-                                ),
-
-                                // Calculation
-                                Container(
-                                  child: Column(
-                                    children: [
-                                      // Sub total
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text("Sub Total"),
-                                                SizedBox(width: 5),
-                                                DiskonProduct()
-                                              ],
-                                            ),
-                                            Text("Rp 300.000")
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text("Biaya Pengiriman"),
-                                            Text("Rp 15.000")
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0, bottom: 30),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Total", 
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16
-                                              ),
-                                            ),
-                                            Text(
-                                              "Rp 315.000",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16
-                                              )
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-
-                              ],
-                            ),
-                          )
                         ],
                       ),
                     ),
@@ -666,4 +495,3 @@ class DetailProductPage extends StatelessWidget {
     );
   }
 }
-
