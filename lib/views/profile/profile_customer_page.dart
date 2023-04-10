@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/login_controller.dart';
+import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/controllers/components/tabbar_controller.dart';
 import 'package:kharisma_sales_app/models/user_model.dart';
@@ -12,6 +13,9 @@ class ProfileCustomerPage extends StatelessWidget {
   final MyTabController tabController = Get.put(MyTabController());
   final LoginController loginController = Get.put(LoginController());
   final LoginController userController = Get.find();
+
+  final RxBool isExpandedMenu = false.obs;
+  final RxBool isExpandedLayanan = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +113,19 @@ class ProfileCustomerPage extends StatelessWidget {
                               child: Column(
                                 children: [
                                   ExpansionTile(
-                                    title: Text(
-                                      'Menu',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700),
+                                    iconColor: AppsColors.loginColorPrimary,
+                                    onExpansionChanged: (value) => isExpandedMenu.value = value,
+                                    title: Obx(
+                                      () => Text(
+                                        'Menu',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          color: isExpandedMenu.value
+                                              ? AppsColors
+                                                  .loginColorPrimary 
+                                              : Colors.black,
+                                        ),
+                                      ),
                                     ),
                                     children: [
                                       ListTile(
@@ -144,24 +157,32 @@ class ProfileCustomerPage extends StatelessWidget {
                                         ),
                                         leading: Icon(Icons.notifications),
                                       ),
-                                      
                                       ListTile(
                                         title: Text(
                                           'Logout',
                                           style: TextStyle(fontSize: 14),
                                         ),
                                         leading: Icon(Icons.logout),
-                                        onTap: () async{
+                                        onTap: () async {
                                           loginController.logout();
                                         },
                                       ),
                                     ],
                                   ),
                                   ExpansionTile(
-                                    title: Text(
-                                      'Layanan',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700),
+                                    iconColor: AppsColors.loginColorPrimary,
+                                    onExpansionChanged: (value) => isExpandedLayanan.value = value,
+                                    title: Obx(
+                                      () => Text(
+                                        'Layanan',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          color: isExpandedLayanan.value
+                                              ? AppsColors
+                                                  .loginColorPrimary 
+                                              : Colors.black,
+                                        ),
+                                      ),
                                     ),
                                     children: [
                                       ListTile(
@@ -172,12 +193,15 @@ class ProfileCustomerPage extends StatelessWidget {
                                         tileColor: AppsColors.loginColorPrimary,
                                         leading: Icon(Icons.lock),
                                       ),
-                                      ListTile(
-                                        title: Text(
-                                          'Syarat Ketentuan',
-                                          style: TextStyle(fontSize: 14),
+                                      GestureDetector(
+                                        child: ListTile(
+                                          title: Text(
+                                            'Syarat Ketentuan',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                          leading: Icon(Icons.article),
                                         ),
-                                        leading: Icon(Icons.article),
+                                        onTap: () => Get.toNamed(RoutesName.termCondition),
                                       ),
                                       ListTile(
                                         title: Text(

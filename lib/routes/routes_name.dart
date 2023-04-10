@@ -17,4 +17,5 @@ abstract class RoutesName{
 
   // profile
   static const profile = '/profile-page';
+  static const termCondition = '/termcondition-page';
 }
