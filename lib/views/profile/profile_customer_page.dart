@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/login_controller.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
+import 'package:kharisma_sales_app/views/profile/call_center_page.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/controllers/components/tabbar_controller.dart';
 import 'package:kharisma_sales_app/models/user_model.dart';
@@ -203,12 +204,15 @@ class ProfileCustomerPage extends StatelessWidget {
                                         ),
                                         onTap: () => Get.toNamed(RoutesName.termCondition),
                                       ),
-                                      ListTile(
-                                        title: Text(
-                                          'Hubungi Kami',
-                                          style: TextStyle(fontSize: 14),
+                                      GestureDetector(
+                                        child: ListTile(
+                                          title: Text(
+                                            'Hubungi Kami',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                          leading: Icon(Icons.call),
                                         ),
-                                        leading: Icon(Icons.call),
+                                        onTap: () => Get.toNamed(RoutesName.callcenter)
                                       ),
                                     ],
                                   ),
