@@ -20,4 +20,5 @@ abstract class RoutesName{
   static const profile = '/profile-page';
   static const termCondition = '/termcondition-page';
   static const callcenter = '/callcenter-page';
+  static const addAddress = '/add-address-page';
 }

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/login_controller.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
-import 'package:kharisma_sales_app/views/profile/call_center_page.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/controllers/components/tabbar_controller.dart';
 import 'package:kharisma_sales_app/models/user_model.dart';
@@ -129,13 +128,16 @@ class ProfileCustomerPage extends StatelessWidget {
                                       ),
                                     ),
                                     children: [
-                                      ListTile(
-                                        title: Text(
-                                          'Alamat Pengiriman',
-                                          style: TextStyle(fontSize: 14),
+                                      GestureDetector(
+                                        child: ListTile(
+                                          title: Text(
+                                            'Alamat Pengiriman',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                          tileColor: AppsColors.loginColorPrimary,
+                                          leading: Icon(Icons.location_on),
                                         ),
-                                        tileColor: AppsColors.loginColorPrimary,
-                                        leading: Icon(Icons.location_on),
+                                        onTap: () => Get.toNamed(RoutesName.addAddress),
                                       ),
                                       ListTile(
                                         title: Text(

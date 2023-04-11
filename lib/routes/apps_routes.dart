@@ -8,6 +8,7 @@ import 'package:kharisma_sales_app/views/product/cart_product_page.dart';
 import 'package:kharisma_sales_app/views/product/checkout_product_page.dart';
 import 'package:kharisma_sales_app/views/product/save_product_page.dart';
 import 'package:kharisma_sales_app/views/product/notification_product_page.dart';
+import 'package:kharisma_sales_app/views/profile/add_address_page.dart';
 import 'package:kharisma_sales_app/views/profile/call_center_page.dart';
 import 'package:kharisma_sales_app/views/profile/profile_customer_page.dart';
 import 'package:kharisma_sales_app/views/profile/termcondition_page.dart';
@@ -26,6 +27,7 @@ class AppsRoutes{
     GetPage(name: RoutesName.profile, page: () => ProfileCustomerPage()),
     GetPage(name: RoutesName.termCondition, page: () => TermConditionPage()),
     GetPage(name: RoutesName.callcenter, page: ()=> CallCenterPage()),
-    GetPage(name: RoutesName.checkoutProduct, page: ()=> CheckoutProductPage())
+    GetPage(name: RoutesName.checkoutProduct, page: ()=> CheckoutProductPage()),
+    GetPage(name: RoutesName.addAddress, page: () => AddAddressPage())
   ];
 }
