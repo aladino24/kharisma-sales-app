@@ -5,6 +5,7 @@ import 'package:kharisma_sales_app/views/login/forgot_password_page.dart';
 import 'package:kharisma_sales_app/views/login/login_customer_page.dart';
 import 'package:kharisma_sales_app/views/login/login_sales_page.dart';
 import 'package:kharisma_sales_app/views/product/cart_product_page.dart';
+import 'package:kharisma_sales_app/views/product/checkout_product_page.dart';
 import 'package:kharisma_sales_app/views/product/save_product_page.dart';
 import 'package:kharisma_sales_app/views/product/notification_product_page.dart';
 import 'package:kharisma_sales_app/views/profile/call_center_page.dart';
@@ -24,6 +25,7 @@ class AppsRoutes{
     GetPage(name: RoutesName.notificationProduct, page: () => NotificationProductPage()),
     GetPage(name: RoutesName.profile, page: () => ProfileCustomerPage()),
     GetPage(name: RoutesName.termCondition, page: () => TermConditionPage()),
-    GetPage(name: RoutesName.callcenter, page: ()=> CallCenterPage())
+    GetPage(name: RoutesName.callcenter, page: ()=> CallCenterPage()),
+    GetPage(name: RoutesName.checkoutProduct, page: ()=> CheckoutProductPage())
   ];
 }

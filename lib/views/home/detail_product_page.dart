@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/widgets/rating_star.dart';
@@ -314,22 +315,25 @@ class DetailProductPage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  width: 150,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: AppsColors.loginColorPrimary,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "Buy Now",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700),
+                                GestureDetector(
+                                  child: Container(
+                                    width: 150,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: AppsColors.loginColorPrimary,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "Buy Now",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700),
+                                      ),
                                     ),
                                   ),
+                                  onTap: () => Get.toNamed(RoutesName.checkoutProduct),
                                 ),
                               ],
                             ),
@@ -345,111 +349,143 @@ class DetailProductPage extends StatelessWidget {
                           ),
 
                           // Varian product
-                          Obx(() => Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Varian (4)",
-                                  style: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                SizedBox(height: 5),
-                                Container(
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.only(right: 5),
-                                        width: 90,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          color: detailProductController.variant.value =='Hitam'
-                                              ? AppsColors.loginColorPrimary
-                                              : Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                              color: detailProductController.variant.value == 'Hitam'
-                                                  ? AppsColors.loginColorPrimary
-                                                  : AppsColors
-                                                      .loginFontColorSecondary),
-                                        ),
-                                        child: InkWell(
-                                          child: Center(
-                                              child: Text(
-                                            "Hitam",
-                                            style: TextStyle(
-                                                color: detailProductController.variant.value == 'Hitam'
-                                                    ? Colors.white
-                                                    : AppsColors.loginFontColorSecondary
-                                              ),
-                                          )),
-                                          onTap: () => detailProductController.setVariant('Hitam'),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: const EdgeInsets.only(right: 5),
-                                        width: 90,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          color: detailProductController.variant.value == 'Merah'
-                                              ? AppsColors.loginColorPrimary
-                                              : Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                              color: detailProductController.variant.value == 'Merah'
-                                                  ? AppsColors.loginColorPrimary
-                                                  : AppsColors.loginFontColorSecondary),
-                                        ),
-                                        child: InkWell(
-                                          child: Center(
-                                              child: Text(
-                                            "Merah",
-                                            style: TextStyle(
-                                                color: detailProductController.variant.value == 'Merah'
-                                                      ? Colors.white
-                                                      : AppsColors.loginFontColorSecondary),
-                                          )),
-                                          onTap: () => detailProductController.setVariant('Merah'),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: const EdgeInsets.only(right: 5),
-                                        width: 90,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          color: detailProductController.variant.value == 'Putih'
-                                              ? AppsColors.loginColorPrimary
-                                              : Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                              color: detailProductController.variant.value == 'Putih'
-                                                  ? AppsColors.loginColorPrimary
-                                                  : AppsColors.loginFontColorSecondary),
-                                        ),
-                                        child: InkWell(
-                                          child: Center(
-                                              child: Text(
-                                            "Putih",
-                                            style: TextStyle(
-                                                color: detailProductController.variant.value == 'Putih'
-                                                      ? Colors.white
-                                                      : AppsColors.loginFontColorSecondary),
-                                          )),
-                                          onTap: () => detailProductController.setVariant('Putih'),
-                                        ),
-                                      )
-                                    ],
+                          Obx(
+                            () => Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Varian (4)",
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700),
                                   ),
-                                )
-                              ],
+                                  SizedBox(height: 5),
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(right: 5),
+                                          width: 90,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            color: detailProductController
+                                                        .variant.value ==
+                                                    'Hitam'
+                                                ? AppsColors.loginColorPrimary
+                                                : Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: detailProductController
+                                                            .variant.value ==
+                                                        'Hitam'
+                                                    ? AppsColors
+                                                        .loginColorPrimary
+                                                    : AppsColors
+                                                        .loginFontColorSecondary),
+                                          ),
+                                          child: InkWell(
+                                            child: Center(
+                                                child: Text(
+                                              "Hitam",
+                                              style: TextStyle(
+                                                  color: detailProductController
+                                                              .variant.value ==
+                                                          'Hitam'
+                                                      ? Colors.white
+                                                      : AppsColors
+                                                          .loginFontColorSecondary),
+                                            )),
+                                            onTap: () => detailProductController
+                                                .setVariant('Hitam'),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(right: 5),
+                                          width: 90,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            color: detailProductController
+                                                        .variant.value ==
+                                                    'Merah'
+                                                ? AppsColors.loginColorPrimary
+                                                : Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: detailProductController
+                                                            .variant.value ==
+                                                        'Merah'
+                                                    ? AppsColors
+                                                        .loginColorPrimary
+                                                    : AppsColors
+                                                        .loginFontColorSecondary),
+                                          ),
+                                          child: InkWell(
+                                            child: Center(
+                                                child: Text(
+                                              "Merah",
+                                              style: TextStyle(
+                                                  color: detailProductController
+                                                              .variant.value ==
+                                                          'Merah'
+                                                      ? Colors.white
+                                                      : AppsColors
+                                                          .loginFontColorSecondary),
+                                            )),
+                                            onTap: () => detailProductController
+                                                .setVariant('Merah'),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(right: 5),
+                                          width: 90,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            color: detailProductController
+                                                        .variant.value ==
+                                                    'Putih'
+                                                ? AppsColors.loginColorPrimary
+                                                : Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: detailProductController
+                                                            .variant.value ==
+                                                        'Putih'
+                                                    ? AppsColors
+                                                        .loginColorPrimary
+                                                    : AppsColors
+                                                        .loginFontColorSecondary),
+                                          ),
+                                          child: InkWell(
+                                            child: Center(
+                                                child: Text(
+                                              "Putih",
+                                              style: TextStyle(
+                                                  color: detailProductController
+                                                              .variant.value ==
+                                                          'Putih'
+                                                      ? Colors.white
+                                                      : AppsColors
+                                                          .loginFontColorSecondary),
+                                            )),
+                                            onTap: () => detailProductController
+                                                .setVariant('Putih'),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
 
                           // Detail Product description
                           Container(
@@ -481,7 +517,6 @@ class DetailProductPage extends StatelessWidget {
                               ],
                             ),
                           ),
-
                         ],
                       ),
                     ),
