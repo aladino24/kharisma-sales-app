@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
-import 'package:kharisma_sales_app/controllers/api/forgot_password_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/apps/forgot_password_controller.dart';
 import 'package:get/get.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
