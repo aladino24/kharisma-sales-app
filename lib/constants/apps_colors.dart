@@ -10,4 +10,5 @@ class AppsColors{
    static const Color textCustomerPrice = Color(0xFFFF2525);
    static const Color ratingProduct = Color(0xFFFFC102);
    static const Color labelAlamatUtama = Color(0xFF4425FF);
+   static const Color imageAlamatBackground = Color(0xFFFFE9C9);
 }

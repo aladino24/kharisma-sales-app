@@ -28,8 +28,7 @@ class ProvinsiController extends GetxController {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['data'];
         _listProvinsi.assignAll(data.map((e) => Provinsi.fromJson(e)).toList());
-        listProvinsi.value =
-            data.map((json) => Provinsi.fromJson(json)).toList();
+        listProvinsi.value = data.map((json) => Provinsi.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load data');
       }

@@ -137,7 +137,7 @@ class ProfileCustomerPage extends StatelessWidget {
                                           tileColor: AppsColors.loginColorPrimary,
                                           leading: Icon(Icons.location_on),
                                         ),
-                                        onTap: () => Get.toNamed(RoutesName.addAddress),
+                                        onTap: () => Get.toNamed(RoutesName.listAddress),
                                       ),
                                       ListTile(
                                         title: Text(

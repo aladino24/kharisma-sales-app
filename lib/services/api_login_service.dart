@@ -14,7 +14,7 @@ class ApiLoginService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(<String, String>{'email': email, 'password': password}),
     );
-    // print(jsonDecode(response.body));
+    print(jsonDecode(response.body));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
