@@ -11,6 +11,8 @@ class LoginCustomerPage extends StatelessWidget {
 
   final LoginController loginController = Get.put(LoginController());
 
+  final GlobalKey<FormState> _formKey = new GlobalKey();
+
   var isHidePassword = true.obs;
 
   @override
@@ -36,167 +38,172 @@ class LoginCustomerPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.1,
-                    top: 25,
-                    right: MediaQuery.of(context).size.width * 0.1),
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Login",
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
+              Form(
+                key: _formKey,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.1,
+                      top: 25,
+                      right: MediaQuery.of(context).size.width * 0.1),
+                  child: Container(
+                    alignment: Alignment.topLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Login",
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Customer",
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
+                        Text(
+                          "Customer",
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Before get started, you must login",
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          color: AppsColors.loginFontColorSecondary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
+                        Text(
+                          "Before get started, you must login",
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            color: AppsColors.loginFontColorSecondary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      TextFormField(
-                        controller: loginController.emailCustomerController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Email can't be empty";
-                          } else if (!GetUtils.isEmail(value)) {
-                            return 'Email tidak valid';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Obx(
-                        () => TextFormField(
-                          controller: loginController.passwordController,
-                          obscureText: isHidePassword.value, // field password
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: loginController.emailCustomerController,
+                          keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Password can't be empty";
+                              return "Email can't be empty";
+                            } else if (!GetUtils.isEmail(value)) {
+                              return 'Email tidak valid';
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                            labelText: 'Password',
-                            prefixIcon: Icon(Icons.lock),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                isHidePassword.value
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                            labelText: 'Email',
+                            prefixIcon: Icon(Icons.person),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Obx(
+                          () => TextFormField(
+                            controller: loginController.passwordController,
+                            obscureText: isHidePassword.value, // field password
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Password can't be empty";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              prefixIcon: Icon(Icons.lock),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  isHidePassword.value
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  isHidePassword.value = !isHidePassword.value;
+                                },
                               ),
-                              onPressed: () {
-                                isHidePassword.value = !isHidePassword.value;
-                              },
+                            ),
+                            // lainnya properti TextFormField
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            RichText(
+                              text: TextSpan(children: [
+                                TextSpan(
+                                    text: " Forgot Password?",
+                                    style: TextStyle(
+                                      color: AppsColors.loginColorPrimary,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Get.toNamed(RoutesName.forgotPassword);
+                                      }),
+                              ]),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.06,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: Obx(() => loginController.isLoading.value
+                              ? ElevatedButton(
+                                  onPressed: () {},
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            AppsColors.loginColorPrimary),
+                                  ),
+                                )
+                              : ElevatedButton(
+                                  onPressed: () async {
+                                     if (_formKey.currentState!.validate()) {}
+
+                                    final prefs = await SharedPreferences.getInstance();
+                                    loginController.loginCustomer().then((value) async => {
+                                              await prefs.setString('role', 'customer')
+                                            });
+                                  },
+                                  child: Text('Login'),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            AppsColors.loginColorPrimary),
+                                  ),
+                                )),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "OR",
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              color: AppsColors.loginFontColorSecondary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
-                          // lainnya properti TextFormField
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
-                                  text: " Forgot Password?",
-                                  style: TextStyle(
-                                    color: AppsColors.loginColorPrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Get.toNamed(RoutesName.forgotPassword);
-                                    }),
-                            ]),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: Obx(() => loginController.isLoading.value
-                            ? ElevatedButton(
-                                onPressed: () {},
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          AppsColors.loginColorPrimary),
-                                ),
-                              )
-                            : ElevatedButton(
-                                onPressed: () async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  loginController.loginCustomer().then((value) async => {
-                                      await prefs.setString('role', 'customer')
-                                  });
-                                },
-                                child: Text('Login'),
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          AppsColors.loginColorPrimary),
-                                ),
-                              )),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "OR",
-                          style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            color: AppsColors.loginFontColorSecondary,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
+                        SizedBox(height: 10),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.06,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Get.offNamed(RoutesName.loginSales);
+                            },
+                            child: Text('Login as Sales'),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  AppsColors.loginFontColorSecondary),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Get.offNamed(RoutesName.loginSales);
-                          },
-                          child: Text('Login as Sales'),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                AppsColors.loginFontColorSecondary),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 40),
-                    ],
+                        SizedBox(height: 40),
+                      ],
+                    ),
                   ),
                 ),
               ),

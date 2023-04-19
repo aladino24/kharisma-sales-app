@@ -1,24 +1,22 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kharisma_sales_app/models/kota.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
 
 class KotaController extends GetxController {
   var isLoading = false.obs;
-   var selectedKotaId = Rx<String?>(null);
+   var selectedKotaId = Rx<Kota?>(null);
   var _listKota = List<Kota>.empty().obs;
   get listKota => _listKota;
   
 
   Future<void> fetchKotaByProvinsiId(provinsi_id) async {
-    String api_address_url = ApiUrl.apiAddressUrl + 'kota?provinsi_id=$provinsi_id';
+    String api_address_url = ApiUrl.apiUrl + 'city-raja-ongkir/$provinsi_id';
     try {
       isLoading.value = true;
-      final apiKey = dotenv.env['API_KEY_ADDRESS'];
-      final response = await http
-          .get(Uri.parse(api_address_url), headers: {'X-API-KEY': '$apiKey'});
+      // final apiKey = dotenv.env['API_KEY_ADDRESS'];
+      final response = await http.get(Uri.parse(api_address_url));
 
       print(response.body);
 

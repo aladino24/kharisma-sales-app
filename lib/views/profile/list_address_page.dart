@@ -8,11 +8,27 @@ import 'package:kharisma_sales_app/widgets/main_header.dart';
 class ListAddressPage extends StatelessWidget {
   ListAddressPage({super.key});
 
-  final AlamatKirimController listAlamatPengiriman =
-      Get.put(AlamatKirimController());
+  final AlamatKirimController listAlamatPengiriman = Get.put(AlamatKirimController());
 
+  
   @override
   Widget build(BuildContext context) {
+  
+    final Map arguments = Get.arguments ?? {};
+    final bool isNotif = arguments.containsKey('notif');
+
+    if (isNotif && arguments['notif'] == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.snackbar(
+          'Notification',
+          'Alamat berhasil ditambahkan',
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      });
+    }
+    
     return Scaffold(
       body: SafeArea(
           child: Column(

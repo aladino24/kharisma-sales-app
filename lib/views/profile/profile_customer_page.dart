@@ -265,14 +265,99 @@ class ProfileCustomerPage extends StatelessWidget {
                     ),
 
                     Container(
-                      height: 20, // set tinggi container sesuai kebutuhan
+                      height: 200, 
+                      width: Get.width * 0.9,
                       child: TabBarView(
                         controller: tabController.tabController,
                         children: [
                           // konten tab starters
-                          Center(
-                            child: Text("Lagi Diproses sabar"),
-                          ),
+                          ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: 2,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(vertical: 10),
+                                      width: Get.width * 0.9,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.2),
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 0),
+                                          ),
+                                        ],
+                                      ),
+                                      child: ListTile(
+                                        trailing: Text(
+                                          "Sedang Diproses",
+                                          style: TextStyle(
+                                            color: Colors.orange,
+                                            fontSize: 10
+                                          ),
+                                        ),
+                                        title: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: 80,
+                                              height: 80,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: AppsColors
+                                                    .imageProductBackground,
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                    "assets/images/product.png",
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          "Alamat Pengiriman",
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                     Text(
+                                                        "x100",
+                                                        style: TextStyle(
+                                                            color: AppsColors
+                                                                .loginColorPrimary,
+                                                            fontSize: 14),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                      ),
+                                    );
+                                  }),
                           // konten tab main course
                           Center(
                             child: Text("Tunggu ya dikirim"),

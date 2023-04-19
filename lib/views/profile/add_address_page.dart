@@ -6,6 +6,9 @@ import 'package:kharisma_sales_app/controllers/api/address/kecamatan_controller.
 import 'package:kharisma_sales_app/controllers/api/address/kelurahan_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/kota_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/provinsi_controller.dart';
+import 'package:kharisma_sales_app/models/kecamatan.dart';
+import 'package:kharisma_sales_app/models/kota.dart';
+import 'package:kharisma_sales_app/models/provinsi.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
 class AddAddressPage extends StatelessWidget {
@@ -16,6 +19,8 @@ class AddAddressPage extends StatelessWidget {
   final kecamatanController = Get.put(KecamatanController());
   final kelurahanController = Get.put(KelurahanController());
 
+  final alamatKirimController = Get.find<AlamatKirimController>();
+  final GlobalKey<FormState> _formKey = new GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +50,7 @@ class AddAddressPage extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
                       child: Form(
+                        key: _formKey,
                           child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -83,6 +89,13 @@ class AddAddressPage extends StatelessWidget {
                               child: Container(
                                 margin: EdgeInsets.only(bottom: 10),
                                 child: TextFormField(
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Nama Penerima tidak boleh kosong';
+                                    }
+                                    return null;
+                                  },
+                                  controller: alamatKirimController.recipientNameController,
                                   decoration: InputDecoration(
                                     contentPadding:
                                         EdgeInsets.symmetric(horizontal: 10),
@@ -125,6 +138,13 @@ class AddAddressPage extends StatelessWidget {
                               child: Container(
                                 margin: EdgeInsets.only(bottom: 10),
                                 child: TextFormField(
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'No. Telepon tidak boleh kosong';
+                                    }
+                                    return null;
+                                  },
+                                  controller: alamatKirimController.recipientPhoneController,
                                   decoration: InputDecoration(
                                     contentPadding:
                                         EdgeInsets.symmetric(horizontal: 10),
@@ -167,9 +187,17 @@ class AddAddressPage extends StatelessWidget {
                               child: Container(
                                 margin: EdgeInsets.only(bottom: 10),
                                 child: TextFormField(
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Alamat tidak boleh kosong';
+                                    }
+                                    return null;
+                                  },
+                                  controller: alamatKirimController.recipientAddressController,
+                                  maxLines: 3,
                                   decoration: InputDecoration(
                                     contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10),
+                                        EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                     hintText: "Masukkan Alamat",
                                     hintStyle: TextStyle(fontSize: 12),
                                     border: OutlineInputBorder(
@@ -211,13 +239,20 @@ class AddAddressPage extends StatelessWidget {
                                               const EdgeInsets.only(top: 5),
                                           child: Obx(
                                             () => DropdownButtonFormField(
+                                              validator: (value) {
+                                                if (value == null) {
+                                                  return 'Provinsi tidak boleh kosong';
+                                                }
+                                                return null;
+                                              },
                                               isExpanded: true,
                                               // isDense: true,
                                               decoration: InputDecoration(
                                                 contentPadding:
                                                     EdgeInsets.symmetric(
                                                         horizontal: 10),
-                                                hintText: provinsiController.listProvinsi.isEmpty
+                                                hintText: provinsiController
+                                                        .listProvinsi.isEmpty
                                                     ? "Loading..."
                                                     : "Pilih Provinsi",
                                                 hintStyle:
@@ -247,24 +282,45 @@ class AddAddressPage extends StatelessWidget {
                                                             width: 1)),
                                               ),
                                               items: List.generate(
-                                                  provinsiController.listProvinsi.length,
+                                                  provinsiController
+                                                      .listProvinsi.length,
                                                   (index) => DropdownMenuItem(
                                                         child: Text(
-                                                          provinsiController.listProvinsi[index].name,
+                                                          provinsiController
+                                                              .listProvinsi[
+                                                                  index]
+                                                              .province,
                                                           style: TextStyle(
                                                               fontSize: 12),
                                                         ),
-                                                        value: provinsiController.listProvinsi[index].id,
+                                                        value: provinsiController
+                                                                .listProvinsi[
+                                                            index],
                                                       )),
                                               onChanged: (value) {
                                                 if (value != null) {
-                                                  kotaController.clearListKota();
-                                                  kotaController.fetchKotaByProvinsiId(value);
-                                                  kotaController.selectedKotaId.value = null;
+                                                  Provinsi selectedProvinsi =
+                                                      value as Provinsi;
+                                                  kotaController
+                                                      .clearListKota();
+                                                  kotaController
+                                                      .fetchKotaByProvinsiId(
+                                                          selectedProvinsi
+                                                              .province_id);
+                                                  kotaController.selectedKotaId
+                                                      .value = null;
+                                                  provinsiController
+                                                      .selectedProvinsiId
+                                                      .value = value;
                                                 }
-                                                
                                               },
-                                            
+                                              value: provinsiController
+                                                          .selectedProvinsiId
+                                                          .value !=
+                                                      null
+                                                  ? provinsiController
+                                                      .selectedProvinsiId.value
+                                                  : null,
                                             ),
                                           )),
                                     ],
@@ -287,12 +343,19 @@ class AddAddressPage extends StatelessWidget {
                                               const EdgeInsets.only(top: 5),
                                           child: Obx(
                                             () => DropdownButtonFormField(
+                                              validator: (value) {
+                                                if (value == null) {
+                                                  return 'Kota tidak boleh kosong';
+                                                }
+                                                return null;
+                                              },
                                               isExpanded: true,
                                               decoration: InputDecoration(
                                                 contentPadding:
                                                     EdgeInsets.symmetric(
                                                         horizontal: 10),
-                                                hintText: kotaController.isLoading.value
+                                                hintText: kotaController
+                                                        .isLoading.value
                                                     ? "Loading..."
                                                     : "Pilih Kota",
                                                 hintStyle:
@@ -321,27 +384,49 @@ class AddAddressPage extends StatelessWidget {
                                                             color: Colors.grey,
                                                             width: 1)),
                                               ),
-                                              items: kotaController.listKota.isNotEmpty
+                                              items: kotaController
+                                                      .listKota.isNotEmpty
                                                   ? List.generate(
-                                                      kotaController.listKota.length,
+                                                      kotaController
+                                                          .listKota.length,
                                                       (index) =>
                                                           DropdownMenuItem(
                                                             child: Text(
-                                                              kotaController.listKota[index].name,
+                                                              kotaController
+                                                                  .listKota[
+                                                                      index]
+                                                                  .cityName,
                                                               style: TextStyle(
                                                                   fontSize: 12),
                                                             ),
-                                                            value: kotaController.listKota[index].id,
+                                                            value: kotaController
+                                                                    .listKota[
+                                                                index],
                                                           ))
                                                   : null,
                                               onChanged: (value) {
-                                                if(value != null){
-                                                  kecamatanController.clearListKecamatan();
-                                                  kecamatanController.fetchKecamatanByKotaId(value);
-                                                  kecamatanController.selectedKecamatanId.value = null;
+                                                if (value != null) {
+                                                  Kota selectedKota =
+                                                      value as Kota;
+                                                  kecamatanController
+                                                      .clearListKecamatan();
+                                                  kecamatanController
+                                                      .fetchKecamatanByKotaId(
+                                                          selectedKota.cityId);
+                                                  kecamatanController
+                                                      .selectedKecamatanId
+                                                      .value = null;
+                                                  kotaController.selectedKotaId
+                                                      .value = value;
                                                 }
                                               },
-                                              value: kotaController.selectedKotaId.value != null ? kotaController.selectedKotaId.value : null,
+                                              value: kotaController
+                                                          .selectedKotaId
+                                                          .value !=
+                                                      null
+                                                  ? kotaController
+                                                      .selectedKotaId.value
+                                                  : null,
                                             ),
                                           )),
                                     ],
@@ -371,113 +456,213 @@ class AddAddressPage extends StatelessWidget {
                                       Container(
                                         width: 150,
                                         padding: const EdgeInsets.only(top: 5),
-                                        child: Obx(() => DropdownButtonFormField(
-                                          isExpanded: true,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                            hintText: kecamatanController.isLoading.value ? "Loading..." : "Pilih Kecamatan",
-                                            hintStyle: TextStyle(fontSize: 12),
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1)),
-                                            focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1)),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1)),
-                                          ),
-                                          items: kecamatanController.listKecamatan.isNotEmpty ? List.generate(
-                                            kecamatanController.listKecamatan.length, 
-                                            (index) => DropdownMenuItem(
+                                        margin: EdgeInsets.only(bottom: 15),
+                                        child: Obx(() =>
+                                            DropdownButtonFormField(
+                                              validator: (value) {
+                                                if (value == null) {
+                                                  return 'Kecamatan tidak boleh kosong';
+                                                }
+                                                return null;
+                                              },
+                                              isExpanded: true,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                hintText: kecamatanController
+                                                        .isLoading.value
+                                                    ? "Loading..."
+                                                    : "Pilih Kecamatan",
+                                                hintStyle:
+                                                    TextStyle(fontSize: 12),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1)),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1)),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1)),
+                                              ),
+                                              items: kecamatanController
+                                                      .listKecamatan.isNotEmpty
+                                                  ? List.generate(
+                                                      kecamatanController
+                                                          .listKecamatan.length,
+                                                      (index) =>
+                                                          DropdownMenuItem(
                                                             child: Text(
-                                                              kecamatanController.listKecamatan[index].name,
+                                                              kecamatanController
+                                                                  .listKecamatan[
+                                                                      index]
+                                                                  .subdistrictName,
                                                               style: TextStyle(
                                                                   fontSize: 12),
                                                             ),
-                                                            value: kecamatanController.listKecamatan[index].id,
-                                                          )
-                                          ) : null,
-                                          onChanged: (value) {
-                                             if(value != null){
-                                                  kelurahanController.clearListKelurahan();
-                                                  kelurahanController.fetchKelurahanByKecamatanId(value);
-                                                  kelurahanController.selectedKelurahanId.value = null;
+                                                            value: kecamatanController
+                                                                    .listKecamatan[
+                                                                index],
+                                                          ))
+                                                  : null,
+                                              onChanged: (value) {
+                                                if (value != null) {
+                                                  Kecamatan selectedKecamatan =
+                                                      value as Kecamatan;
+                                                  kelurahanController
+                                                      .clearListKelurahan();
+                                                  kelurahanController
+                                                      .fetchKelurahanByKecamatanId(
+                                                          selectedKecamatan
+                                                              .subdistrictId);
+                                                  kelurahanController
+                                                      .selectedKelurahanId
+                                                      .value = null;
+                                                  kecamatanController
+                                                      .selectedKecamatanId
+                                                      .value = value;
                                                 }
-                                          },
-                                          value: kecamatanController.selectedKecamatanId.value != null ? kecamatanController.selectedKecamatanId.value : null,
-                                        )),
+                                              },
+                                              value: kecamatanController
+                                                          .selectedKecamatanId
+                                                          .value !=
+                                                      null
+                                                  ? kecamatanController
+                                                      .selectedKecamatanId.value
+                                                  : null,
+                                            )),
                                       ),
                                     ],
                                   ),
                                   SizedBox(width: 10),
+                                  // Column(
+                                  //   crossAxisAlignment:
+                                  //       CrossAxisAlignment.start,
+                                  //   children: [
+                                  //     Text(
+                                  //       "Kelurahan",
+                                  //       style: TextStyle(
+                                  //           fontSize: 14,
+                                  //           fontWeight: FontWeight.bold),
+                                  //     ),
+                                  //     // dropdownform field
+                                  //     Container(
+                                  //       width: 150,
+                                  //       padding: const EdgeInsets.only(top: 5),
+                                  //       child: Obx(() => DropdownButtonFormField(
+                                  //         decoration: InputDecoration(
+                                  //           contentPadding:
+                                  //               EdgeInsets.symmetric(
+                                  //                   horizontal: 10),
+                                  //           hintText: kelurahanController.isLoading.value ? "Loading..." : "Pilih Kelurahan",
+                                  //           hintStyle: TextStyle(fontSize: 12),
+                                  //           border: OutlineInputBorder(
+                                  //               borderRadius:
+                                  //                   BorderRadius.circular(5),
+                                  //               borderSide: BorderSide(
+                                  //                   color: Colors.grey,
+                                  //                   width: 1)),
+                                  //           focusedBorder: OutlineInputBorder(
+                                  //               borderRadius:
+                                  //                   BorderRadius.circular(5),
+                                  //               borderSide: BorderSide(
+                                  //                   color: Colors.grey,
+                                  //                   width: 1)),
+                                  //           enabledBorder: OutlineInputBorder(
+                                  //               borderRadius:
+                                  //                   BorderRadius.circular(5),
+                                  //               borderSide: BorderSide(
+                                  //                   color: Colors.grey,
+                                  //                   width: 1)),
+                                  //         ),
+                                  //         items: kelurahanController.listKelurahan.isNotEmpty ? List.generate(
+                                  //           kelurahanController.listKelurahan.length,
+                                  //           (index) => DropdownMenuItem(
+                                  //                           child: Text(
+                                  //                             kelurahanController.listKelurahan[index].name,
+                                  //                             style: TextStyle(
+                                  //                                 fontSize: 12),
+                                  //                           ),
+                                  //                           value: kelurahanController.listKelurahan[index],
+                                  //                         )
+                                  //         ) : null,
+                                  //         onChanged: (value) {
+                                  //           if(value != null){
+                                  //                 kelurahanController.selectedKelurahanId.value = value as Kelurahan?;
+                                  //             }
+                                  //         },
+                                  //         value: kelurahanController.selectedKelurahanId.value != null ? kelurahanController.selectedKelurahanId.value : null,
+                                  //       ),)
+                                  //     ),
+                                  //   ],
+                                  // ),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Kelurahan",
+                                        "Kode Pos",
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      // dropdownform field
-                                      Container(
-                                        width: 150,
+                                      Padding(
                                         padding: const EdgeInsets.only(top: 5),
-                                        child: Obx(() => DropdownButtonFormField(
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                            hintText: kelurahanController.isLoading.value ? "Loading..." : "Pilih Kelurahan",
-                                            hintStyle: TextStyle(fontSize: 12),
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1)),
-                                            focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1)),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1)),
+                                        child: Container(
+                                          width: 150,
+                                          margin: EdgeInsets.only(bottom: 15),
+                                          child: TextFormField(
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return "Kode Pos tidak boleh kosong";
+                                              }
+                                              return null;
+                                            },
+                                            controller: alamatKirimController.recipientKodePosController,
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              hintText: "Masukkan Kode Pos",
+                                              hintStyle:
+                                                  TextStyle(fontSize: 12),
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1)),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1)),
+                                            ),
                                           ),
-                                          items: kelurahanController.listKelurahan.isNotEmpty ? List.generate(
-                                            kelurahanController.listKelurahan.length, 
-                                            (index) => DropdownMenuItem(
-                                                            child: Text(
-                                                              kelurahanController.listKelurahan[index].name,
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            ),
-                                                            value: kelurahanController.listKelurahan[index].id,
-                                                          )
-                                          ) : null,
-                                          onChanged: (value) {
-
-                                          },
-                                          value: kelurahanController.selectedKelurahanId.value != null ? kelurahanController.selectedKelurahanId.value : null,
-                                        ),)
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -489,50 +674,10 @@ class AddAddressPage extends StatelessWidget {
 
                             Padding(
                               padding:
-                                  const EdgeInsets.only(right: 20, left: 20),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Kode Pos",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 5),
-                              child: Container(
-                                margin: EdgeInsets.only(bottom: 15),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    hintText: "Masukkan Kode Pos",
-                                    hintStyle: TextStyle(fontSize: 12),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 20, left: 20),
-                              child: Container(
+                                  const EdgeInsets.only(right: 20, left: 20, bottom: 15),
+                              child: Obx(() => Container(
                                 width: Get.width,
-                                child: ElevatedButton(
+                                child: alamatKirimController.isLoading.value ? Center(child: CircularProgressIndicator(),) : ElevatedButton(
                                   child: Text("Submit"),
                                   style: ButtonStyle(
                                       backgroundColor:
@@ -543,9 +688,14 @@ class AddAddressPage extends StatelessWidget {
                                           RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
                                       ))),
-                                  onPressed: () {},
-                                ),
-                              ),
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      alamatKirimController.createNewAddress();
+                                    }
+                                    
+                                  },
+                                )
+                              )),
                             )
                           ],
                         ),

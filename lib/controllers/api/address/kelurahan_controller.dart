@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class KelurahanController extends GetxController{
   var isLoading = false.obs;
-  var selectedKelurahanId = Rx<String?>(null);
+  var selectedKelurahanId = Rx<Kelurahan?>(null);
   var _listKelurahan = List.empty().obs;
   get listKelurahan => _listKelurahan;
 
@@ -16,7 +16,7 @@ class KelurahanController extends GetxController{
     String api_address_url = ApiUrl.apiAddressUrl + 'kelurahan?kecamatan_id=$kecamatan_id';
     
     try {
-      isLoading.value = true;
+      isLoading(true);
       final apiKey = dotenv.env['API_KEY_ADDRESS'];
       final response = await http.get(
         Uri.parse(api_address_url), 
@@ -32,7 +32,9 @@ class KelurahanController extends GetxController{
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      
+      print(e.toString());
+    } finally{
+      isLoading(false);
     }
   }
 

@@ -1,16 +1,16 @@
 class ProvinsiList {
-  final String status;
+  int? code;
   final String message;
   final List<Provinsi> data;
 
-  ProvinsiList({required this.status, required this.message, required this.data});
+  ProvinsiList({required this.code, required this.message, required this.data});
 
   factory ProvinsiList.fromJson(Map<String, dynamic> json) {
     var list = json['data'] as List;
     List<Provinsi> provinsiList = list.map((i) => Provinsi.fromJson(i)).toList();
 
     return ProvinsiList(
-      status: json['status'],
+      code: json['code'],
       message: json['message'],
       data: provinsiList,
     );
@@ -18,15 +18,15 @@ class ProvinsiList {
 }
 
 class Provinsi {
-  final String id;
-  final String name;
+  final String province_id;
+  final String province;
 
-  Provinsi({required this.id, required this.name});
+  Provinsi({required this.province_id, required this.province});
 
   factory Provinsi.fromJson(Map<String, dynamic> json) {
     return Provinsi(
-      id: json['id'],
-      name: json['name'],
+      province_id: json['province_id'],
+      province: json['province'],
     );
   }
 }
