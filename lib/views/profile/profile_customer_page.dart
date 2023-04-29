@@ -145,6 +145,7 @@ class ProfileCustomerPage extends StatelessWidget {
                                           style: TextStyle(fontSize: 14),
                                         ),
                                         leading: Icon(Icons.book_online),
+                                        onTap: () => Get.toNamed(RoutesName.listVoucher),
                                       ),
                                       ListTile(
                                         title: Text(

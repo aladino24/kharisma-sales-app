@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
+import 'package:kharisma_sales_app/widgets/search_voucher.dart';
 
 class CheckoutProductPage extends StatelessWidget {
   CheckoutProductPage({super.key});
@@ -262,56 +263,7 @@ class CheckoutProductPage extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            Container(
-                              height: 50,
-                              margin: EdgeInsets.symmetric(vertical: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.2),
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                            hintText: "Recipient's username",
-                                            border: InputBorder.none),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 50,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 15),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      ),
-                                      color: AppsColors.loginColorPrimary,
-                                    ),
-                                    child: Center(
-                                        child: Text(
-                                      'Apply',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            SearchVoucher(),
                             SizedBox(
                               height: 20,
                             ),
@@ -485,3 +437,4 @@ class CheckoutProductPage extends StatelessWidget {
     );
   }
 }
+

@@ -45,10 +45,10 @@ class AlamatPengiriman {
   String? alamat;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
   String? createdBy;
   String? updatedBy;
-  Null? deletedBy;
+  String? deletedBy;
   String? alamatLengkap;
 
   AlamatPengiriman(

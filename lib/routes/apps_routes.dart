@@ -14,6 +14,7 @@ import 'package:kharisma_sales_app/views/profile/list_address_page.dart';
 import 'package:kharisma_sales_app/views/profile/profile_customer_page.dart';
 import 'package:kharisma_sales_app/views/profile/termcondition_page.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
+import 'package:kharisma_sales_app/views/voucher/list_voucher_page.dart';
 
 class AppsRoutes{
   static final pages = [
@@ -30,6 +31,7 @@ class AppsRoutes{
     GetPage(name: RoutesName.callcenter, page: ()=> CallCenterPage()),
     GetPage(name: RoutesName.checkoutProduct, page: ()=> CheckoutProductPage()),
     GetPage(name: RoutesName.addAddress, page: () => AddAddressPage()),
-    GetPage(name: RoutesName.listAddress, page: () => ListAddressPage())
+    GetPage(name: RoutesName.listAddress, page: () => ListAddressPage()),
+    GetPage(name: RoutesName.listVoucher, page: () => ListVoucherPage())
   ];
 }

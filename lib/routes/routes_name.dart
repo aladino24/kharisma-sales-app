@@ -22,4 +22,7 @@ abstract class RoutesName{
   static const callcenter = '/callcenter-page';
   static const listAddress = '/list-address-page';
   static const addAddress = '/add-address-page';
+
+  // Voucher
+  static const listVoucher = '/list-voucher-page';
 }
