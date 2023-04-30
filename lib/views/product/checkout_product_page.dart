@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
-import 'package:kharisma_sales_app/widgets/search_voucher.dart';
 
 class CheckoutProductPage extends StatelessWidget {
   CheckoutProductPage({super.key});
+
+  final TextEditingController claimController = TextEditingController();
 
   var _currencies = ["COD", "JNE", "J&t"];
 
@@ -263,7 +264,7 @@ class CheckoutProductPage extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            SearchVoucher(),
+                            // SearchVoucher(),
                             SizedBox(
                               height: 20,
                             ),

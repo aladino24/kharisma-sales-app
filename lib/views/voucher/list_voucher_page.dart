@@ -52,7 +52,13 @@ class ListVoucherPage extends StatelessWidget {
                     SearchVoucher(),
                     SizedBox(height: 20),
                     // Listtile Voucher
-                    Obx(() => ListView.builder(
+                    Obx(() => voucherController.isLoading.value ? Center(
+                      child: CircularProgressIndicator(
+                        color: AppsColors.loginColorPrimary,
+                      ),
+                    ) : voucherController.listVoucher.length == 0 ? Center(
+                      child: Text("Belum ada voucher yang tersedia"),
+                    ) : ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: voucherController.listVoucher.length,

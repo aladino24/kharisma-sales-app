@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kharisma_sales_app/controllers/api/product/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
+import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
@@ -10,11 +14,12 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final MainHeaderController myController = Get.put(MainHeaderController());
+  final ProductController productController = Get.put(ProductController());
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop:  _onBackPressed,
+      onWillPop: _onBackPressed,
       child: Scaffold(
         body: SafeArea(
           child: Column(
@@ -100,7 +105,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: GridView.builder(
+                child: Obx(() => GridView.builder(
                     shrinkWrap: true,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -109,8 +114,9 @@ class HomePage extends StatelessWidget {
                       crossAxisSpacing: 10,
                     ),
                     padding: const EdgeInsets.all(5),
-                    itemCount: 5,
+                    itemCount: productController.products.length,
                     itemBuilder: (context, index) {
+                      Product product = productController.products[index];
                       return Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -135,13 +141,15 @@ class HomePage extends StatelessWidget {
                                       topLeft: Radius.circular(15.0),
                                       topRight: Radius.circular(15.0),
                                     )),
-                                child: Image.asset(
-                                  'assets/images/product.png',
-                                  fit: BoxFit.cover,
-                                ),
+                                child: product.image != null
+                                    ? Image.memory(
+                                        base64Decode(product.image.toString()),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Placeholder(),
                               ),
                               onTap: () {
-                                Get.toNamed(RoutesName.detailProduct);
+                                Get.toNamed(RoutesName.detailProduct, arguments: product);
                               },
                             ),
                             Expanded(
@@ -154,22 +162,32 @@ class HomePage extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Product Name",
+                                        product.productName.toString(),
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w700,
                                             color: AppsColors
                                                 .loginFontColorPrimaryDark),
                                       ),
                                       Text(
-                                        "Seller Price : Rp 2.500",
+                                        product.pricelist != null && product.pricelist![0].type == 'b2b'
+                                            ? "Seller Price : ${NumberFormat.currency(
+                                                  locale: 'id_ID',
+                                                  symbol: 'Rp ',
+                                                  decimalDigits: 0,
+                                                ).format(int.parse(product.pricelist![0].price.toString()))}": "Seller Price : -",
                                         style: TextStyle(
                                             fontSize: 13,
                                             color: AppsColors
                                                 .loginFontColorPrimaryDark),
                                       ),
                                       Text(
-                                        "Customer Price : Rp 3.500",
+                                        product.pricelist != null && product.pricelist![0].type == 'b2c'
+                                            ? "Customer Price : ${NumberFormat.currency(
+                                                  locale: 'id_ID',
+                                                  symbol: 'Rp ',
+                                                  decimalDigits: 0,
+                                                ).format(int.parse(product.pricelist![0].price.toString()))}": "Customer Price : -",
                                         style: TextStyle(
                                             fontSize: 13, color: Colors.red),
                                       ),
@@ -231,7 +249,7 @@ class HomePage extends StatelessWidget {
                           ],
                         ),
                       );
-                    }),
+                    })),
               )
             ],
           ),
@@ -247,11 +265,15 @@ class HomePage extends StatelessWidget {
         content: Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
         actions: <Widget>[
           TextButton(
-            child: Text('Tidak', style: TextStyle(color: AppsColors.loginColorPrimary),),
+            child: Text(
+              'Tidak',
+              style: TextStyle(color: AppsColors.loginColorPrimary),
+            ),
             onPressed: () => Get.back(result: false),
           ),
           TextButton(
-            child: Text('Ya', style: TextStyle(color: AppsColors.loginColorPrimary)),
+            child: Text('Ya',
+                style: TextStyle(color: AppsColors.loginColorPrimary)),
             onPressed: () => Get.back(result: true),
           ),
         ],

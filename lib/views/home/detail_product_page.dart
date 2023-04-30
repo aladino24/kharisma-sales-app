@@ -1,7 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
@@ -12,8 +14,7 @@ class DetailProductPage extends StatelessWidget {
   DetailProductPage({super.key});
 
   CarouselController? carouselController = CarouselController();
-  final DetailProductController detailProductController =
-      Get.put(DetailProductController());
+  final DetailProductController detailProductController = Get.put(DetailProductController());
 
   void previousImage() {
     carouselController!.previousPage(
@@ -27,6 +28,9 @@ class DetailProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // get arguments json
+    final Product? product = Get.arguments as Product?;
+    print(product!.productName);
     return Scaffold(
       body: SafeArea(
           child: Column(
@@ -148,16 +152,20 @@ class DetailProductPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 230,
+                            width: 280,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  "Bolpoin G-Soft",
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
+                                Expanded(
+                                  child: Text(
+                                    product.productName.toString(),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
                                 DiskonProduct()
@@ -174,7 +182,12 @@ class DetailProductPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Seller Price : Rp 3.000",
+                                  product.pricelist != null && product.pricelist![0].type == 'b2b'
+                                            ? "Seller Price : ${NumberFormat.currency(
+                                                  locale: 'id_ID',
+                                                  symbol: 'Rp ',
+                                                  decimalDigits: 0,
+                                                ).format(int.parse(product.pricelist![0].price.toString()))}": "Seller Price : -",
                                   style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontSize: 16,
@@ -182,7 +195,12 @@ class DetailProductPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  "Customer Price : Rp 3.500",
+                                  product.pricelist != null && product.pricelist![0].type == 'b2c'
+                                            ? "Customer Price : ${NumberFormat.currency(
+                                                  locale: 'id_ID',
+                                                  symbol: 'Rp ',
+                                                  decimalDigits: 0,
+                                                ).format(int.parse(product.pricelist![0].price.toString()))}": "Customer Price : -",
                                   style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontSize: 16,
@@ -512,7 +530,6 @@ class DetailProductPage extends StatelessWidget {
                                       color:
                                           AppsColors.loginFontColorSecondary),
                                   textAlign: TextAlign.justify,
-                                  textDirection: TextDirection.ltr,
                                 ),
                               ],
                             ),
