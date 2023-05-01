@@ -53,7 +53,7 @@ class VoucherController extends GetxController{
     String claim_voucher_url = ApiUrl.apiUrl + 'ecom/kode-voucher/claim';
     try {
       isLoadingVoucher(true);
-      print(keyCodeController.text);
+      // print(keyCodeController.text);
       final response  = await http.post(
         Uri.parse(claim_voucher_url),
         headers: {

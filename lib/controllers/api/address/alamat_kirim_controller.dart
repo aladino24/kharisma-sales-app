@@ -39,14 +39,14 @@ class AlamatKirimController extends GetxController {
 
   @override
   void onClose(){
-    recipientNameController.dispose();
-    recipientPhoneController.dispose();
-    recipientAddressController.dispose();
-    recipientProvinsiController.dispose();
-    recipientKotaController.dispose();
-    recipientKecamatanController.dispose();
-    // recipientKelurahanController.dispose();
-    recipientKodePosController.dispose();
+    // recipientNameController.dispose();
+    // recipientPhoneController.dispose();
+    // recipientAddressController.dispose();
+    // recipientProvinsiController.dispose();
+    // recipientKotaController.dispose();
+    // recipientKecamatanController.dispose();
+    // // recipientKelurahanController.dispose();
+    // recipientKodePosController.dispose();
     super.onClose();
   }
 
@@ -121,9 +121,6 @@ class AlamatKirimController extends GetxController {
       if (response.statusCode == 200) {
         isLoading(false);
       
-        // final Map<String, dynamic> responseData = json.decode(response.body);
-        // print(responseData);
-        
         Get.offNamedUntil(RoutesName.listAddress,(route) => route.isFirst, arguments: 
           {
             'notif' : true,
@@ -149,7 +146,91 @@ class AlamatKirimController extends GetxController {
     }finally{
       isLoading(false);
     }
-  //  print(userId is int);
-  
+  }
+
+  Future<void> deleteAddress(String id) async {
+    String api_deleteAddress_url = ApiUrl.apiUrl + 'ecom/alamat-pengiriman/' + id;
+    try {
+      isLoading(true);
+      final response = await http.delete(
+        Uri.parse(api_deleteAddress_url),
+        headers: <String, String> {
+          'Authorization': 'Bearer ${await loginController.getToken()}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        }
+      );
+
+      if (response.statusCode == 200) {
+        isLoading(false);
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print(responseData);
+        Get.snackbar(
+          'Success', 
+          responseData['message'],
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        fetchAlamatPengiriman();
+      } else {
+        isLoading(false);
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        throw Exception(responseData['message']);
+      }
+    } catch (e) {
+      isLoading(false);
+      print(e.toString());
+
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }finally{
+      isLoading(false);
+    }
+  }
+
+  Future<void> setAlamatUtama(String id) async{
+    String api_setAlamatUtama_url = ApiUrl.apiUrl + 'ecom/alamat-pengiriman/setting-alamat-utama/' + id;
+
+    try {
+      isLoading(true);
+      final response = await http.get(
+        Uri.parse(api_setAlamatUtama_url),
+        headers: <String, String> {
+          'Authorization': 'Bearer ${await loginController.getToken()}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        }
+      );
+
+      if (response.statusCode == 200) {
+        isLoading(false);
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print(responseData);
+        Get.snackbar(
+          'Success', 
+          responseData['message'],
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        fetchAlamatPengiriman();
+      } else {
+        isLoading(false);
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        throw Exception(responseData['message']);
+      }
+    } catch (e) {
+      isLoading(false);
+      print(e.toString());
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }finally{
+      isLoading(false);
+    }
   }
 }
