@@ -153,6 +153,9 @@ class ProfileCustomerPage extends StatelessWidget {
                                           style: TextStyle(fontSize: 14),
                                         ),
                                         leading: Icon(Icons.favorite),
+                                        onTap: (){
+                                          Get.toNamed(RoutesName.saveProduct);
+                                        },
                                       ),
                                       ListTile(
                                         title: Text(
