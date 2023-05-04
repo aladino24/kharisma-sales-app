@@ -269,7 +269,7 @@ class ListAddressPage extends StatelessWidget {
                                             contentPadding: EdgeInsets.symmetric(
                                                 horizontal: 20, vertical: 10),
                                           ),
-                                          onTap: (){
+                                          onLongPress: (){
                                             // alert dialog
                                             Get.defaultDialog(
                                               title: "Pilih Alamat",
@@ -286,9 +286,7 @@ class ListAddressPage extends StatelessWidget {
                                                 listAlamatPengiriman.setAlamatUtama(data.id.toString());
                                                 Get.back();
                                               },
-                                              onCancel: (){
-                                                Get.back();
-                                              }
+                                              onCancel: (){}
                                             );
                                           },
                                         ),

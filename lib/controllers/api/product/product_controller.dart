@@ -23,7 +23,9 @@ class ProductController extends GetxController{
 
      try {
        isLoading(true);
-       final response = await http.get(Uri.parse(api_product_url));
+       final response = await http.get(
+        Uri.parse(api_product_url),
+      );
         if(response.statusCode == 200){
           print(jsonDecode(response.body)['data']);
           isLoading(false);

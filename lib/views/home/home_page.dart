@@ -9,6 +9,7 @@ import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/widgets/rating_star.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -105,151 +106,202 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Obx(() => GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1 / 1.53,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                    ),
-                    padding: const EdgeInsets.all(5),
-                    itemCount: productController.products.length,
-                    itemBuilder: (context, index) {
-                      Product product = productController.products[index];
-                      return Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                blurRadius: 5,
-                                offset: const Offset(0, 0),
-                              )
-                            ]),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              child: Container(
-                                // heigh sesuai dengan tinggi parent * 0.5
-                                height: 165,
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                    color: AppsColors.imageProductBackground,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
-                                    )),
-                                child: product.image != null
-                                    ? Image.memory(
-                                        base64Decode(product.image.toString()),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Placeholder(),
+                child: Obx(() {
+                  if (productController.isLoading.value) {
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(5),
+                      itemCount: 6,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 1,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              onTap: () {
-                                Get.toNamed(RoutesName.detailProduct, arguments: product);
-                              },
                             ),
-                            Expanded(
-                              child: GestureDetector(
-                                child: Container(
-                                  alignment: Alignment.topLeft,
-                                  padding: EdgeInsets.all(10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return GridView.builder(
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1 / 1.53,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                        ),
+                        padding: const EdgeInsets.all(5),
+                        itemCount: productController.products.length,
+                        itemBuilder: (context, index) {
+                          Product product = productController.products[index];
+                          //  print('Ini image ' + product.image!);
+                          return Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 0),
+                                  )
+                                ]),
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                  child: Container(
+                                    // heigh sesuai dengan tinggi parent * 0.5
+                                    height: 165,
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                        color:
+                                            AppsColors.imageProductBackground,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15.0),
+                                          topRight: Radius.circular(15.0),
+                                        )),
+                                    child: product.image != null
+                                        ? Image.memory(
+                                            base64Decode(product.image!),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(
+                                            'assets/images/image.png',
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                  onTap: () {
+                                    Get.toNamed(RoutesName.detailProduct,
+                                        arguments: product);
+                                  },
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    child: Container(
+                                      alignment: Alignment.topLeft,
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            product.productName.toString(),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
+                                                color: AppsColors
+                                                    .loginFontColorPrimaryDark),
+                                          ),
+                                          Text(
+                                            product.pricelist != null &&
+                                                    product.pricelist![0]
+                                                            .type ==
+                                                        'b2b'
+                                                ? "Seller Price : ${NumberFormat.currency(
+                                                    locale: 'id_ID',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0,
+                                                  ).format(int.parse(product.pricelist![0].price.toString()))}"
+                                                : "Seller Price : -",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: AppsColors
+                                                    .loginFontColorPrimaryDark),
+                                          ),
+                                          Text(
+                                            product.pricelist != null &&
+                                                    product.pricelist![0]
+                                                            .type ==
+                                                        'b2c'
+                                                ? "Customer Price : ${NumberFormat.currency(
+                                                    locale: 'id_ID',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0,
+                                                  ).format(int.parse(product.pricelist![0].price.toString()))}"
+                                                : "Customer Price : -",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.red),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      Get.toNamed(RoutesName.detailProduct,
+                                          arguments: product);
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: 10, right: 10, bottom: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        product.productName.toString(),
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w700,
-                                            color: AppsColors
-                                                .loginFontColorPrimaryDark),
-                                      ),
-                                      Text(
-                                        product.pricelist != null && product.pricelist![0].type == 'b2b'
-                                            ? "Seller Price : ${NumberFormat.currency(
-                                                  locale: 'id_ID',
-                                                  symbol: 'Rp ',
-                                                  decimalDigits: 0,
-                                                ).format(int.parse(product.pricelist![0].price.toString()))}": "Seller Price : -",
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: AppsColors
-                                                .loginFontColorPrimaryDark),
-                                      ),
-                                      Text(
-                                        product.pricelist != null && product.pricelist![0].type == 'b2c'
-                                            ? "Customer Price : ${NumberFormat.currency(
-                                                  locale: 'id_ID',
-                                                  symbol: 'Rp ',
-                                                  decimalDigits: 0,
-                                                ).format(int.parse(product.pricelist![0].price.toString()))}": "Customer Price : -",
-                                        style: TextStyle(
-                                            fontSize: 13, color: Colors.red),
-                                      ),
+                                      RatingStar(),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.15,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 28,
+                                              height: 28,
+                                              decoration: BoxDecoration(
+                                                  color: AppsColors
+                                                      .imageProductBackground,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(100),
+                                                  )),
+                                              child: Icon(Icons.favorite,
+                                                  color: Colors.red, size: 18),
+                                            ),
+                                            Container(
+                                              width: 28,
+                                              height: 28,
+                                              child: Icon(
+                                                  Icons
+                                                      .add_shopping_cart_outlined,
+                                                  color: Colors.white,
+                                                  size: 17),
+                                              decoration: BoxDecoration(
+                                                  color: AppsColors
+                                                      .loginColorPrimary,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(100),
+                                                  )),
+                                            ),
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
-                                onTap: () {
-                                  Get.toNamed(RoutesName.detailProduct);
-                                },
-                              ),
+                              ],
                             ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                  left: 10, right: 10, bottom: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  RatingStar(),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.15,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: 28,
-                                          height: 28,
-                                          decoration: BoxDecoration(
-                                              color: AppsColors
-                                                  .imageProductBackground,
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(100),
-                                              )),
-                                          child: Icon(Icons.favorite,
-                                              color: Colors.red, size: 18),
-                                        ),
-                                        Container(
-                                          width: 28,
-                                          height: 28,
-                                          child: Icon(
-                                              Icons.add_shopping_cart_outlined,
-                                              color: Colors.white,
-                                              size: 17),
-                                          decoration: BoxDecoration(
-                                              color:
-                                                  AppsColors.loginColorPrimary,
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(100),
-                                              )),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    })),
+                          );
+                        });
+                  }
+                }),
               )
             ],
           ),
