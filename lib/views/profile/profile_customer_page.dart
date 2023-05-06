@@ -96,7 +96,9 @@ class ProfileCustomerPage extends StatelessWidget {
                             width: Get.width * 0.75,
                             height: 30,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.toNamed(RoutesName.editProfile);
+                              },
                               child: Text("Edit Profile"),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppsColors.loginColorPrimary,
