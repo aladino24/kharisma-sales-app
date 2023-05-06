@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/models/user_model.dart';
 
 class EditProfilePage extends StatelessWidget {
+  final LoginController userController = Get.find<LoginController>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController storeNameController = TextEditingController();
+  final TextEditingController storeAddressController = TextEditingController();
+  final TextEditingController kelurahanController = TextEditingController();
+  final TextEditingController kecamatanController = TextEditingController();
+  final TextEditingController kotaController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,7 +24,23 @@ class EditProfilePage extends StatelessWidget {
         backgroundColor: AppsColors.loginColorPrimary,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: FutureBuilder(
+        future: userController.getUserModel(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+          }
+          final UserModel user = snapshot.data!;
+            nameController.text = user.nama!;
+            emailController.text = user.email!;
+            phoneController.text = user.telepon!;
+            addressController.text = user.alamat!;
+            storeNameController.text = user.nama_toko!;
+            storeAddressController.text = user.alamat_toko!;
+            kelurahanController.text = user.kelurahan!;
+            kecamatanController.text = user.kecamatan!;
+            kotaController.text = user.kota!;
+        return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -22,6 +52,7 @@ class EditProfilePage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 TextField(
+                  controller: nameController,
                   decoration: InputDecoration(
                       labelText: 'Name',
                       labelStyle:
@@ -34,6 +65,7 @@ class EditProfilePage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 TextField(
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                       labelText: 'Email',
@@ -47,6 +79,7 @@ class EditProfilePage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 TextField(
+                  controller: phoneController,
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                       labelText: 'Phone',
@@ -60,6 +93,7 @@ class EditProfilePage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 TextField(
+                  controller: addressController,
                   maxLines: 3,
                   decoration: InputDecoration(
                       labelText: 'Alamat',
@@ -80,6 +114,7 @@ class EditProfilePage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 TextField(
+                  controller: storeNameController,
                   decoration: InputDecoration(
                       labelText: 'Store Name',
                       labelStyle:
@@ -92,6 +127,7 @@ class EditProfilePage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 TextField(
+                  controller: storeAddressController,
                   maxLines: 3,
                   decoration: InputDecoration(
                       labelText: 'Store Address',
@@ -104,7 +140,8 @@ class EditProfilePage extends StatelessWidget {
                               width: 1.0))),
                 ),
                 SizedBox(height: 16.0),
-                 TextField(
+                TextField(
+                  controller: kelurahanController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                       labelText: 'Kelurahan',
@@ -117,7 +154,8 @@ class EditProfilePage extends StatelessWidget {
                               width: 1.0))),
                 ),
                 SizedBox(height: 16.0),
-                 TextField(
+                TextField(
+                  controller: kecamatanController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                       labelText: 'Kecamatan',
@@ -130,7 +168,8 @@ class EditProfilePage extends StatelessWidget {
                               width: 1.0))),
                 ),
                 SizedBox(height: 16.0),
-                 TextField(
+                TextField(
+                  controller: kotaController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                       labelText: 'Kota',
@@ -152,8 +191,8 @@ class EditProfilePage extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
+        );
+      })),
     );
   }
 }

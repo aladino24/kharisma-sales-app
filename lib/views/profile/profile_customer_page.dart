@@ -97,7 +97,7 @@ class ProfileCustomerPage extends StatelessWidget {
                             height: 30,
                             child: ElevatedButton(
                               onPressed: () {
-                                Get.toNamed(RoutesName.editProfile);
+                                Get.toNamed(RoutesName.editProfile, arguments: userController.getUserModel());
                               },
                               child: Text("Edit Profile"),
                               style: ElevatedButton.styleFrom(
