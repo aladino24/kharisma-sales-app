@@ -14,6 +14,8 @@ class LoginController extends GetxController {
   final passwordController = TextEditingController();
   final tokenController = TextEditingController();
   var isLoading = false.obs;
+  // fetch user
+  var userModelData = UserModel().obs;
 
   @override
   void onClose() {
@@ -22,6 +24,12 @@ class LoginController extends GetxController {
     passwordController.dispose();
     tokenController.dispose();
     super.onClose();
+  }
+
+  @override
+  void onInit(){
+    super.onInit();
+    fetchUser();
   }
 
   Future<void> loginCustomer() async {
@@ -77,10 +85,9 @@ class LoginController extends GetxController {
   }
 
   Future<void> logout() async {
-    
     try {
       await http.post(
-        Uri.parse( ApiUrl.apiUrl + 'ecom/logout'),
+        Uri.parse(ApiUrl.apiUrl + 'ecom/logout'),
         headers: {'Authorization': 'Bearer $getToken()'},
       );
       // Membersihkan token dan data pengguna dari penyimpanan lokal
@@ -127,4 +134,28 @@ class LoginController extends GetxController {
   }
 
 
+  Future<UserModel?> fetchUser() async {
+    final apiUrl = ApiUrl.apiUrl + 'ecom/profile';
+
+    try {
+      isLoading(true);
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Authorization': 'Bearer ${await getToken()}',
+      });
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body)['data'];
+        print(data);
+        userModelData.value = UserModel.fromJson(data);
+        return userModelData.value;
+      } else {
+        throw Exception(json.decode(response.body)['message']);
+      }
+    } catch (e) {
+      print(e.toString());
+      return null;
+    } finally {
+      isLoading(false);
+    }
+  }
 }

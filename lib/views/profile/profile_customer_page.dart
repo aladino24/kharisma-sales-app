@@ -62,33 +62,31 @@ class ProfileCustomerPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          FutureBuilder<UserModel?>(
-                              future: userController.getUserModel(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                }
-                                final userModel = snapshot.data;
-                                return Container(
-                                  margin: EdgeInsets.only(top: 20),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "${userModel?.nama ?? 'Anonymous'}",
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                      Text(
-                                        "${userModel?.email ?? ''}",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: AppsColors
-                                                .loginFontColorSecondary),
-                                      )
-                                    ],
+                          Obx(() {
+                            if (userController.isLoading.value) {
+                              return CircularProgressIndicator();
+                            }
+                            final userModel = userController.userModelData.value;
+                            print(userModel.nama);
+                            return Container(
+                              margin: EdgeInsets.only(top: 20),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "${userModel.nama ?? 'Anonymous'}",
+                                    style: TextStyle(fontSize: 18),
                                   ),
-                                );
-                              }),
+                                  Text(
+                                    "${userModel.email ?? ''}",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppsColors.loginFontColorSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
 
                           // button edit profile
                           Container(
@@ -97,7 +95,8 @@ class ProfileCustomerPage extends StatelessWidget {
                             height: 30,
                             child: ElevatedButton(
                               onPressed: () {
-                                Get.toNamed(RoutesName.editProfile, arguments: userController.getUserModel());
+                                Get.toNamed(RoutesName.editProfile,
+                                    arguments: userController.getUserModel());
                               },
                               child: Text("Edit Profile"),
                               style: ElevatedButton.styleFrom(
@@ -116,15 +115,15 @@ class ProfileCustomerPage extends StatelessWidget {
                                 children: [
                                   ExpansionTile(
                                     iconColor: AppsColors.loginColorPrimary,
-                                    onExpansionChanged: (value) => isExpandedMenu.value = value,
+                                    onExpansionChanged: (value) =>
+                                        isExpandedMenu.value = value,
                                     title: Obx(
                                       () => Text(
                                         'Menu',
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           color: isExpandedMenu.value
-                                              ? AppsColors
-                                                  .loginColorPrimary 
+                                              ? AppsColors.loginColorPrimary
                                               : Colors.black,
                                         ),
                                       ),
@@ -136,10 +135,12 @@ class ProfileCustomerPage extends StatelessWidget {
                                             'Alamat Pengiriman',
                                             style: TextStyle(fontSize: 14),
                                           ),
-                                          tileColor: AppsColors.loginColorPrimary,
+                                          tileColor:
+                                              AppsColors.loginColorPrimary,
                                           leading: Icon(Icons.location_on),
                                         ),
-                                        onTap: () => Get.toNamed(RoutesName.listAddress),
+                                        onTap: () =>
+                                            Get.toNamed(RoutesName.listAddress),
                                       ),
                                       ListTile(
                                         title: Text(
@@ -147,7 +148,8 @@ class ProfileCustomerPage extends StatelessWidget {
                                           style: TextStyle(fontSize: 14),
                                         ),
                                         leading: Icon(Icons.book_online),
-                                        onTap: () => Get.toNamed(RoutesName.listVoucher),
+                                        onTap: () =>
+                                            Get.toNamed(RoutesName.listVoucher),
                                       ),
                                       ListTile(
                                         title: Text(
@@ -155,7 +157,7 @@ class ProfileCustomerPage extends StatelessWidget {
                                           style: TextStyle(fontSize: 14),
                                         ),
                                         leading: Icon(Icons.favorite),
-                                        onTap: (){
+                                        onTap: () {
                                           Get.toNamed(RoutesName.saveProduct);
                                         },
                                       ),
@@ -180,15 +182,15 @@ class ProfileCustomerPage extends StatelessWidget {
                                   ),
                                   ExpansionTile(
                                     iconColor: AppsColors.loginColorPrimary,
-                                    onExpansionChanged: (value) => isExpandedLayanan.value = value,
+                                    onExpansionChanged: (value) =>
+                                        isExpandedLayanan.value = value,
                                     title: Obx(
                                       () => Text(
                                         'Layanan',
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           color: isExpandedLayanan.value
-                                              ? AppsColors
-                                                  .loginColorPrimary 
+                                              ? AppsColors.loginColorPrimary
                                               : Colors.black,
                                         ),
                                       ),
@@ -210,18 +212,19 @@ class ProfileCustomerPage extends StatelessWidget {
                                           ),
                                           leading: Icon(Icons.article),
                                         ),
-                                        onTap: () => Get.toNamed(RoutesName.termCondition),
+                                        onTap: () => Get.toNamed(
+                                            RoutesName.termCondition),
                                       ),
                                       GestureDetector(
-                                        child: ListTile(
-                                          title: Text(
-                                            'Hubungi Kami',
-                                            style: TextStyle(fontSize: 14),
+                                          child: ListTile(
+                                            title: Text(
+                                              'Hubungi Kami',
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                            leading: Icon(Icons.call),
                                           ),
-                                          leading: Icon(Icons.call),
-                                        ),
-                                        onTap: () => Get.toNamed(RoutesName.callcenter)
-                                      ),
+                                          onTap: () => Get.toNamed(
+                                              RoutesName.callcenter)),
                                     ],
                                   ),
                                 ],
@@ -271,99 +274,96 @@ class ProfileCustomerPage extends StatelessWidget {
                     ),
 
                     Container(
-                      height: 200, 
+                      height: 200,
                       width: Get.width * 0.9,
                       child: TabBarView(
                         controller: tabController.tabController,
                         children: [
                           // konten tab starters
                           ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: 2,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      margin: EdgeInsets.symmetric(vertical: 10),
-                                      width: Get.width * 0.9,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.2),
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 0),
-                                          ),
-                                        ],
+                              shrinkWrap: true,
+                              itemCount: 2,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  width: Get.width * 0.9,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 0),
                                       ),
-                                      child: ListTile(
-                                        trailing: Text(
-                                          "Sedang Diproses",
-                                          style: TextStyle(
-                                            color: Colors.orange,
-                                            fontSize: 10
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                    trailing: Text(
+                                      "Sedang Diproses",
+                                      style: TextStyle(
+                                          color: Colors.orange, fontSize: 10),
+                                    ),
+                                    title: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: 80,
+                                          height: 80,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: AppsColors
+                                                .imageProductBackground,
+                                            image: DecorationImage(
+                                              image: AssetImage(
+                                                "assets/images/product.png",
+                                              ),
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
-                                        title: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              width: 80,
-                                              height: 80,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: AppsColors
-                                                    .imageProductBackground,
-                                                image: DecorationImage(
-                                                  image: AssetImage(
-                                                    "assets/images/product.png",
-                                                  ),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          "Alamat Pengiriman",
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                     Text(
-                                                        "x100",
-                                                        style: TextStyle(
-                                                            color: AppsColors
-                                                                .loginColorPrimary,
-                                                            fontSize: 14),
+                                                    Text(
+                                                      "Alamat Pengiriman",
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w700,
                                                       ),
+                                                    )
                                                   ],
                                                 ),
-                                              ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  "x100",
+                                                  style: TextStyle(
+                                                      color: AppsColors
+                                                          .loginColorPrimary,
+                                                      fontSize: 14),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 10),
-                                      ),
-                                    );
-                                  }),
+                                      ],
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                  ),
+                                );
+                              }),
                           // konten tab main course
                           Center(
                             child: Text("Tunggu ya dikirim"),
