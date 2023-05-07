@@ -148,6 +148,81 @@ class AlamatKirimController extends GetxController {
     }
   }
 
+
+  Future<void> editAddress(id) async {
+    String api_address_url = ApiUrl.apiUrl + 'ecom/alamat-pengiriman';
+    var provinsiController = Get.find<ProvinsiController>();
+    var kotaController = Get.find<KotaController>();
+    var kecamatanController = Get.find<KecamatanController>();
+    // var kelurahanController = Get.find<KelurahanController>();
+      final userModel = await loginController.getUserModel();
+
+     if (userModel == null) {
+        return;
+      }
+      final userId = userModel.id;
+      // print(id);
+    final Map<String, dynamic> data = {
+      'id' : id.toString(),
+      'user_id' : userId.toString(),
+      'penerima' : recipientNameController.text,
+      'no_telepon' : recipientPhoneController.text,
+      'kota_id' : kotaController.selectedKotaId.value!.cityId,
+      'kota' : kotaController.selectedKotaId.value!.cityName,
+      'provinsi_id' : provinsiController.selectedProvinsiId.value!.province_id,
+      'provinsi' : provinsiController.selectedProvinsiId.value!.province,
+      'kecamatan_id' : kecamatanController.selectedKecamatanId.value!.subdistrictId,
+      'kecamatan' : kecamatanController.selectedKecamatanId.value!.subdistrictName,
+      'kelurahan' : recipientAddressController.text,
+      'kode_pos' : recipientKodePosController.text,
+      'alamat' : recipientAddressController.text,
+    };
+    // print(kecamatanController.selectedKecamatanId.value!.subdistrictName);
+
+    // store data
+    try {
+      isLoading(true);
+      final response = await http.post(
+      Uri.parse(api_address_url),
+      body: data,
+      headers: {
+        'Authorization': 'Bearer ${await loginController.getToken()}',
+        // 'Content-Type': 'application/json',
+      },
+    );
+
+    // print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        isLoading(false);
+      
+        Get.offNamedUntil(RoutesName.listAddress,(route) => route.isFirst, arguments: 
+          {
+            'notif' : true,
+          }
+        );
+
+      } else {
+        isLoading(false);
+        throw Exception('Failed to login');
+
+        // final Map<String, dynamic> responseData = json.decode(response.body);
+        // print(responseData);
+      }
+    } catch (e) {
+      isLoading(false);
+      print(e.toString());
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }finally{
+      isLoading(false);
+    }
+  }
+
   Future<void> deleteAddress(String id) async {
     String api_deleteAddress_url = ApiUrl.apiUrl + 'ecom/alamat-pengiriman/' + id;
     try {
