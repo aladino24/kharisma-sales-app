@@ -16,7 +16,7 @@ class ProfileController extends GetxController{
 
 
   
-Future<void> editProfile(String name, String email, String telepon, String alamat, String nama_toko, String alamat_toko, String kelurahan, String kecamatan, String kota) async{
+Future<void> editProfile(String name, String email, String telepon, String alamat, String nama_toko, String alamat_toko, String kelurahan, String kecamatan, String kota, String lat, String lng) async{
     String edit_profile_url = ApiUrl.apiUrl + 'ecom/profile';
 
     try {
@@ -34,8 +34,8 @@ Future<void> editProfile(String name, String email, String telepon, String alama
           'kelurahan' : kelurahan,
           'kecamatan' : kecamatan,
           'kota' : kota,
-          'lat' : "-7.250445",
-          'lng' : "112.768845",
+          'lat' : lat,
+          'lng' : lng,
         },
         headers: {
           'Authorization': 'Bearer ${await loginController.getToken()}',

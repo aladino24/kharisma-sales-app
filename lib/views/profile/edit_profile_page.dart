@@ -252,7 +252,9 @@ class EditProfilePage extends StatelessWidget {
                             storeAddressController.text,
                             kelurahanController.text,
                             kecamatanController.text,
-                            kotaController.text
+                            kotaController.text,
+                            user.lat!,
+                            user.lng!,
                         );
                        }
                     },

@@ -5,7 +5,6 @@ import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/controllers/components/tabbar_controller.dart';
-import 'package:kharisma_sales_app/models/user_model.dart';
 
 class ProfileCustomerPage extends StatelessWidget {
   ProfileCustomerPage({Key? key}) : super(key: key);

@@ -1,3 +1,5 @@
+import 'package:add_to_cart_animation/add_to_cart_animation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MainHeaderController extends GetxController{
@@ -5,6 +7,7 @@ class MainHeaderController extends GetxController{
   var isCartIconSelected = false.obs;
   var isNotificationIconSelected = false.obs;
   var isProfileSelected = false.obs;
+  GlobalKey<CartIconKey> cartKey = GlobalKey<CartIconKey>();
 
 
   void selectBookmarkIcon(){
