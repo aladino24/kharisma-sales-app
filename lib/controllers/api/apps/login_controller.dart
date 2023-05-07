@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/profile/profile_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/models/user_model.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_login_service.dart';
@@ -19,10 +22,10 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    emailCustomerController.dispose();
-    emailSalesController.dispose();
-    passwordController.dispose();
-    tokenController.dispose();
+    // emailCustomerController.dispose();
+    // emailSalesController.dispose();
+    // passwordController.dispose();
+    // tokenController.dispose();
     super.onClose();
   }
 
@@ -46,6 +49,7 @@ class LoginController extends GetxController {
       await saveAuthData(userModels);
       isLoading(false);
       Get.offNamed(RoutesName.home);
+      fetchUser();
     } catch (e) {
       print(e);
       isLoading(false);
@@ -71,7 +75,7 @@ class LoginController extends GetxController {
       await saveToken(token);
       await saveAuthData(userModels);
       isLoading(false);
-      Get.offNamed(RoutesName.home);
+      Get.offAllNamed(RoutesName.home);
     } catch (e) {
       print(e);
       isLoading(false);
@@ -88,11 +92,24 @@ class LoginController extends GetxController {
     try {
       await http.post(
         Uri.parse(ApiUrl.apiUrl + 'ecom/logout'),
-        headers: {'Authorization': 'Bearer $getToken()'},
+        headers: {'Authorization': 'Bearer ${await getToken()}'},
       );
       // Membersihkan token dan data pengguna dari penyimpanan lokal
       await clearAuthData();
+
+      emailCustomerController.clear();
+      emailSalesController.clear();
+      passwordController.clear();
+      tokenController.clear();
+
+      // hapus semua value getx
+      Get.delete<LoginController>();
+      Get.delete<UserModel>();
+      Get.delete<AlamatKirimController>();
+      Get.delete<ProfileController>();
+      Get.delete<MainHeaderController>();
       Get.offAllNamed(RoutesName.loginCustomer);
+      
     } catch (e) {
       print(e);
     }
