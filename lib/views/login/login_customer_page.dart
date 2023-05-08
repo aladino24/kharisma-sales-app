@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginCustomerPage extends StatelessWidget {
   LoginCustomerPage({super.key});
 
-  final LoginController loginController = Get.put(LoginController());
 
   final GlobalKey<FormState> _formKey = new GlobalKey();
 
@@ -17,6 +16,9 @@ class LoginCustomerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   // lazy put
+    Get.lazyPut(() => LoginController());
+    final loginController = Get.find<LoginController>();
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(

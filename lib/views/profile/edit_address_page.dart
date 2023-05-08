@@ -26,10 +26,13 @@ class EditAddressPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = Get.arguments['data'];
-    alamatKirimController.recipientNameController.text = data.penerima;
-    alamatKirimController.recipientPhoneController.text = data.noTelepon;
-    alamatKirimController.recipientAddressController.text = data.alamat;
-    alamatKirimController.recipientKodePosController.text = data.kodePos;
+    alamatKirimController.editRecipientNameController.text = data.penerima;
+    alamatKirimController.editRecipientPhoneController.text = data.noTelepon;
+    alamatKirimController.editRecipientAddressController.text = data.alamat;
+    alamatKirimController.editRecipientKodePosController.text = data.kodePos;
+
+
+    // print( kotaController.selectedKotaId.value);
   
     return Scaffold(
       body: SafeArea(
@@ -102,7 +105,7 @@ class EditAddressPage extends StatelessWidget {
                                     }
                                     return null;
                                   },
-                                  controller: alamatKirimController.recipientNameController,
+                                  controller: alamatKirimController.editRecipientNameController,
                                   decoration: InputDecoration(
                                     contentPadding:
                                         EdgeInsets.symmetric(horizontal: 10),
@@ -151,7 +154,7 @@ class EditAddressPage extends StatelessWidget {
                                     }
                                     return null;
                                   },
-                                  controller: alamatKirimController.recipientPhoneController,
+                                  controller: alamatKirimController.editRecipientPhoneController,
                                   decoration: InputDecoration(
                                     contentPadding:
                                         EdgeInsets.symmetric(horizontal: 10),
@@ -200,7 +203,7 @@ class EditAddressPage extends StatelessWidget {
                                     }
                                     return null;
                                   },
-                                  controller: alamatKirimController.recipientAddressController,
+                                  controller: alamatKirimController.editRecipientAddressController,
                                   maxLines: 3,
                                   decoration: InputDecoration(
                                     contentPadding:
@@ -293,41 +296,22 @@ class EditAddressPage extends StatelessWidget {
                                                       .listProvinsi.length,
                                                   (index) => DropdownMenuItem(
                                                         child: Text(
-                                                          provinsiController
-                                                              .listProvinsi[
-                                                                  index]
-                                                              .province,
+                                                          provinsiController.listProvinsi[index].province,
                                                           style: TextStyle(
                                                               fontSize: 12),
                                                         ),
-                                                        value: provinsiController
-                                                                .listProvinsi[
-                                                            index],
+                                                        value: provinsiController.listProvinsi[index],
                                                       )),
                                               onChanged: (value) {
                                                 if (value != null) {
-                                                  Provinsi selectedProvinsi =
-                                                      value as Provinsi;
-                                                  kotaController
-                                                      .clearListKota();
-                                                  kotaController
-                                                      .fetchKotaByProvinsiId(
-                                                          selectedProvinsi
-                                                              .province_id);
-                                                  kotaController.selectedKotaId
-                                                      .value = null;
-                                                  provinsiController
-                                                      .selectedProvinsiId
-                                                      .value = value;
+                                                  Provinsi selectedProvinsi = value as Provinsi;
+                                                  kotaController.clearListKota();
+                                                  kotaController.fetchKotaByProvinsiId(selectedProvinsi.province_id);
+                                                  kotaController.selectedKotaId.value = null;
+                                                  provinsiController.selectedProvinsiId.value = value;
                                                 }
                                               },
-                                              value: provinsiController
-                                                          .selectedProvinsiId
-                                                          .value !=
-                                                      null
-                                                  ? provinsiController
-                                                      .selectedProvinsiId.value
-                                                  : null,
+                                              value: provinsiController.listProvinsi.firstWhere((provinsi) => provinsi.province == data.provinsi, orElse: () => null),
                                             ),
                                           )),
                                     ],
@@ -406,25 +390,16 @@ class EditAddressPage extends StatelessWidget {
                                                               style: TextStyle(
                                                                   fontSize: 12),
                                                             ),
-                                                            value: kotaController
-                                                                    .listKota[
-                                                                index],
+                                                            value: kotaController.listKota[index],
                                                           ))
                                                   : null,
                                               onChanged: (value) {
                                                 if (value != null) {
-                                                  Kota selectedKota =
-                                                      value as Kota;
-                                                  kecamatanController
-                                                      .clearListKecamatan();
-                                                  kecamatanController
-                                                      .fetchKecamatanByKotaId(
-                                                          selectedKota.cityId);
-                                                  kecamatanController
-                                                      .selectedKecamatanId
-                                                      .value = null;
-                                                  kotaController.selectedKotaId
-                                                      .value = value;
+                                                  Kota selectedKota = value as Kota;
+                                                  kecamatanController.clearListKecamatan();
+                                                  kecamatanController.fetchKecamatanByKotaId(selectedKota.cityId);
+                                                  kecamatanController.selectedKecamatanId.value = null;
+                                                  kotaController.selectedKotaId.value = value;
                                                 }
                                               },
                                               value: kotaController
@@ -640,7 +615,7 @@ class EditAddressPage extends StatelessWidget {
                                               }
                                               return null;
                                             },
-                                            controller: alamatKirimController.recipientKodePosController,
+                                            controller: alamatKirimController.editRecipientKodePosController,
                                             keyboardType: TextInputType.number,
                                             decoration: InputDecoration(
                                               contentPadding:

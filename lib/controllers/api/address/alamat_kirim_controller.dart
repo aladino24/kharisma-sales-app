@@ -20,8 +20,16 @@ class AlamatKirimController extends GetxController {
   final recipientProvinsiController = TextEditingController();
   final recipientKotaController = TextEditingController();
   final recipientKecamatanController = TextEditingController();
-  // final recipientKelurahanController = TextEditingController();
   final recipientKodePosController = TextEditingController();
+
+  // for edit address
+  final editRecipientNameController = TextEditingController();
+  final editRecipientPhoneController = TextEditingController();
+  final editRecipientAddressController = TextEditingController();
+  final editRecipientProvinsiController = TextEditingController();
+  final editRecipientKotaController = TextEditingController();
+  final editRecipientKecamatanController = TextEditingController();
+  final editRecipientKodePosController = TextEditingController();
 
   // for fetch alamat pengiriman
   var isLoading = false.obs;
@@ -39,6 +47,7 @@ class AlamatKirimController extends GetxController {
 
   @override
   void onClose(){
+    super.onClose();
     // recipientNameController.dispose();
     // recipientPhoneController.dispose();
     // recipientAddressController.dispose();
@@ -47,7 +56,6 @@ class AlamatKirimController extends GetxController {
     // recipientKecamatanController.dispose();
     // // recipientKelurahanController.dispose();
     // recipientKodePosController.dispose();
-    super.onClose();
   }
 
   Future<void> fetchAlamatPengiriman() async {
@@ -165,17 +173,17 @@ class AlamatKirimController extends GetxController {
     final Map<String, dynamic> data = {
       'id' : id.toString(),
       'user_id' : userId.toString(),
-      'penerima' : recipientNameController.text,
-      'no_telepon' : recipientPhoneController.text,
+      'penerima' : editRecipientNameController.text,
+      'no_telepon' : editRecipientPhoneController.text,
       'kota_id' : kotaController.selectedKotaId.value!.cityId,
       'kota' : kotaController.selectedKotaId.value!.cityName,
       'provinsi_id' : provinsiController.selectedProvinsiId.value!.province_id,
       'provinsi' : provinsiController.selectedProvinsiId.value!.province,
       'kecamatan_id' : kecamatanController.selectedKecamatanId.value!.subdistrictId,
       'kecamatan' : kecamatanController.selectedKecamatanId.value!.subdistrictName,
-      'kelurahan' : recipientAddressController.text,
-      'kode_pos' : recipientKodePosController.text,
-      'alamat' : recipientAddressController.text,
+      'kelurahan' : editRecipientAddressController.text,
+      'kode_pos' : editRecipientKodePosController.text,
+      'alamat' : editRecipientAddressController.text,
     };
     // print(kecamatanController.selectedKecamatanId.value!.subdistrictName);
 
