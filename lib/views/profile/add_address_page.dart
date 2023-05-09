@@ -286,10 +286,7 @@ class AddAddressPage extends StatelessWidget {
                                                       .listProvinsi.length,
                                                   (index) => DropdownMenuItem(
                                                         child: Text(
-                                                          provinsiController
-                                                              .listProvinsi[
-                                                                  index]
-                                                              .province,
+                                                          provinsiController.listProvinsi[index].province,
                                                           style: TextStyle(
                                                               fontSize: 12),
                                                         ),

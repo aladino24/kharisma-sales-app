@@ -69,8 +69,7 @@ class AlamatKirimController extends GetxController {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['data'];
-        _listAlamat
-            .assignAll(data.map((e) => AlamatPengiriman.fromJson(e)).toList());
+        _listAlamat.assignAll(data.map((e) => AlamatPengiriman.fromJson(e)).toList());
 
         // print(alamatPengirimanResult.data);
       } else {

@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
+import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/widgets/tabel_quantity.dart';
 
 class CartProductPage extends StatelessWidget {
   CartProductPage({Key? key}) : super(key: key);
+
+  final CartController cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,7 @@ class CartProductPage extends StatelessWidget {
                   children: [
                     Container(
                       margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                       height: 50,
                       child: Row(children: [
                         // pilih semua action
@@ -65,13 +72,14 @@ class CartProductPage extends StatelessWidget {
                     // Cart product
                     SizedBox(
                       height: 300,
-                      child: ListView.builder(
+                      child: Obx(() => ListView.builder(
                         shrinkWrap: true,
-                        itemCount: 5,
+                        itemCount: cartController.cartProductList.length,
                         itemBuilder: (context, index) {
+                             CartProduct cartProduct = cartController.cartProductList[index];
                           return Container(
                             margin: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
+                                horizontal: 15, vertical: 10),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
@@ -96,9 +104,10 @@ class CartProductPage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10),
                                       color: AppsColors.imageProductBackground,
                                       image: DecorationImage(
-                                        image: AssetImage(
-                                          "assets/images/product.png",
-                                        ),
+                                        image: cartProduct.product!.image != null ? 
+                                        MemoryImage(base64Decode(cartProduct.product!.image!)) : AssetImage(
+                                          'assets/images/image.png',
+                                        ) as ImageProvider,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -109,11 +118,16 @@ class CartProductPage extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Bolpoin G-Soft",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
+                                        Container(
+                                          width: 120,
+                                          child: Text(
+                                            cartProduct.product!.productName!,
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2, 
                                           ),
                                         ),
                                         DiskonProduct(),
@@ -121,7 +135,11 @@ class CartProductPage extends StatelessWidget {
                                           height: 5,
                                         ),
                                         Text(
-                                          "Rp 10.000",
+                                          NumberFormat.currency(
+                                                    locale: 'id_ID',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0,
+                                                  ).format(int.parse(cartProduct.price!)),
                                           style: TextStyle(
                                             fontSize: 14,
                                           ),
@@ -142,13 +160,13 @@ class CartProductPage extends StatelessWidget {
                             ),
                           );
                         },
-                      ),
+                      ),)
                     ),
 
                     // Informasi Order
                     Container(
                       margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       width: Get.width,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),

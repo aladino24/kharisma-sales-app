@@ -17,6 +17,7 @@ class ProvinsiController extends GetxController {
     super.onInit();
     fetchProvinsi();
   }
+  
 
   void fetchProvinsi() async {
     String api_address_url = ApiUrl.apiUrl + 'provinsi-raja-ongkir';

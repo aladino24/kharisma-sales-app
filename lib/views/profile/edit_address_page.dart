@@ -30,9 +30,8 @@ class EditAddressPage extends StatelessWidget {
     alamatKirimController.editRecipientPhoneController.text = data.noTelepon;
     alamatKirimController.editRecipientAddressController.text = data.alamat;
     alamatKirimController.editRecipientKodePosController.text = data.kodePos;
+    
 
-
-    // print( kotaController.selectedKotaId.value);
   
     return Scaffold(
       body: SafeArea(
@@ -332,8 +331,7 @@ class EditAddressPage extends StatelessWidget {
                                           width: 150,
                                           padding:
                                               const EdgeInsets.only(top: 5),
-                                          child: Obx(
-                                            () => DropdownButtonFormField(
+                                          child: Obx(() => DropdownButtonFormField(
                                               validator: (value) {
                                                 if (value == null) {
                                                   return 'Kota tidak boleh kosong';
@@ -383,10 +381,7 @@ class EditAddressPage extends StatelessWidget {
                                                       (index) =>
                                                           DropdownMenuItem(
                                                             child: Text(
-                                                              kotaController
-                                                                  .listKota[
-                                                                      index]
-                                                                  .cityName,
+                                                              kotaController.listKota[index].cityName,
                                                               style: TextStyle(
                                                                   fontSize: 12),
                                                             ),
@@ -402,15 +397,13 @@ class EditAddressPage extends StatelessWidget {
                                                   kotaController.selectedKotaId.value = value;
                                                 }
                                               },
-                                              value: kotaController
-                                                          .selectedKotaId
-                                                          .value !=
+                                              value: kotaController.selectedKotaId.value !=
                                                       null
                                                   ? kotaController
                                                       .selectedKotaId.value
                                                   : null,
-                                            ),
-                                          )),
+                                            )
+                                        )),
                                     ],
                                   ),
                                 ],
