@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
@@ -16,6 +17,8 @@ class HomePage extends StatelessWidget {
 
   final MainHeaderController myController = Get.put(MainHeaderController());
   final ProductController productController = Get.put(ProductController());
+  //cart controller
+  final CartController cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
@@ -274,21 +277,26 @@ class HomePage extends StatelessWidget {
                                               child: Icon(Icons.favorite,
                                                   color: Colors.red, size: 18),
                                             ),
-                                            Container(
-                                              width: 28,
-                                              height: 28,
-                                              child: Icon(
-                                                  Icons
-                                                      .add_shopping_cart_outlined,
-                                                  color: Colors.white,
-                                                  size: 17),
-                                              decoration: BoxDecoration(
-                                                  color: AppsColors
-                                                      .loginColorPrimary,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(100),
-                                                  )),
+                                            GestureDetector(
+                                              child: Container(
+                                                width: 28,
+                                                height: 28,
+                                                child: Icon(
+                                                    Icons
+                                                        .add_shopping_cart_outlined,
+                                                    color: Colors.white,
+                                                    size: 17),
+                                                decoration: BoxDecoration(
+                                                    color: AppsColors
+                                                        .loginColorPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(100),
+                                                    )),
+                                              ),
+                                              onTap: (){
+                                                  cartController.addCartProduct(product.productId!, product.pricelist![0].price.toString(), 1);
+                                              },
                                             ),
                                           ],
                                         ),

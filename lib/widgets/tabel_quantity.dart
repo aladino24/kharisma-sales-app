@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 
 class TableQuantity extends StatelessWidget {
   final int size;
   final int iconSize;
+  final RxInt quantity;
+  final String uuid;
+  final String stock;
   TableQuantity({
-    super.key, required this.size, required this.iconSize,
+    super.key, required this.size, required this.iconSize, required this.quantity, required this.uuid, required this.stock,
   });
+
+  final CartController cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +47,15 @@ class TableQuantity extends StatelessWidget {
                       color: Colors.grey),
                 ),
                 child: Center(
-                  child: Text(
-                    "15",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                    ),
-                  ),
+                  child: GetBuilder<CartController>(
+                    id: uuid,
+                    builder: (_) {
+                      return Text(
+                        '${quantity}',
+                        style: TextStyle(fontSize: 15.0),
+                      );
+                    },
+                 ),
                 ),
               ),
             ),
@@ -58,9 +67,14 @@ class TableQuantity extends StatelessWidget {
                     Border.all(color: Colors.grey),
               ),
               child: Center(
-                child: Icon(
-                  Icons.add,
-                  size: iconSize.toDouble(),
+                child: GestureDetector(
+                  child: Icon(
+                    Icons.add,
+                    size: iconSize.toDouble(),
+                  ),
+                  onTap: (){
+                    cartController.increment(uuid, quantity, stock);
+                  },
                 ),
               ),
             ),

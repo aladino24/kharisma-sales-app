@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,36 +57,7 @@ class DetailProductPage extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: AppsColors.imageProductBackground,
                                   image: DecorationImage(
-                                    image: AssetImage(
-                                        'assets/images/product2.png'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppsColors.imageProductBackground,
-                                  image: DecorationImage(
-                                    image:
-                                        AssetImage('assets/images/product.png'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                        'assets/images/product2.png'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image:
-                                        AssetImage('assets/images/product.png'),
+                                    image: product.image != null ? MemoryImage(base64Decode(product.image!)) : AssetImage('assets/images/image.png') as ImageProvider,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -296,7 +269,7 @@ class DetailProductPage extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "( Stock : 100 )",
+                                    "( Stock : ${product.stock} )",
                                     style: TextStyle(
                                       fontFamily: 'Montserrat',
                                       fontSize: 12,

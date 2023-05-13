@@ -14,7 +14,7 @@ class CartProductPage extends StatelessWidget {
   CartProductPage({Key? key}) : super(key: key);
 
   final CartController cartController = Get.put(CartController());
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,97 +71,133 @@ class CartProductPage extends StatelessWidget {
                     ),
                     // Cart product
                     SizedBox(
-                      height: 300,
-                      child: Obx(() => ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: cartController.cartProductList.length,
-                        itemBuilder: (context, index) {
-                             CartProduct cartProduct = cartController.cartProductList[index];
-                          return Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 0),
-                                ),
-                              ],
-                            ),
-                            child: CheckboxListTile(
-                              value: false,
-                              onChanged: (value) {},
-                              title: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 90,
-                                    height: 90,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: AppsColors.imageProductBackground,
-                                      image: DecorationImage(
-                                        image: cartProduct.product!.image != null ? 
-                                        MemoryImage(base64Decode(cartProduct.product!.image!)) : AssetImage(
-                                          'assets/images/image.png',
-                                        ) as ImageProvider,
-                                        fit: BoxFit.cover,
+                        height: 300,
+                        child: Obx((){
+                          if (cartController.isLoading.value) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }else{
+                            return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: cartController.cartProductList.length,
+                            itemBuilder: (context, index) {
+                              CartProduct cartProduct = cartController.cartProductList[index];
+                              int parsedQuantity = int.parse(cartProduct.quantity!);
+                              cartController.quantityGlobal.value = parsedQuantity;
+                                return Container(
+                                  key: ValueKey(cartProduct.uuid),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 0),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
+                                  child: CheckboxListTile(
+                                    value: false,
+                                    onChanged: (value) {
+                                    },
+                                    title: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                          width: 120,
-                                          child: Text(
-                                            cartProduct.product!.productName!,
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w600,
+                                          width: 90,
+                                          height: 90,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: AppsColors
+                                                .imageProductBackground,
+                                            image: DecorationImage(
+                                              image: cartProduct
+                                                          .product!.image !=
+                                                      null
+                                                  ? MemoryImage(base64Decode(
+                                                      cartProduct.product!.image!))
+                                                  : AssetImage(
+                                                      'assets/images/image.png',
+                                                    ) as ImageProvider,
+                                              fit: BoxFit.cover,
                                             ),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2, 
                                           ),
                                         ),
-                                        DiskonProduct(),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          NumberFormat.currency(
-                                                    locale: 'id_ID',
-                                                    symbol: 'Rp ',
-                                                    decimalDigits: 0,
-                                                  ).format(int.parse(cartProduct.price!)),
-                                          style: TextStyle(
-                                            fontSize: 14,
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 120,
+                                                child: Text(
+                                                  cartProduct
+                                                      .product!.productName!,
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 2,
+                                                ),
+                                              ),
+                                              DiskonProduct(),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                NumberFormat.currency(
+                                                  locale: 'id_ID',
+                                                  symbol: 'Rp ',
+                                                  decimalDigits: 0,
+                                                ).format(int.parse(
+                                                    cartProduct.price!)),
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              TableQuantity(
+                                                    size: 20, 
+                                                    iconSize: 12,
+                                                    quantity: cartController.quantityGlobal.value.obs,
+                                                    stock: cartProduct.product!.stock!,
+                                                    uuid: cartProduct.uuid!
+                                              )
+                                            ],
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        TableQuantity(size: 20, iconSize: 12)
                                       ],
                                     ),
+                                    secondary: GestureDetector(
+                                      child: Icon(Icons.delete),
+                                      onTap: (){
+                                        cartController.deleteCartProduct(
+                                          cartProduct.uuid!
+                                        );
+                                      },
+                                    ),
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
                                   ),
-                                ],
-                              ),
-                              secondary: Icon(Icons.delete),
-                              controlAffinity: ListTileControlAffinity.leading,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                            ),
+                                );
+                            },
                           );
-                        },
-                      ),)
-                    ),
+                          }
+                        }
+                        )),
 
                     // Informasi Order
                     Container(
