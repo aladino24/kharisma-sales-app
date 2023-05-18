@@ -6,8 +6,10 @@ class DetailProductController extends GetxController{
   var variant = ''.obs;
 
 
-  void increment(){
-    quantity.value++;
+  void increment(int value, String? stock){
+    if(quantity < int.parse(stock!)){
+      quantity.value++;
+    }
     update();
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
@@ -32,7 +33,7 @@ class DetailProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // get arguments json
     final Product? product = Get.arguments as Product?;
-    print(product!.productName);
+    // print(product!.productName);
     return Scaffold(
       body: SafeArea(
           child: Column(
@@ -57,7 +58,7 @@ class DetailProductPage extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: AppsColors.imageProductBackground,
                                   image: DecorationImage(
-                                    image: product.image != null ? MemoryImage(base64Decode(product.image!)) : AssetImage('assets/images/image.png') as ImageProvider,
+                                    image: product!.image != null ? MemoryImage(base64Decode(product.image!)) : AssetImage('assets/images/image.png') as ImageProvider,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -259,7 +260,7 @@ class DetailProductPage extends StatelessWidget {
                                                 child: Icon(Icons.add),
                                                 onTap: () {
                                                   detailProductController
-                                                      .increment();
+                                                      .increment(detailProductController.quantity.value, product.stock);
                                                 },
                                               ),
                                             ),
@@ -287,24 +288,32 @@ class DetailProductPage extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 15),
                             child: Row(
                               children: [
-                                Container(
-                                  margin: const EdgeInsets.only(right: 10),
-                                  width: 150,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        color: AppsColors.loginColorPrimary),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "+ Add To Cart",
-                                      style: TextStyle(
-                                          color: AppsColors.loginColorPrimary,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700),
+                                GestureDetector(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 10),
+                                    width: 150,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: AppsColors.loginColorPrimary),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "+ Add To Cart",
+                                        style: TextStyle(
+                                            color: AppsColors.loginColorPrimary,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700),
+                                      ),
                                     ),
                                   ),
+                                  onTap: (){
+                                    // lazyput cartcontroller
+                                    Get.lazyPut(() => CartController());
+                                    final cartController = Get.find<CartController>();
+                                    cartController.addCartProduct(product.productId!, product.pricelist![0].price!, detailProductController.quantity.value );
+                                  },
                                 ),
                                 GestureDetector(
                                   child: Container(

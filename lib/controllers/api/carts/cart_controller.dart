@@ -11,6 +11,7 @@ class CartController extends GetxController{
   var isLoading = false.obs;
   var cartProductList = List<CartProduct>.empty().obs;
   var loginController = Get.put(LoginController());
+  var isAllSelected = false.obs;
 
   var quantityGlobal = 0.obs;
 
@@ -68,7 +69,7 @@ class CartController extends GetxController{
             }),
           );
 
-          print(response.body);
+          // print(response.body);
   
           if(response.statusCode == 200){
             isLoading(false);
@@ -86,6 +87,7 @@ class CartController extends GetxController{
             );
 
             fetchCartProduct();
+            // update();
           }else{
             isLoading(false);
             throw Exception(jsonDecode(response.body)['message']);
@@ -110,6 +112,7 @@ class CartController extends GetxController{
     Future<void> deleteCartProduct(String uuid) async{
       String api_cart_product = ApiUrl.apiUrl + 'ecom/cart/' + uuid;
         try {
+          // isLoading(true);
           final response = await http.delete(
             Uri.parse(api_cart_product),
             headers: {
@@ -127,6 +130,9 @@ class CartController extends GetxController{
            print(jsonResult['message']);
 
             fetchCartProduct();
+            update(
+              ['${uuid}']
+            );
           }else{
             isLoading(false);
             throw Exception(jsonDecode(response.body)['message']);
@@ -148,21 +154,45 @@ class CartController extends GetxController{
     }
 
     
-  void increment(String uuid, RxInt quantity, String stock){
-    if(quantity < int.parse(stock)){
+  void increment(String uuid, RxInt quantity, String stock, int index){
+    if(quantity.value < int.parse(stock)){
       quantity.value++;
     }
+    update(
+        [index]
+    );
+  }
+
+  void decrement(String uuid, RxInt quantity, String stock){
+    if(quantity.value > 1){
+      quantity.value--;
+    }
+     update(
+        ['${uuid}']
+     );
+  }
+
+  void selectAll() {
+    isAllSelected.value = !isAllSelected.value;
+    
+    cartProductList.forEach((cartProduct) {
+      cartProduct.isSelected = isAllSelected.value;
+    });
+    
+    update();
+  }
+
+  void selectCartProduct(int index, RxInt quantity, String uuid){
+    cartProductList[index].isSelected = !cartProductList[index].isSelected;
+    // quantity ketika dichecklist masih sama quantity seperti sebelumnya berdasarkan uuid
+    quantity.value = cartProductList[index].isSelected ? quantity.value : quantityGlobal.value;
+    
+    quantityGlobal.value = int.parse(cartProductList[index].quantity!);
+    isAllSelected.value = cartProductList.every((cartProduct) => cartProduct.isSelected);
+    // update();
     update(
       ['${uuid}']
     );
   }
-
-  void decrement(){
-    if(quantityGlobal.value > 1){
-      quantityGlobal.value--;
-    }
-  }
-
- 
   
 }

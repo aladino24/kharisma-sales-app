@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
 
@@ -10,6 +11,9 @@ class ProductController extends GetxController{
   var _products = <Product>[].obs;
 
   List<Product> get products => _products;
+
+  final LoginController loginController = Get.put(LoginController());
+  
 
   @override
   void onInit() {
@@ -20,12 +24,27 @@ class ProductController extends GetxController{
 
   Future<void> fetchProduct() async {
     String api_product_url = ApiUrl.apiUrl + 'ecom/product';
+    var response;
 
      try {
        isLoading(true);
-       final response = await http.get(
-        Uri.parse(api_product_url),
-      );
+
+       // jika await getToken() tidak sama dengan null  maka kirimkan header bearer token
+       if(await loginController.getToken() != null){
+          response = await http.get(
+            Uri.parse(api_product_url),
+            headers: {
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+            },
+          );
+       }
+        // jika await getToken() sama dengan null  maka kirimkan header bearer token
+        if(await loginController.getToken() == null){
+            response = await http.get(
+              Uri.parse(api_product_url),
+            );
+        }
+       
         if(response.statusCode == 200){
           print(jsonDecode(response.body)['data']);
           isLoading(false);
@@ -43,4 +62,8 @@ class ProductController extends GetxController{
      }
     
   }
+
+
+
+ 
 }

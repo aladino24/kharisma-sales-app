@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
@@ -8,6 +9,8 @@ class CheckoutProductPage extends StatelessWidget {
   CheckoutProductPage({super.key});
 
   final TextEditingController claimController = TextEditingController();
+
+  final OngkosKirimController ongkosKirimController = Get.put(OngkosKirimController());
 
   var _currencies = ["COD", "JNE", "J&t"];
 
@@ -236,18 +239,26 @@ class CheckoutProductPage extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0),
                                     child: DropdownButtonHideUnderline(
-                                      child: DropdownButton<String>(
-                                        hint: Text('Pilih jenis pengiriman'),
+                                      child: Obx(() => DropdownButton<String>(
+                                        hint: ongkosKirimController.isLoading.value ? Text("Loading...") : Text('Pilih jenis pengiriman'),
                                         // value: 'COD',
                                         isDense: true,
                                         onChanged: (String? newValue) {},
-                                        items: _currencies.map((String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),
+                                        items: ongkosKirimController.ongkosKirim.isNotEmpty
+                                                  ? List.generate(
+                                                      ongkosKirimController
+                                                          .ongkosKirim.length,
+                                                      (index) =>
+                                                          DropdownMenuItem(
+                                                            child: Text(
+                                                              ongkosKirimController.ongkosKirim[index].nama!,
+                                                              style: TextStyle(
+                                                                  fontSize: 12),
+                                                            ),
+                                                            value: ongkosKirimController.ongkosKirim[index].harga.toString(),
+                                                          ))
+                                                  : null,
+                                      ),)
                                     ),
                                   ),
                                 );

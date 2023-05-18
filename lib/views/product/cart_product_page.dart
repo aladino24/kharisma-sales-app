@@ -55,9 +55,13 @@ class CartProductPage extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Checkbox(
-                                      value: false,
-                                      onChanged: (value) {},
+                                    GetBuilder<CartController>(
+                                      builder: (controller) => Checkbox(
+                                      value: cartController.isAllSelected.value,
+                                      onChanged: (value) {
+                                        // cartController.selectAll();
+                                      },
+                                     )
                                     ),
                                     const Text("Pilih Semua"),
                                   ],
@@ -85,24 +89,12 @@ class CartProductPage extends StatelessWidget {
                               CartProduct cartProduct = cartController.cartProductList[index];
                               int parsedQuantity = int.parse(cartProduct.quantity!);
                               cartController.quantityGlobal.value = parsedQuantity;
-                                return Container(
-                                  key: ValueKey(cartProduct.uuid),
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.2),
-                                        blurRadius: 5,
-                                        offset: const Offset(0, 0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: CheckboxListTile(
-                                    value: false,
+                                return GetBuilder<CartController>(
+                                    id: cartProduct.uuid,
+                                    builder: (controller) => CheckboxListTile(
+                                    value: cartController.cartProductList[index].isSelected,
                                     onChanged: (value) {
+                                      cartController.selectCartProduct(index,cartController.quantityGlobal.value.obs, cartProduct.uuid!);
                                     },
                                     title: Row(
                                       crossAxisAlignment:
@@ -117,8 +109,7 @@ class CartProductPage extends StatelessWidget {
                                             color: AppsColors
                                                 .imageProductBackground,
                                             image: DecorationImage(
-                                              image: cartProduct
-                                                          .product!.image !=
+                                              image: cartProduct.product!.image !=
                                                       null
                                                   ? MemoryImage(base64Decode(
                                                       cartProduct.product!.image!))
@@ -168,11 +159,12 @@ class CartProductPage extends StatelessWidget {
                                                 height: 5,
                                               ),
                                               TableQuantity(
-                                                    size: 20, 
+                                                    size: 25, 
                                                     iconSize: 12,
                                                     quantity: cartController.quantityGlobal.value.obs,
                                                     stock: cartProduct.product!.stock!,
-                                                    uuid: cartProduct.uuid!
+                                                    uuid: cartProduct.uuid!,
+                                                    index: index,
                                               )
                                             ],
                                           ),
@@ -191,8 +183,8 @@ class CartProductPage extends StatelessWidget {
                                         ListTileControlAffinity.leading,
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 10),
-                                  ),
-                                );
+                                  )
+                                  );
                             },
                           );
                           }

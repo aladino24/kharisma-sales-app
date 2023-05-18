@@ -24,6 +24,7 @@ class CartProduct {
   String? userId;
   String? productId;
   String? quantity;
+  bool isSelected = false;
   String? price;
   String? totalPrice;
   String? status;
@@ -58,8 +59,7 @@ class CartProduct {
     isCheckout = json['is_checkout'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    product =
-        json['product'] != null ? new Product.fromJson(json['product']) : null;
+    product = json['product'] != null ? new Product.fromJson(json['product']) : null;
   }
 
 }

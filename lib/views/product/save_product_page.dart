@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/save_product_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
@@ -15,6 +16,8 @@ class SaveProductPage extends StatelessWidget {
   SaveProductPage({Key? key}) : super(key: key);
 
   final ProductController productController = Get.find<ProductController>();
+  final SaveProductController saveProductController =
+      Get.put(SaveProductController());
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class SaveProductPage extends StatelessWidget {
             ),
             Expanded(
               child: Obx(() {
-                if (productController.isLoading.value) {
+                if (saveProductController.isLoading.value) {
                   return GridView.builder(
                     padding: const EdgeInsets.all(5),
                     itemCount: 6,
@@ -95,159 +98,200 @@ class SaveProductPage extends StatelessWidget {
                         crossAxisSpacing: 10,
                       ),
                       padding: const EdgeInsets.all(5),
-                      itemCount: 3,
+                      itemCount: saveProductController.products.length,
                       itemBuilder: (context, index) {
-                        Product product = productController.products[index];
+                        Product product = saveProductController.products[index];
                         //  print('Ini image ' + product.image!);
-                        return Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 0),
-                                )
-                              ]),
-                          child: Column(
-                            children: [
-                              GestureDetector(
-                                child: Container(
-                                  // heigh sesuai dengan tinggi parent * 0.5
-                                  height: 165,
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                      color: AppsColors.imageProductBackground,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(15.0),
-                                        topRight: Radius.circular(15.0),
-                                      )),
-                                  child: product.image != null
-                                      ? Image.memory(
-                                          base64Decode(product.image!),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.asset(
-                                          'assets/images/image.png',
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                                onTap: () {
-                                  Get.toNamed(RoutesName.detailProduct,
-                                      arguments: product);
-                                },
-                              ),
-                              Expanded(
-                                child: GestureDetector(
+                        return GestureDetector(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 0),
+                                  )
+                                ]),
+                            child: Column(
+                              children: [
+                                GestureDetector(
                                   child: Container(
-                                    alignment: Alignment.topLeft,
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          product.productName.toString(),
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppsColors
-                                                  .loginFontColorPrimaryDark),
-                                        ),
-                                        Text(
-                                          product.pricelist != null &&
-                                                  product.pricelist![0].type ==
-                                                      'b2b'
-                                              ? "Seller Price : ${NumberFormat.currency(
-                                                  locale: 'id_ID',
-                                                  symbol: 'Rp ',
-                                                  decimalDigits: 0,
-                                                ).format(int.parse(product.pricelist![0].price.toString()))}"
-                                              : "Seller Price : -",
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: AppsColors
-                                                  .loginFontColorPrimaryDark),
-                                        ),
-                                        Text(
-                                          product.pricelist != null &&
-                                                  product.pricelist![0].type ==
-                                                      'b2c'
-                                              ? "Customer Price : ${NumberFormat.currency(
-                                                  locale: 'id_ID',
-                                                  symbol: 'Rp ',
-                                                  decimalDigits: 0,
-                                                ).format(int.parse(product.pricelist![0].price.toString()))}"
-                                              : "Customer Price : -",
-                                          style: TextStyle(
-                                              fontSize: 13, color: Colors.red),
-                                        ),
-                                      ],
-                                    ),
+                                    // heigh sesuai dengan tinggi parent * 0.5
+                                    height: 165,
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                        color:
+                                            AppsColors.imageProductBackground,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15.0),
+                                          topRight: Radius.circular(15.0),
+                                        )),
+                                    child: product.image != null
+                                        ? Image.memory(
+                                            base64Decode(product.image!),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(
+                                            'assets/images/image.png',
+                                            fit: BoxFit.cover,
+                                          ),
                                   ),
                                   onTap: () {
                                     Get.toNamed(RoutesName.detailProduct,
                                         arguments: product);
                                   },
                                 ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 10, right: 10, bottom: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    RatingStar(),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.15,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                Expanded(
+                                  child: GestureDetector(
+                                    child: Container(
+                                      alignment: Alignment.topLeft,
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Container(
-                                            width: 28,
-                                            height: 28,
-                                            decoration: BoxDecoration(
+                                          Text(
+                                            product.productName.toString(),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
                                                 color: AppsColors
-                                                    .imageProductBackground,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(100),
-                                                )),
-                                            child: Icon(Icons.favorite,
-                                                color: Colors.red, size: 18),
+                                                    .loginFontColorPrimaryDark),
                                           ),
-                                          Container(
-                                            width: 28,
-                                            height: 28,
-                                            child: Icon(
-                                                Icons
-                                                    .add_shopping_cart_outlined,
-                                                color: Colors.white,
-                                                size: 17),
-                                            decoration: BoxDecoration(
+                                          Text(
+                                            product.pricelist != null && product.pricelist!.length >= 2
+                                                ? product.pricelist![1].type == 'b2b'
+                                                    ? "Seller Price : ${NumberFormat.currency(
+                                                        locale: 'id_ID',
+                                                        symbol: 'Rp ',
+                                                        decimalDigits: 0,
+                                                      ).format(int.parse(product.pricelist![1].price.toString()))}"
+                                                    : product.pricelist![1].type ==
+                                                            'b2c'
+                                                        ? "Customer Price : ${NumberFormat.currency(
+                                                            locale: 'id_ID',
+                                                            symbol: 'Rp ',
+                                                            decimalDigits: 0,
+                                                          ).format(int.parse(product.pricelist![1].price.toString()))}"
+                                                        : "" : "",
+                                            style: TextStyle(
+                                                fontSize: 13,
                                                 color: AppsColors
-                                                    .loginColorPrimary,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(100),
-                                                )),
+                                                    .loginFontColorPrimaryDark),
+                                          ),
+                                          Text(
+                                            product.pricelist != null &&
+                                                    product.pricelist![0].type =='b2b'
+                                                ? "Seller Price : ${NumberFormat.currency(
+                                                    locale: 'id_ID',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0,
+                                                  ).format(int.parse(product.pricelist![0].price.toString()))}"
+                                                : product.pricelist != null &&
+                                                        product.pricelist![0]
+                                                                .type ==
+                                                            'b2c'
+                                                    ? "Customer Price : ${NumberFormat.currency(
+                                                        locale: 'id_ID',
+                                                        symbol: 'Rp ',
+                                                        decimalDigits: 0,
+                                                      ).format(int.parse(product.pricelist![0].price.toString()))}"
+                                                    : "",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.red),
                                           ),
                                         ],
                                       ),
-                                    )
-                                  ],
+                                    ),
+                                    onTap: () {
+                                      Get.toNamed(RoutesName.detailProduct,
+                                          arguments: product);
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: 10, right: 10, bottom: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      RatingStar(),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.15,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 28,
+                                              height: 28,
+                                              decoration: BoxDecoration(
+                                                  color: AppsColors
+                                                      .imageProductBackground,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(100),
+                                                  )),
+                                              child: GestureDetector(
+                                                child: Icon(Icons.favorite,
+                                                    color: Colors.red,
+                                                    size: 18),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 28,
+                                              height: 28,
+                                              child: Icon(
+                                                  Icons
+                                                      .add_shopping_cart_outlined,
+                                                  color: Colors.white,
+                                                  size: 17),
+                                              decoration: BoxDecoration(
+                                                  color: AppsColors
+                                                      .loginColorPrimary,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(100),
+                                                  )),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                          onLongPress: () {
+                            Get.defaultDialog(
+                              title: 'Delete Product',
+                              middleText:
+                                  'Are you sure want to delete this product from wishlist?',
+                              textConfirm: 'Yes',
+                              textCancel: 'No',
+                              confirmTextColor: Colors.white,
+                              buttonColor: AppsColors.loginColorPrimary,
+                              cancelTextColor: AppsColors.loginColorPrimary,
+                              onConfirm: () async {
+                                await saveProductController
+                                    .deleteProduct(product.productId);
+                                Get.back();
+                              },
+                              onCancel: () {},
+                            );
+                          },
                         );
                       });
                 }
               }),
-            
-          )
+            )
           ],
         ),
       ),

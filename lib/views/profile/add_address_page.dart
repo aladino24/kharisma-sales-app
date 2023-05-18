@@ -298,17 +298,10 @@ class AddAddressPage extends StatelessWidget {
                                                 if (value != null) {
                                                   Provinsi selectedProvinsi =
                                                       value as Provinsi;
-                                                  kotaController
-                                                      .clearListKota();
-                                                  kotaController
-                                                      .fetchKotaByProvinsiId(
-                                                          selectedProvinsi
-                                                              .province_id);
-                                                  kotaController.selectedKotaId
-                                                      .value = null;
-                                                  provinsiController
-                                                      .selectedProvinsiId
-                                                      .value = value;
+                                                  kotaController.clearListKota();
+                                                  kotaController.fetchKotaByProvinsiId(selectedProvinsi.province_id);
+                                                  kotaController.selectedKotaId.value = null;
+                                                  provinsiController.selectedProvinsiId.value = value;
                                                 }
                                               },
                                               value: provinsiController
@@ -390,8 +383,7 @@ class AddAddressPage extends StatelessWidget {
                                                           DropdownMenuItem(
                                                             child: Text(
                                                               kotaController
-                                                                  .listKota[
-                                                                      index]
+                                                                  .listKota[index]
                                                                   .cityName,
                                                               style: TextStyle(
                                                                   fontSize: 12),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/save_product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
@@ -19,6 +20,9 @@ class HomePage extends StatelessWidget {
   final ProductController productController = Get.put(ProductController());
   //cart controller
   final CartController cartController = Get.put(CartController());
+
+  var customer_price;
+  var sales_price;
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +153,9 @@ class HomePage extends StatelessWidget {
                         padding: const EdgeInsets.all(5),
                         itemCount: productController.products.length,
                         itemBuilder: (context, index) {
+                       
                           Product product = productController.products[index];
+                          
                           //  print('Ini image ' + product.image!);
                           return Container(
                             decoration: BoxDecoration(
@@ -208,17 +214,25 @@ class HomePage extends StatelessWidget {
                                                 color: AppsColors
                                                     .loginFontColorPrimaryDark),
                                           ),
-                                          Text(
+                                           Text(
                                             product.pricelist != null &&
-                                                    product.pricelist![0]
-                                                            .type ==
+                                                    product.pricelist!.length >= 2
+                                                ? product.pricelist![1].type ==
                                                         'b2b'
-                                                ? "Seller Price : ${NumberFormat.currency(
-                                                    locale: 'id_ID',
-                                                    symbol: 'Rp ',
-                                                    decimalDigits: 0,
-                                                  ).format(int.parse(product.pricelist![0].price.toString()))}"
-                                                : "Seller Price : -",
+                                                    ? "Seller Price : ${NumberFormat.currency(
+                                                        locale: 'id_ID',
+                                                        symbol: 'Rp ',
+                                                        decimalDigits: 0,
+                                                      ).format(int.parse(product.pricelist![1].price.toString()))}"
+                                                    : product.pricelist![1]
+                                                                .type ==
+                                                            'b2c'
+                                                        ? "Customer Price : ${NumberFormat.currency(
+                                                            locale: 'id_ID',
+                                                            symbol: 'Rp ',
+                                                            decimalDigits: 0,
+                                                          ).format(int.parse(product.pricelist![1].price.toString()))}"
+                                                        : "" : "",
                                             style: TextStyle(
                                                 fontSize: 13,
                                                 color: AppsColors
@@ -226,19 +240,27 @@ class HomePage extends StatelessWidget {
                                           ),
                                           Text(
                                             product.pricelist != null &&
-                                                    product.pricelist![0]
-                                                            .type ==
-                                                        'b2c'
-                                                ? "Customer Price : ${NumberFormat.currency(
+                                                    product.pricelist![0].type =='b2b'
+                                                ? "Seller Price : ${NumberFormat.currency(
                                                     locale: 'id_ID',
                                                     symbol: 'Rp ',
                                                     decimalDigits: 0,
                                                   ).format(int.parse(product.pricelist![0].price.toString()))}"
-                                                : "Customer Price : -",
+                                                : product.pricelist != null &&
+                                                        product.pricelist![0]
+                                                                .type ==
+                                                            'b2c'
+                                                    ? "Customer Price : ${NumberFormat.currency(
+                                                        locale: 'id_ID',
+                                                        symbol: 'Rp ',
+                                                        decimalDigits: 0,
+                                                      ).format(int.parse(product.pricelist![0].price.toString()))}"
+                                                    : "",
                                             style: TextStyle(
                                                 fontSize: 13,
                                                 color: Colors.red),
                                           ),
+                                         
                                         ],
                                       ),
                                     ),
@@ -274,8 +296,22 @@ class HomePage extends StatelessWidget {
                                                       BorderRadius.all(
                                                     Radius.circular(100),
                                                   )),
-                                              child: Icon(Icons.favorite,
-                                                  color: Colors.red, size: 18),
+                                              child: GestureDetector(
+                                                child: Icon(Icons.favorite,
+                                                    color: Colors.red,
+                                                    size: 18),
+                                                onTap: () {
+                                                  // lazy put
+                                                  Get.lazyPut(() =>
+                                                      SaveProductController());
+                                                  final saveProductController =
+                                                      Get.find<
+                                                          SaveProductController>();
+                                                  saveProductController
+                                                      .saveProduct(int.parse(
+                                                          product.productId!));
+                                                },
+                                              ),
                                             ),
                                             GestureDetector(
                                               child: Container(
@@ -294,8 +330,12 @@ class HomePage extends StatelessWidget {
                                                       Radius.circular(100),
                                                     )),
                                               ),
-                                              onTap: (){
-                                                  cartController.addCartProduct(product.productId!, product.pricelist![0].price.toString(), 1);
+                                              onTap: () {
+                                                cartController.addCartProduct(
+                                                    product.productId!,
+                                                    product.pricelist![0].price
+                                                        .toString(),
+                                                    1);
                                               },
                                             ),
                                           ],
