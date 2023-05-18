@@ -108,6 +108,9 @@ class LoginController extends GetxController {
       Get.delete<AlamatKirimController>();
       Get.delete<ProfileController>();
       Get.delete<MainHeaderController>();
+
+      //Get delete all
+      Get.deleteAll();
       Get.offAllNamed(RoutesName.loginCustomer);
       
     } catch (e) {
