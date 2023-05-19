@@ -8,9 +8,11 @@ import 'package:http/http.dart' as http;
 
 class OngkosKirimController extends GetxController{
   var isLoading = false.obs;
-  var _ongkosKirim = <OngkosKirim>[].obs;
+  
+  var selectedOngkosKirim = Rx<OngkosKirim?>(null);
+  var _listOngkosKirim = List<OngkosKirim>.empty().obs;
 
-  List<OngkosKirim> get ongkosKirim => _ongkosKirim;
+  get listOngkosKirim => _listOngkosKirim;
 
   final LoginController loginController = Get.find<LoginController>();
 
@@ -33,9 +35,9 @@ class OngkosKirimController extends GetxController{
 
       if(response.statusCode == 200){
         isLoading(false);
-        final data = jsonDecode(response.body)['data'];
-        print(data);
-        _ongkosKirim.assignAll(List<OngkosKirim>.from(data.map((ongkosKirim) => OngkosKirim.fromJson(ongkosKirim))));
+        final List<dynamic> data = json.decode(response.body)['data'];
+        _listOngkosKirim.assignAll(data.map((e) => OngkosKirim.fromJson(e)).toList());
+        listOngkosKirim.value = data.map((json) => OngkosKirim.fromJson(json)).toList();
       }else{
         isLoading(false);
         throw Exception('Failed to load data');

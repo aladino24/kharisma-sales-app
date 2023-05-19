@@ -12,7 +12,7 @@ class CheckoutProductPage extends StatelessWidget {
 
   final OngkosKirimController ongkosKirimController = Get.put(OngkosKirimController());
 
-  var _currencies = ["COD", "JNE", "J&t"];
+  // var _currencies = ["COD", "JNE", "J&t"];
 
   @override
   Widget build(BuildContext context) {
@@ -239,25 +239,36 @@ class CheckoutProductPage extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0),
                                     child: DropdownButtonHideUnderline(
-                                      child: Obx(() => DropdownButton<String>(
+                                      child: Obx(() => DropdownButtonFormField(
                                         hint: ongkosKirimController.isLoading.value ? Text("Loading...") : Text('Pilih jenis pengiriman'),
                                         // value: 'COD',
                                         isDense: true,
-                                        onChanged: (String? newValue) {},
-                                        items: ongkosKirimController.ongkosKirim.isNotEmpty
+                                        items: ongkosKirimController.listOngkosKirim.isNotEmpty
                                                   ? List.generate(
                                                       ongkosKirimController
-                                                          .ongkosKirim.length,
+                                                          .listOngkosKirim.length,
                                                       (index) =>
                                                           DropdownMenuItem(
                                                             child: Text(
-                                                              ongkosKirimController.ongkosKirim[index].nama!,
+                                                              ongkosKirimController.listOngkosKirim[index].nama!,
                                                               style: TextStyle(
                                                                   fontSize: 12),
                                                             ),
-                                                            value: ongkosKirimController.ongkosKirim[index].harga.toString(),
+                                                            value: ongkosKirimController.listOngkosKirim[index],
                                                           ))
                                                   : null,
+                                          onChanged: (value) {},
+                                          value: ongkosKirimController
+                                                          .selectedOngkosKirim
+                                                          .value !=
+                                                      null
+                                                  ? ongkosKirimController
+                                                          .selectedOngkosKirim
+                                                          .value
+                                                  : null,
+                                           decoration: InputDecoration(
+                                             border: InputBorder.none, // Menghilangkan underline
+                                           ),        
                                       ),)
                                     ),
                                   ),

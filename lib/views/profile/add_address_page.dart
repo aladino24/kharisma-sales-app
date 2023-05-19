@@ -388,9 +388,7 @@ class AddAddressPage extends StatelessWidget {
                                                               style: TextStyle(
                                                                   fontSize: 12),
                                                             ),
-                                                            value: kotaController
-                                                                    .listKota[
-                                                                index],
+                                                            value: kotaController.listKota[index],
                                                           ))
                                                   : null,
                                               onChanged: (value) {
