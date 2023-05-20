@@ -33,16 +33,16 @@ class AlamatKirimController extends GetxController {
 
   // for fetch alamat pengiriman
   var isLoading = false.obs;
-  // var inputNotif = false.obs;
   var _listAlamat = List<AlamatPengiriman>.empty(growable: true).obs;
   var errorMessage = ''.obs;
-
   get listAlamat => _listAlamat;
+  var alamatPengiriman = AlamatPengiriman().obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchAlamatPengiriman();
+    fetchAlamatUtama();
   }
 
   @override
@@ -271,6 +271,48 @@ class AlamatKirimController extends GetxController {
     }finally{
       isLoading(false);
     }
+  }
+
+  Future<AlamatPengiriman?> fetchAlamatUtama() async{
+    String api_address_url = ApiUrl.apiUrl + 'ecom/alamat-pengiriman';
+    
+    try {
+          isLoading(true);
+          final response = await http.get(
+            Uri.parse(api_address_url),
+            headers: <String, String>{
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+            },
+          );
+
+          if (response.statusCode == 200) {
+            isLoading(false);
+            final Map<String, dynamic> responseData = json.decode(response.body);
+            List<dynamic> data = responseData['data'];
+            Map<String, dynamic>? alamatUtamaData = data.firstWhere(
+              (element) => element['alamat_utama'] == '1',
+              orElse: () => null,
+            );
+            // print(alamatUtamaData);
+            if (alamatUtamaData != null) {
+              AlamatPengiriman alamatPengiriman = AlamatPengiriman.fromJson(alamatUtamaData);
+               this.alamatPengiriman.value = alamatPengiriman;
+              return alamatPengiriman;  
+            } else {
+              return null;
+            }
+          } else {
+            isLoading(false);
+            final Map<String, dynamic> responseData = json.decode(response.body);
+            throw Exception(responseData['message']);
+          }
+      } catch (e) {
+        isLoading(false);
+        print(e.toString());
+        return null;
+      }finally{
+        isLoading(false);
+      }
   }
 
   Future<void> setAlamatUtama(String id) async{

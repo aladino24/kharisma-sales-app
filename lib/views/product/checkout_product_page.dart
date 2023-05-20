@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
+import 'package:kharisma_sales_app/routes/apps_routes.dart';
+import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
@@ -10,9 +13,11 @@ class CheckoutProductPage extends StatelessWidget {
 
   final TextEditingController claimController = TextEditingController();
 
-  final OngkosKirimController ongkosKirimController = Get.put(OngkosKirimController());
+  final OngkosKirimController ongkosKirimController =
+      Get.put(OngkosKirimController());
 
-  // var _currencies = ["COD", "JNE", "J&t"];
+  final AlamatKirimController alamatKirimController =
+      Get.put(AlamatKirimController());
 
   @override
   Widget build(BuildContext context) {
@@ -52,89 +57,119 @@ class CheckoutProductPage extends StatelessWidget {
                         ],
                       )),
                       SizedBox(height: 10),
-                      Container(
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.person,
-                                  color: AppsColors.loginColorPrimary,
-                                ),
-                                SizedBox(width: 5),
-                                Text.rich(
-                                  TextSpan(
-                                      text: "Nama Penerima",
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: " ( Alamat Toko )",
+                      Obx(
+                        () {
+                          if (alamatKirimController.listAlamat.length == 0) {
+                            return alamatKirimController.isLoading.value
+                                ? Center(child: CircularProgressIndicator())
+                                : Container(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                            "Anda belum memiliki alamat pengiriman"),
+                                        SizedBox(height: 10),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Get.toNamed(RoutesName.addAddress);
+                                          },
+                                          child:
+                                              Text("Tambah Alamat Pengiriman"),
+                                            style: 
+                                            ElevatedButton.styleFrom(
+                                              backgroundColor: AppsColors.loginColorPrimary
+                                            ),
                                         )
-                                      ]),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppsColors.labelAlamatUtama,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 2),
-                                    child: Text(
-                                      "Utama",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
+                                      ],
+                                    ),
+                                  );
+                          } else {
+                            return Container(
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.person,
+                                        color: AppsColors.loginColorPrimary,
                                       ),
-                                    ),
+                                      SizedBox(width: 5),
+                                      Text.rich(
+                                        TextSpan(
+                                            text: alamatKirimController.alamatPengiriman.value.penerima,
+                                            children: <InlineSpan>[
+                                              TextSpan(
+                                                text: alamatKirimController.alamatPengiriman.value.isAlamatToko == "1" ? " ( Alamat Toko )" : "",
+                                              )
+                                            ]),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: AppsColors.labelAlamatUtama,
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 2),
+                                          child: Text(
+                                            "Utama",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.call,
-                                  color: AppsColors.loginColorPrimary,
-                                ),
-                                SizedBox(width: 5),
-                                Text.rich(
-                                  TextSpan(
-                                    text: "0812-0345-2367",
+                                  SizedBox(
+                                    height: 5,
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: AppsColors.loginColorPrimary,
-                                ),
-                                SizedBox(width: 5),
-                                Container(
-                                  width: 300,
-                                  child: Text.rich(
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    TextSpan(
-                                      text:
-                                          "Jl. Dupak II No. 28, Kel. Jepara, Kec. Bubutan, Surabaya (60171)",
-                                    ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.call,
+                                        color: AppsColors.loginColorPrimary,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text.rich(
+                                        TextSpan(
+                                          text: alamatKirimController.alamatPengiriman.value.noTelepon,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: AppsColors.loginColorPrimary,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Container(
+                                        width: 300,
+                                        child: Text.rich(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          TextSpan(
+                                            text:
+                                                "${alamatKirimController.alamatPengiriman.value.alamat}, ${alamatKirimController.alamatPengiriman.value.kecamatan}, ${alamatKirimController.alamatPengiriman.value.kota}, ${alamatKirimController.alamatPengiriman.value.provinsi} (${alamatKirimController.alamatPengiriman.value.kodePos})",
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+                        },
                       ),
                       Divider(
                         thickness: 2,
@@ -239,38 +274,47 @@ class CheckoutProductPage extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0),
                                     child: DropdownButtonHideUnderline(
-                                      child: Obx(() => DropdownButtonFormField(
-                                        hint: ongkosKirimController.isLoading.value ? Text("Loading...") : Text('Pilih jenis pengiriman'),
+                                        child: Obx(
+                                      () => DropdownButtonFormField(
+                                        hint: ongkosKirimController
+                                                .isLoading.value
+                                            ? Text("Loading...")
+                                            : Text('Pilih jenis pengiriman'),
                                         // value: 'COD',
                                         isDense: true,
-                                        items: ongkosKirimController.listOngkosKirim.isNotEmpty
-                                                  ? List.generate(
-                                                      ongkosKirimController
-                                                          .listOngkosKirim.length,
-                                                      (index) =>
-                                                          DropdownMenuItem(
-                                                            child: Text(
-                                                              ongkosKirimController.listOngkosKirim[index].nama!,
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            ),
-                                                            value: ongkosKirimController.listOngkosKirim[index],
-                                                          ))
-                                                  : null,
-                                          onChanged: (value) {},
-                                          value: ongkosKirimController
-                                                          .selectedOngkosKirim
-                                                          .value !=
-                                                      null
-                                                  ? ongkosKirimController
-                                                          .selectedOngkosKirim
-                                                          .value
-                                                  : null,
-                                           decoration: InputDecoration(
-                                             border: InputBorder.none, // Menghilangkan underline
-                                           ),        
-                                      ),)
-                                    ),
+                                        items: ongkosKirimController
+                                                .listOngkosKirim.isNotEmpty
+                                            ? List.generate(
+                                                ongkosKirimController
+                                                    .listOngkosKirim.length,
+                                                (index) => DropdownMenuItem(
+                                                      child: Text(
+                                                        ongkosKirimController
+                                                            .listOngkosKirim[
+                                                                index]
+                                                            .nama!,
+                                                        style: TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                      value: ongkosKirimController
+                                                              .listOngkosKirim[
+                                                          index],
+                                                    ))
+                                            : null,
+                                        onChanged: (value) {},
+                                        value: ongkosKirimController
+                                                    .selectedOngkosKirim
+                                                    .value !=
+                                                null
+                                            ? ongkosKirimController
+                                                .selectedOngkosKirim.value
+                                            : null,
+                                        decoration: InputDecoration(
+                                          border: InputBorder
+                                              .none, // Menghilangkan underline
+                                        ),
+                                      ),
+                                    )),
                                   ),
                                 );
                               },
@@ -310,25 +354,24 @@ class CheckoutProductPage extends StatelessWidget {
                             // Calculation
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.2),
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
-                                border: Border.all(
-                                  color: AppsColors.loginFontColorSecondary,
-                              
-                                )
-                              ),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ],
+                                  border: Border.all(
+                                    color: AppsColors.loginFontColorSecondary,
+                                  )),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 15),
+                                    padding: const EdgeInsets.only(
+                                        left: 10.0, right: 10.0, top: 15),
                                     child: Text(
                                       "Ringkasan Belanja",
                                       style: TextStyle(
@@ -370,15 +413,14 @@ class CheckoutProductPage extends StatelessWidget {
                                           children: [
                                             Text(
                                               "Total Diskon",
-                                              style: TextStyle(
-                                                  color: Colors.red),
+                                              style:
+                                                  TextStyle(color: Colors.red),
                                             ),
                                           ],
                                         ),
                                         Text(
                                           "Rp 100.000",
-                                          style: TextStyle(
-                                                  color: Colors.red),
+                                          style: TextStyle(color: Colors.red),
                                         )
                                       ],
                                     ),
@@ -427,24 +469,23 @@ class CheckoutProductPage extends StatelessWidget {
                             Container(
                               width: Get.width,
                               child: TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          AppsColors.loginColorPrimary),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            AppsColors.loginColorPrimary),
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    )),
+                                  ),
+                                  onPressed: () {},
+                                  child: Text(
+                                    "Lanjutkan",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
                                   )),
-                                ),
-                                onPressed: (){}, 
-                                child: Text(
-                                  "Lanjutkan",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ),
                             )
                           ],
                         ),
@@ -460,4 +501,3 @@ class CheckoutProductPage extends StatelessWidget {
     );
   }
 }
-
