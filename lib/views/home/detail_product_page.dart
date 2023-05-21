@@ -18,7 +18,7 @@ class DetailProductPage extends StatelessWidget {
 
   CarouselController? carouselController = CarouselController();
   final DetailProductController detailProductController = Get.put(DetailProductController());
-
+   final Product? product = Get.arguments as Product?;
   void previousImage() {
     carouselController!.previousPage(
         duration: Duration(milliseconds: 300), curve: Curves.ease);
@@ -32,7 +32,8 @@ class DetailProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // get arguments json
-    final Product? product = Get.arguments as Product?;
+   
+    
     // print(product!.productName);
     return Scaffold(
       body: SafeArea(
@@ -58,7 +59,7 @@ class DetailProductPage extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: AppsColors.imageProductBackground,
                                   image: DecorationImage(
-                                    image: product!.image != null ? MemoryImage(base64Decode(product.image!)) : AssetImage('assets/images/image.png') as ImageProvider,
+                                    image: product!.image != null ? MemoryImage(base64Decode(product!.image!)) : AssetImage('assets/images/image.png') as ImageProvider,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -132,7 +133,7 @@ class DetailProductPage extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    product.productName.toString(),
+                                    product!.productName.toString(),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -156,12 +157,12 @@ class DetailProductPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  product.pricelist != null && product.pricelist![0].type == 'b2b'
+                                  product!.pricelist != null && product!.pricelist![0].type == 'b2b'
                                             ? "Seller Price : ${NumberFormat.currency(
                                                   locale: 'id_ID',
                                                   symbol: 'Rp ',
                                                   decimalDigits: 0,
-                                                ).format(int.parse(product.pricelist![0].price.toString()))}": "Seller Price : -",
+                                                ).format(int.parse(product!.pricelist![0].price.toString()))}": "Seller Price : -",
                                   style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontSize: 16,
@@ -169,12 +170,12 @@ class DetailProductPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  product.pricelist != null && product.pricelist![0].type == 'b2c'
+                                  product!.pricelist != null && product!.pricelist![0].type == 'b2c'
                                             ? "Customer Price : ${NumberFormat.currency(
                                                   locale: 'id_ID',
                                                   symbol: 'Rp ',
                                                   decimalDigits: 0,
-                                                ).format(int.parse(product.pricelist![0].price.toString()))}": "Customer Price : -",
+                                                ).format(int.parse(product!.pricelist![0].price.toString()))}": "Customer Price : -",
                                   style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontSize: 16,
@@ -260,7 +261,7 @@ class DetailProductPage extends StatelessWidget {
                                                 child: Icon(Icons.add),
                                                 onTap: () {
                                                   detailProductController
-                                                      .increment(detailProductController.quantity.value, product.stock);
+                                                      .increment(detailProductController.quantity.value, product!.stock);
                                                 },
                                               ),
                                             ),
@@ -270,7 +271,7 @@ class DetailProductPage extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "( Stock : ${product.stock} )",
+                                    "( Stock : ${product!.stock} )",
                                     style: TextStyle(
                                       fontFamily: 'Montserrat',
                                       fontSize: 12,
@@ -312,7 +313,7 @@ class DetailProductPage extends StatelessWidget {
                                     // lazyput cartcontroller
                                     Get.lazyPut(() => CartController());
                                     final cartController = Get.find<CartController>();
-                                    cartController.addCartProduct(product.productId!, product.pricelist![0].price!, detailProductController.quantity.value );
+                                    cartController.addCartProduct(product!.productId!, product!.pricelist![0].price!, detailProductController.quantity.value );
                                   },
                                 ),
                                 GestureDetector(
@@ -333,7 +334,15 @@ class DetailProductPage extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  onTap: () => Get.toNamed(RoutesName.checkoutProduct),
+                                  onTap: () => Get.toNamed(RoutesName.checkoutProduct,
+                                   arguments: {
+                                      "productId" : product!.productId,
+                                      "productName" : product!.productName,
+                                      "price" : product!.pricelist!.where((element) => element.type == 'b2b').first.price,
+                                      "quantity" : detailProductController.quantity.value,
+                                      'imageProduct' : product!.image
+                                   }
+                                  ),
                                 ),
                               ],
                             ),

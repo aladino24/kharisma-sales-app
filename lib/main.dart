@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kharisma_sales_app/controllers/components/network/bindings/network_binding.dart';
 import 'package:kharisma_sales_app/views/home/home_page.dart';
 import 'package:kharisma_sales_app/views/login/login_customer_page.dart';
 import 'package:kharisma_sales_app/routes/apps_routes.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
               initialRoute: '/',
               defaultTransition: Transition.noTransition,
               getPages: AppsRoutes.pages,
+              initialBinding: NetworkBinding(),
             );
           }
         }
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
           initialRoute: '/',
           defaultTransition: Transition.noTransition,
           getPages: AppsRoutes.pages,
+          initialBinding: NetworkBinding(),
         );
       },
     );

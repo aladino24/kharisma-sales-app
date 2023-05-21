@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
@@ -8,8 +7,8 @@ import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
-class CheckoutProductPage extends StatelessWidget {
-  CheckoutProductPage({super.key});
+class CartCheckoutPage extends StatelessWidget {
+  CartCheckoutPage({super.key});
 
   final TextEditingController claimController = TextEditingController();
 
@@ -186,70 +185,11 @@ class CheckoutProductPage extends StatelessWidget {
                       Container(
                         height: 100,
                         child: Scrollbar(
-                          // child: ListView.builder(
-                          //   shrinkWrap: true,
-                          //   itemCount: 5,
-                          //   itemBuilder: (context, index) {
-                          //     return Container(
-                          //       decoration: BoxDecoration(
-                          //         color: Colors.white,
-                          //         borderRadius: BorderRadius.circular(10),
-                          //         boxShadow: [
-                          //           BoxShadow(
-                          //             color: Colors.grey.withOpacity(0.2),
-                          //             blurRadius: 5,
-                          //             offset: const Offset(0, 0),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //       child: ListTile(
-                          //         title: Row(
-                          //           crossAxisAlignment:
-                          //               CrossAxisAlignment.start,
-                          //           children: [
-                          //             Container(
-                          //               width: 65,
-                          //               height: 65,
-                          //               decoration: BoxDecoration(
-                          //                 borderRadius:
-                          //                     BorderRadius.circular(10),
-                          //                 color:
-                          //                     AppsColors.imageProductBackground,
-                          //                 image: DecorationImage(
-                          //                   image: AssetImage(
-                          //                     "assets/images/product.png",
-                          //                   ),
-                          //                   fit: BoxFit.cover,
-                          //                 ),
-                          //               ),
-                          //             ),
-                          //             Padding(
-                          //               padding: const EdgeInsets.all(8.0),
-                          //               child: Column(
-                          //                 crossAxisAlignment:
-                          //                     CrossAxisAlignment.start,
-                          //                 children: [
-                          //                   Text(
-                          //                     "Bolpoin G-Soft",
-                          //                     style: TextStyle(
-                          //                       fontSize: 16,
-                          //                       fontWeight: FontWeight.w600,
-                          //                     ),
-                          //                   ),
-                          //                   DiskonProduct(),
-                          //                   SizedBox(
-                          //                     height: 5,
-                          //                   ),
-                          //                 ],
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     );
-                          //   },
-                          // ),
-                          child: Container(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: 5,
+                            itemBuilder: (context, index) {
+                              return Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10),
@@ -267,19 +207,16 @@ class CheckoutProductPage extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Container(
-                                        width: 80,
-                                        height: 80,
+                                        width: 65,
+                                        height: 65,
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
                                           color:
                                               AppsColors.imageProductBackground,
                                           image: DecorationImage(
-                                            image: imageProduct != null ? Image.memory(
-                                              imageProduct,
-                                              fit: BoxFit.cover,
-                                            ).image : AssetImage(
-                                                'assets/images/image.png',
+                                            image: AssetImage(
+                                              "assets/images/product.png",
                                             ),
                                             fit: BoxFit.cover,
                                           ),
@@ -292,7 +229,7 @@ class CheckoutProductPage extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              productName,
+                                              "Bolpoin G-Soft",
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w600,
@@ -302,37 +239,15 @@ class CheckoutProductPage extends StatelessWidget {
                                             SizedBox(
                                               height: 5,
                                             ),
-                                             Text(
-                                                NumberFormat.currency(
-                                                  locale: 'id_ID',
-                                                  symbol: 'Rp ',
-                                                  decimalDigits: 0,
-                                                ).format(int.parse(
-                                                    price!)),
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            Text(
-                                              "Qty : ${quantity}x",
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
                                           ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(height: 15),
