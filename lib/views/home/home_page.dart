@@ -29,8 +29,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onBackPressed,
-      child: Scaffold(
-        body: Obx(() {
+      child: Scaffold(body: Obx(() {
         if (networkController.connectionStatus.value == 0) {
           return Center(
             // tampilkan gambar no connection
@@ -45,11 +44,24 @@ class HomePage extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Text(
-                  'No Internet Connection',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Koneksi Anda Terputus :(",
+                      style: TextStyle(fontSize: 16.25, color: Colors.black),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 7),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Periksa koneksi internet atau Wi-Fi Anda dan coba lagi",
+                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                    ),
                   ),
                 ),
               ],

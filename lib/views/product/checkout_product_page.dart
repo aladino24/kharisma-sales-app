@@ -184,71 +184,8 @@ class CheckoutProductPage extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Container(
-                        height: 100,
+                        height: 110,
                         child: Scrollbar(
-                          // child: ListView.builder(
-                          //   shrinkWrap: true,
-                          //   itemCount: 5,
-                          //   itemBuilder: (context, index) {
-                          //     return Container(
-                          //       decoration: BoxDecoration(
-                          //         color: Colors.white,
-                          //         borderRadius: BorderRadius.circular(10),
-                          //         boxShadow: [
-                          //           BoxShadow(
-                          //             color: Colors.grey.withOpacity(0.2),
-                          //             blurRadius: 5,
-                          //             offset: const Offset(0, 0),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //       child: ListTile(
-                          //         title: Row(
-                          //           crossAxisAlignment:
-                          //               CrossAxisAlignment.start,
-                          //           children: [
-                          //             Container(
-                          //               width: 65,
-                          //               height: 65,
-                          //               decoration: BoxDecoration(
-                          //                 borderRadius:
-                          //                     BorderRadius.circular(10),
-                          //                 color:
-                          //                     AppsColors.imageProductBackground,
-                          //                 image: DecorationImage(
-                          //                   image: AssetImage(
-                          //                     "assets/images/product.png",
-                          //                   ),
-                          //                   fit: BoxFit.cover,
-                          //                 ),
-                          //               ),
-                          //             ),
-                          //             Padding(
-                          //               padding: const EdgeInsets.all(8.0),
-                          //               child: Column(
-                          //                 crossAxisAlignment:
-                          //                     CrossAxisAlignment.start,
-                          //                 children: [
-                          //                   Text(
-                          //                     "Bolpoin G-Soft",
-                          //                     style: TextStyle(
-                          //                       fontSize: 16,
-                          //                       fontWeight: FontWeight.w600,
-                          //                     ),
-                          //                   ),
-                          //                   DiskonProduct(),
-                          //                   SizedBox(
-                          //                     height: 5,
-                          //                   ),
-                          //                 ],
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     );
-                          //   },
-                          // ),
                           child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -267,8 +204,8 @@ class CheckoutProductPage extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Container(
-                                        width: 80,
-                                        height: 80,
+                                        width: 95,
+                                        height: 95,
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -291,11 +228,22 @@ class CheckoutProductPage extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              productName,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
+                                            Container(
+                                              width: 220,
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      productName,
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                             DiskonProduct(),
@@ -310,7 +258,7 @@ class CheckoutProductPage extends StatelessWidget {
                                                 ).format(int.parse(
                                                     price!)),
                                                 style: TextStyle(
-                                                  fontSize: 14,
+                                                  fontSize: 12,
                                                 ),
                                               ),
                                             SizedBox(
