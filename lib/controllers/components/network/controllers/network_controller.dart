@@ -18,7 +18,7 @@ class NetworkController extends GetxController{
     }
 
     Future<void> initConnectivity() async {
-       ConnectivityResult result = ConnectivityResult.mobile;
+       ConnectivityResult result = ConnectivityResult.none;
 
       try {
         result = await _connectivity.checkConnectivity();

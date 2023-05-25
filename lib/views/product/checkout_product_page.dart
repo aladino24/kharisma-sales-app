@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
+import 'package:kharisma_sales_app/models/ongkos_kirim.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
@@ -19,6 +21,12 @@ class CheckoutProductPage extends StatelessWidget {
   final AlamatKirimController alamatKirimController =
       Get.put(AlamatKirimController());
 
+
+  // obs variabel biayaPengiriman
+  RxInt biayaPengiriman = 0.obs;
+  RxInt subTotal = 0.obs;
+  RxInt total = 0.obs;
+
   
   
   @override
@@ -29,6 +37,12 @@ class CheckoutProductPage extends StatelessWidget {
       final price = arguments['price'];
       final quantity = arguments['quantity'];
       final imageProduct = arguments['imageProduct'];
+      final weight = arguments['weight'];
+      
+
+      int priceProduct = int.parse(price);
+      int quantityProduct = quantity;
+      
     return Scaffold(
       body: SafeArea(
           child: Column(
@@ -209,11 +223,10 @@ class CheckoutProductPage extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          color:
-                                              AppsColors.imageProductBackground,
+                                          color:AppsColors.imageProductBackground,
                                           image: DecorationImage(
                                             image: imageProduct != null ? Image.memory(
-                                              imageProduct,
+                                              base64Decode(imageProduct),
                                               fit: BoxFit.cover,
                                             ).image : AssetImage(
                                                 'assets/images/image.png',
@@ -222,6 +235,7 @@ class CheckoutProductPage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
+                                      
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
@@ -314,46 +328,45 @@ class CheckoutProductPage extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0),
                                     child: DropdownButtonHideUnderline(
-                                        child: Obx(
-                                      () => DropdownButtonFormField(
-                                        hint: ongkosKirimController
-                                                .isLoading.value
-                                            ? Text("Loading...")
-                                            : Text('Pilih jenis pengiriman'),
-                                        // value: 'COD',
-                                        isDense: true,
-                                        items: ongkosKirimController
-                                                .listOngkosKirim.isNotEmpty
-                                            ? List.generate(
-                                                ongkosKirimController
-                                                    .listOngkosKirim.length,
-                                                (index) => DropdownMenuItem(
-                                                      child: Text(
-                                                        ongkosKirimController
-                                                            .listOngkosKirim[
-                                                                index]
-                                                            .nama!,
-                                                        style: TextStyle(
-                                                            fontSize: 12),
-                                                      ),
-                                                      value: ongkosKirimController
-                                                              .listOngkosKirim[
-                                                          index],
-                                                    ))
-                                            : null,
-                                        onChanged: (value) {},
-                                        value: ongkosKirimController
-                                                    .selectedOngkosKirim
-                                                    .value !=
-                                                null
-                                            ? ongkosKirimController
-                                                .selectedOngkosKirim.value
-                                            : null,
-                                        decoration: InputDecoration(
-                                          border: InputBorder
-                                              .none, // Menghilangkan underline
-                                        ),
-                                      ),
+                                        child: Obx(() {
+                                            if (ongkosKirimController.listOngkosKirim.isEmpty) {
+                                                ongkosKirimController.fetchOngkosKirim(alamatKirimController.alamatPengiriman.value.kecamatanId, weight);
+                                              }
+                                          return DropdownButtonFormField(
+                                            hint: ongkosKirimController
+                                                    .isLoading.value
+                                                ? Text("Loading...")
+                                                : Text('Pilih jenis pengiriman'),
+                                            // value: 'COD',
+                                            isDense: true,
+                                            items: ongkosKirimController.listOngkosKirim.isNotEmpty
+                                                ? List.generate(
+                                                    ongkosKirimController
+                                                        .listOngkosKirim.length,
+                                                    (index) => DropdownMenuItem(
+                                                          child: Text(
+                                                            ongkosKirimController.listOngkosKirim[index].nama!,
+                                                            style: TextStyle(
+                                                                fontSize: 12),
+                                                          ),
+                                                          value: ongkosKirimController.listOngkosKirim[index],
+                                                        ))
+                                                : null,
+                                            onChanged: (value) {
+                                              OngkosKirim selectedOngkosKirim = value as OngkosKirim;
+                                              // print(selectedOngkosKirim.nama);
+                                              // subTotal
+                                              biayaPengiriman.value = selectedOngkosKirim.harga ?? 0;
+                                              // print(biayaPengiriman.value);
+                                            },
+                                            value: ongkosKirimController.selectedOngkosKirim.value != null
+                                                ? ongkosKirimController.selectedOngkosKirim.value
+                                                : null,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none, // Menghilangkan underline
+                                            ),
+                                          );
+                                        } 
                                     )),
                                   ),
                                 );
@@ -439,7 +452,19 @@ class CheckoutProductPage extends StatelessWidget {
                                             DiskonProduct()
                                           ],
                                         ),
-                                        Text("Rp 300.000")
+                                        Obx((){
+                                          subTotal.value = priceProduct * quantityProduct;
+                                          return Text(
+                                            NumberFormat.currency(
+                                                    locale: 'id',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0)
+                                                .format(subTotal.value),
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                               ),
+                                          );
+                                        })
                                       ],
                                     ),
                                   ),
@@ -472,7 +497,18 @@ class CheckoutProductPage extends StatelessWidget {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text("Biaya Pengiriman"),
-                                        Text("Rp 15.000")
+                                        Obx(() {
+                                          return Text(
+                                            NumberFormat.currency(
+                                                    locale: 'id',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0)
+                                                .format(biayaPengiriman.value),
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                               ),
+                                          );
+                                        })
                                       ],
                                     ),
                                   ),
@@ -492,10 +528,19 @@ class CheckoutProductPage extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16),
                                         ),
-                                        Text("Rp 315.000",
+                                        Obx(() {
+                                          total.value = subTotal.value + biayaPengiriman.value;
+                                          return Text(
+                                            NumberFormat.currency(
+                                                    locale: 'id',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0)
+                                                .format(total.value),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16))
+                                                fontSize: 16),
+                                          );
+                                        })
                                       ],
                                     ),
                                   )

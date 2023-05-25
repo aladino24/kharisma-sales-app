@@ -340,7 +340,8 @@ class DetailProductPage extends StatelessWidget {
                                       "productName" : product!.productName,
                                       "price" : product!.pricelist!.where((element) => element.type == 'b2b').first.price,
                                       "quantity" : detailProductController.quantity.value,
-                                      'imageProduct' : product!.image
+                                      'imageProduct' : product!.image,
+                                      'weight' : product!.weight
                                    }
                                   ),
                                 ),
