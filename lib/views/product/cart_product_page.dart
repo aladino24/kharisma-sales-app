@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
+import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/widgets/tabel_quantity.dart';
@@ -14,6 +15,12 @@ class CartProductPage extends StatelessWidget {
   CartProductPage({Key? key}) : super(key: key);
 
   final CartController cartController = Get.put(CartController());
+
+  RxInt subTotalCart = 0.obs;
+  RxInt totalCart = 0.obs;
+
+  // cart product obs
+  List<CartProduct> cartProductList = <CartProduct>[];
   
   @override
   Widget build(BuildContext context) {
@@ -95,6 +102,28 @@ class CartProductPage extends StatelessWidget {
                                     value: cartController.cartProductList[index].isSelected,
                                     onChanged: (value) {
                                       cartController.selectCartProduct(index,cartController.quantityGlobal.value.obs, cartProduct.uuid!);
+
+                                      // jika isSelected sama dengan true maka ambil quantity kemudian kalikan dengan harga
+                                      if (cartController.cartProductList[index].isSelected == true) {
+                                        int parsedQuantity = int.parse(cartProduct.quantity!);
+                                        int parsedPrice = int.parse(cartProduct.price!);
+                                        int total = parsedQuantity * parsedPrice;
+                                        subTotalCart.value += total;
+                                        totalCart.value += total;
+
+                                        // Add the selected cart product to the cartProductList
+                                        cartProductList.add(cartProduct);
+
+                                      }else{
+                                        int parsedQuantity = int.parse(cartProduct.quantity!);
+                                        int parsedPrice = int.parse(cartProduct.price!);
+                                        int total = parsedQuantity * parsedPrice;
+                                        subTotalCart.value -= total;
+                                        totalCart.value -= total;
+                                        
+                                        // Remove the selected cart product from the cartProductList
+                                         cartProductList.removeWhere((item) => item.uuid == cartProduct.uuid);
+                                      }
                                     },
                                     title: Row(
                                       crossAxisAlignment:
@@ -109,13 +138,9 @@ class CartProductPage extends StatelessWidget {
                                             color: AppsColors
                                                 .imageProductBackground,
                                             image: DecorationImage(
-                                              image: cartProduct.product!.image !=
-                                                      null
-                                                  ? MemoryImage(base64Decode(
-                                                      cartProduct.product!.image!))
-                                                  : AssetImage(
-                                                      'assets/images/image.png',
-                                                    ) as ImageProvider,
+                                              image: cartProduct.product!.gdImagePath != null
+                                                  ? Image.network(cartProduct.product!.gdImagePath!).image
+                                                  : Image.asset("assets/images/image.png").image,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -234,7 +259,17 @@ class CartProductPage extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text("Sub Total"),
-                                      Text("Rp 300.000")
+                                      Obx(() {
+                                        return Text(
+                                          NumberFormat.currency(
+                                            locale: 'id_ID',
+                                            symbol: 'Rp ',
+                                            decimalDigits: 0,
+                                          ).format(totalCart.value),
+                                          style: TextStyle(
+                                              fontSize: 16),
+                                        );
+                                      })
                                     ],
                                   ),
                                 ),
@@ -245,7 +280,7 @@ class CartProductPage extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text("Biaya Pengiriman"),
-                                      Text("Rp 15.000")
+                                      Text("Rp 0")
                                     ],
                                   ),
                                 ),
@@ -265,10 +300,18 @@ class CartProductPage extends StatelessWidget {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16),
                                       ),
-                                      Text("Rp 315.000",
+                                      Obx(() {
+                                        return Text(
+                                          NumberFormat.currency(
+                                            locale: 'id_ID',
+                                            symbol: 'Rp ',
+                                            decimalDigits: 0,
+                                          ).format(totalCart.value),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 16))
+                                              fontSize: 16),
+                                        );
+                                      })
                                     ],
                                   ),
                                 ),
@@ -289,7 +332,22 @@ class CartProductPage extends StatelessWidget {
                             child: Container(
                               height: 50,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.toNamed(
+                                    RoutesName.cartCheckout,
+                                    arguments: 
+                                    {
+                                      "total": totalCart,
+                                      "cartProductList": cartProductList,
+                                    }
+                                  );
+
+                                  // //tampilkan cartProductList
+                                  //  cartProductList.forEach((element) {
+                                  //    print(element.product!.productName);
+                                  //  });
+                                  
+                                },
                                 child: Text("Beli Sekarang"),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppsColors.loginColorPrimary,

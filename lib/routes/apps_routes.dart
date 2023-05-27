@@ -4,6 +4,7 @@ import 'package:kharisma_sales_app/views/home/home_page.dart';
 import 'package:kharisma_sales_app/views/login/forgot_password_page.dart';
 import 'package:kharisma_sales_app/views/login/login_customer_page.dart';
 import 'package:kharisma_sales_app/views/login/login_sales_page.dart';
+import 'package:kharisma_sales_app/views/product/cart_checkout_page.dart';
 import 'package:kharisma_sales_app/views/product/cart_product_page.dart';
 import 'package:kharisma_sales_app/views/product/checkout_product_page.dart';
 import 'package:kharisma_sales_app/views/product/save_product_page.dart';
@@ -31,11 +32,13 @@ class AppsRoutes{
     GetPage(name: RoutesName.profile, page: () => ProfileCustomerPage()),
     GetPage(name: RoutesName.termCondition, page: () => TermConditionPage()),
     GetPage(name: RoutesName.callcenter, page: ()=> CallCenterPage()),
+    GetPage(name: RoutesName.cartCheckout, page: ()=> CartCheckoutPage()),
     GetPage(name: RoutesName.checkoutProduct, page: ()=> CheckoutProductPage()),
     GetPage(name: RoutesName.addAddress, page: () => AddAddressPage()),
     GetPage(name: RoutesName.listAddress, page: () => ListAddressPage()),
     GetPage(name: RoutesName.editAddress, page: () => EditAddressPage()),
     GetPage(name: RoutesName.listVoucher, page: () => ListVoucherPage()),
-    GetPage(name: RoutesName.editProfile, page: () => EditProfilePage())
+    GetPage(name: RoutesName.editProfile, page: () => EditProfilePage()),
+
   ];
 }

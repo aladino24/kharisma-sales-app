@@ -65,15 +65,19 @@ class CartProduct {
 }
 
 class Product {
-  int? id;
+   int? id;
   String? productId;
   String? productTmplId;
   String? productTagId;
   String? sku;
   String? productName;
   String? productNameSlug;
-  String? image;
-  String? imageSmall;
+  String? gdImageName;
+  String? gdImageMimetype;
+  String? gdImagePath;
+  String? gdImageSmallName;
+  String? gdImageSmallMimetype;
+  String? gdImageSmallPath;
   String? unit;
   String? weight;
   String? stock;
@@ -87,8 +91,12 @@ class Product {
       this.sku,
       this.productName,
       this.productNameSlug,
-      this.image,
-      this.imageSmall,
+      this.gdImageName,
+      this.gdImageMimetype,
+      this.gdImagePath,
+      this.gdImageSmallName,
+      this.gdImageSmallMimetype,
+      this.gdImageSmallPath,
       this.unit,
       this.weight,
       this.stock,
@@ -102,8 +110,12 @@ class Product {
     sku = json['sku'];
     productName = json['product_name'];
     productNameSlug = json['product_name_slug'];
-    image = json['image'];
-    imageSmall = json['image_small'];
+    gdImageName = json['gd_image_name'];
+    gdImageMimetype = json['gd_image_mimetype'];
+    gdImagePath = json['gd_image_path'];
+    gdImageSmallName = json['gd_image_small_name'];
+    gdImageSmallMimetype = json['gd_image_small_mimetype'];
+    gdImageSmallPath = json['gd_image_small_path'];
     unit = json['unit'];
     weight = json['weight'];
     stock = json['stock'];

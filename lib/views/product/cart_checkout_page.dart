@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
+import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
@@ -22,12 +24,13 @@ class CartCheckoutPage extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-     final arguments = Get.arguments;
-      final productId = arguments['productId'];
-      final productName = arguments['productName'];
-      final price = arguments['price'];
-      final quantity = arguments['quantity'];
-      final imageProduct = arguments['imageProduct'];
+    // tangkap arguments getx
+    final Map<String, dynamic> args = Get.arguments;
+    final RxInt total = args['total'];
+    // cartProductList
+    final List<dynamic> cartProductList = args['cartProductList'];
+    // tampilkan cartProductList
+    // print(cartProductList);
     return Scaffold(
       body: SafeArea(
           child: Column(
@@ -187,8 +190,10 @@ class CartCheckoutPage extends StatelessWidget {
                         child: Scrollbar(
                           child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: 5,
+                            itemCount: cartProductList.length,
                             itemBuilder: (context, index) {
+                              // Get the cart product at the current index
+                               CartProduct cartProduct = cartProductList[index];
                               return Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -229,9 +234,9 @@ class CartCheckoutPage extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Bolpoin G-Soft",
+                                               cartProduct.product!.productName.toString(),
                                               style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 12,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
@@ -406,7 +411,16 @@ class CartCheckoutPage extends StatelessWidget {
                                             DiskonProduct()
                                           ],
                                         ),
-                                        Text("Rp 300.000")
+                                        Obx(() => Text(
+                                          NumberFormat.currency(
+                                            locale: 'id_ID',
+                                            symbol: 'Rp ',
+                                            decimalDigits: 0,
+                                          ).format(total.value),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        ))
                                       ],
                                     ),
                                   ),
@@ -426,7 +440,7 @@ class CartCheckoutPage extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                          "Rp 100.000",
+                                          "Rp 0",
                                           style: TextStyle(color: Colors.red),
                                         )
                                       ],

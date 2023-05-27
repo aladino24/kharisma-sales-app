@@ -21,7 +21,7 @@ class CheckoutProductPage extends StatelessWidget {
       Get.put(AlamatKirimController());
 
 
-  // obs variabel biayaPengiriman
+
   RxInt biayaPengiriman = 0.obs;
   RxInt subTotal = 0.obs;
   RxInt total = 0.obs;
