@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,7 +28,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onBackPressed,
-      child: Scaffold(body: Obx(() {
+      child: Scaffold(
+        body: Obx(() {
         if (networkController.connectionStatus.value == 0) {
           return Center(
             // tampilkan gambar no connection
@@ -221,9 +221,9 @@ class HomePage extends StatelessWidget {
                                             topLeft: Radius.circular(15.0),
                                             topRight: Radius.circular(15.0),
                                           )),
-                                      child: product.image != null
-                                          ? Image.memory(
-                                              base64Decode(product.image!),
+                                      child: product.gdImagePath != null
+                                          ? Image.network(
+                                              product.gdImagePath!,
                                               fit: BoxFit.cover,
                                             )
                                           : Image.asset(

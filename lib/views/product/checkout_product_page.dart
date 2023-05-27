@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -225,8 +224,8 @@ class CheckoutProductPage extends StatelessWidget {
                                               BorderRadius.circular(10),
                                           color:AppsColors.imageProductBackground,
                                           image: DecorationImage(
-                                            image: imageProduct != null ? Image.memory(
-                                              base64Decode(imageProduct),
+                                            image: imageProduct != null ? Image.network(
+                                              imageProduct,
                                               fit: BoxFit.cover,
                                             ).image : AssetImage(
                                                 'assets/images/image.png',

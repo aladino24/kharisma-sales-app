@@ -24,7 +24,7 @@ class OngkosKirimController extends GetxController{
 
   Future<void> fetchOngkosKirim(String? kecamatanId, String? weight) async{
     print(weight);
-    String api_url = ApiUrl.apiUrl + 'ecom/ongkos-kirim?kecamatan_id=${kecamatanId}&berat=2';
+    String api_url = ApiUrl.apiUrl + 'ecom/ongkos-kirim?kecamatan_id=${kecamatanId}&berat=${weight}';
     try {
       isLoading(true);
       final response = await http.get(

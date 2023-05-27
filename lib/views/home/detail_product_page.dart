@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -59,7 +57,13 @@ class DetailProductPage extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: AppsColors.imageProductBackground,
                                   image: DecorationImage(
-                                    image: product!.image != null ? MemoryImage(base64Decode(product!.image!)) : AssetImage('assets/images/image.png') as ImageProvider,
+                                    image: product!.gdImagePath != null ? Image.network(
+                                      product!.gdImagePath!,
+                                      fit: BoxFit.cover,
+                                    ).image : Image.asset(
+                                      'assets/images/image.png',
+                                      fit: BoxFit.cover,
+                                    ).image,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -340,7 +344,7 @@ class DetailProductPage extends StatelessWidget {
                                       "productName" : product!.productName,
                                       "price" : product!.pricelist!.where((element) => element.type == 'b2b').first.price,
                                       "quantity" : detailProductController.quantity.value,
-                                      'imageProduct' : product!.image,
+                                      'imageProduct' : product!.gdImagePath,
                                       'weight' : product!.weight
                                    }
                                   ),

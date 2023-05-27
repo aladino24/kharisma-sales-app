@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -128,11 +126,11 @@ class SaveProductPage extends StatelessWidget {
                                           topLeft: Radius.circular(15.0),
                                           topRight: Radius.circular(15.0),
                                         )),
-                                    child: product.image != null
-                                        ? Image.memory(
-                                            base64Decode(product.image!),
+                                    child: product.gdImagePath != null
+                                        ? Image.network(
+                                            product.gdImagePath!,
                                             fit: BoxFit.cover,
-                                          )
+                                        )
                                         : Image.asset(
                                             'assets/images/image.png',
                                             fit: BoxFit.cover,
