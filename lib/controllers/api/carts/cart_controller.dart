@@ -15,12 +15,14 @@ class CartController extends GetxController{
 
   var quantityGlobal = 0.obs;
 
-   @override
+  
 
+   @override
   void onInit() {
     super.onInit();
     fetchCartProduct();
   }
+  
 
    Future<void> fetchCartProduct()async {
      String api_cart_product = ApiUrl.apiUrl + 'ecom/cart';
@@ -97,12 +99,85 @@ class CartController extends GetxController{
           print(e.toString());
 
           // get.snackbar
-          Get.snackbar(
-            'Error',
-            e.toString(),
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
+          errorMessage(e.toString());
+        }finally{
+          isLoading(false);
+        }
+    }
+
+    Future<void> addCartQuantity(String productId, String price, int qty)async {
+      String api_cart_product = ApiUrl.apiUrl + 'ecom/cart';
+        try {
+          // isLoading(true);
+          final response = await http.post(
+            Uri.parse(api_cart_product),
+            headers: {
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+                'Content-Type': 'application/json',
+            },
+            body: jsonEncode(<String, String>{
+              'product_id': productId,
+              'price' : price,
+              'quantity': qty.toString(),
+            }),
           );
+
+          // print(response.body);
+  
+          if(response.statusCode == 200){
+            isLoading(false);
+            var jsonResult = json.decode(response.body);
+            print(jsonResult['message']);
+            fetchCartProduct();
+          }else{
+            isLoading(false);
+            throw Exception(jsonDecode(response.body)['message']);
+          }
+        } catch (e) {
+          isLoading(false);
+          print(e.toString());
+
+          // get.snackbar
+          errorMessage(e.toString());
+        }finally{
+          isLoading(false);
+        }
+    }
+
+    Future<void> updateCartProduct(String uuid, String productId, String price, int quantity)async {
+      String api_cart_product = ApiUrl.apiUrl + 'ecom/cart/${uuid}';
+        try {
+          // isLoading(true);
+          final response = await http.put(
+            Uri.parse(api_cart_product),
+            headers: {
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+                'Content-Type': 'application/json',
+            },
+            body: jsonEncode(<String, String>{
+              'product_id': productId,
+              'price' : price,
+              'quantity': quantity.toString(),
+            }),
+          );
+
+          // print(response.body);
+  
+          if(response.statusCode == 200){
+            isLoading(false);
+            var jsonResult = json.decode(response.body);
+            print(jsonResult['message']);
+            fetchCartProduct();
+          }else{
+            isLoading(false);
+            throw Exception(jsonDecode(response.body)['message']);
+          }
+        } catch (e) {
+          isLoading(false);
+          print(e.toString());
+
+          // get.snackbar
+          errorMessage(e.toString());
         }finally{
           isLoading(false);
         }
@@ -142,33 +217,30 @@ class CartController extends GetxController{
           print(e.toString());
 
           // get.snackbar
-          Get.snackbar(
-            'Error',
-            e.toString(),
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
+          errorMessage(e.toString());
         }finally{
           isLoading(false);
         }
     }
 
     
-  void increment(String uuid, RxInt quantity, String stock, int index){
+  void increment(RxInt quantity, String stock, int index, String price, String productId, RxInt totalCart){
     if(quantity.value < int.parse(stock)){
-      quantity.value++;
+      addCartQuantity(productId,price,1);
+      totalCart.value = 0;
     }
     update(
         [index]
     );
   }
 
-  void decrement(String uuid, RxInt quantity, String stock){
+  void decrement(String uuid,String productId, RxInt quantity, String stock, int index, String price, RxInt totalCart){
     if(quantity.value > 1){
-      quantity.value--;
+      updateCartProduct(uuid, productId, price, quantity.value - 1);
+      totalCart.value = 0;
     }
      update(
-        ['${uuid}']
+        [index]
      );
   }
 
@@ -194,5 +266,17 @@ class CartController extends GetxController{
       ['${uuid}']
     );
   }
+
+  // function error message
+  void errorMessage(String message){
+    Get.snackbar(
+      'Gagal',
+      message,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+
+
   
 }

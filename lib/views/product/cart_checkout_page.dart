@@ -5,6 +5,7 @@ import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
+import 'package:kharisma_sales_app/models/ongkos_kirim.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
@@ -13,14 +14,11 @@ class CartCheckoutPage extends StatelessWidget {
   CartCheckoutPage({super.key});
 
   final TextEditingController claimController = TextEditingController();
-
-  final OngkosKirimController ongkosKirimController =
-      Get.put(OngkosKirimController());
-
-  final AlamatKirimController alamatKirimController =
-      Get.put(AlamatKirimController());
-
-  
+  final OngkosKirimController ongkosKirimController = Get.put(OngkosKirimController());
+  final AlamatKirimController alamatKirimController = Get.put(AlamatKirimController());
+  RxInt biayaPengiriman = 0.obs;
+  RxInt totalBelanja = 0.obs;
+  int weight = 0;
   
   @override
   Widget build(BuildContext context) {
@@ -194,6 +192,7 @@ class CartCheckoutPage extends StatelessWidget {
                             itemBuilder: (context, index) {
                               // Get the cart product at the current index
                                CartProduct cartProduct = cartProductList[index];
+                               weight += int.parse(cartProduct.product!.weight!);
                               return Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -244,6 +243,12 @@ class CartCheckoutPage extends StatelessWidget {
                                             SizedBox(
                                               height: 5,
                                             ),
+                                            Text(
+                                               "Qty: ${cartProduct.quantity.toString()}",
+                                              style: TextStyle(
+                                                fontSize: 12
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -286,46 +291,45 @@ class CartCheckoutPage extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0),
                                     child: DropdownButtonHideUnderline(
-                                        child: Obx(
-                                      () => DropdownButtonFormField(
-                                        hint: ongkosKirimController
-                                                .isLoading.value
-                                            ? Text("Loading...")
-                                            : Text('Pilih jenis pengiriman'),
-                                        // value: 'COD',
-                                        isDense: true,
-                                        items: ongkosKirimController
-                                                .listOngkosKirim.isNotEmpty
-                                            ? List.generate(
-                                                ongkosKirimController
-                                                    .listOngkosKirim.length,
-                                                (index) => DropdownMenuItem(
-                                                      child: Text(
-                                                        ongkosKirimController
-                                                            .listOngkosKirim[
-                                                                index]
-                                                            .nama!,
-                                                        style: TextStyle(
-                                                            fontSize: 12),
-                                                      ),
-                                                      value: ongkosKirimController
-                                                              .listOngkosKirim[
-                                                          index],
-                                                    ))
-                                            : null,
-                                        onChanged: (value) {},
-                                        value: ongkosKirimController
-                                                    .selectedOngkosKirim
-                                                    .value !=
-                                                null
-                                            ? ongkosKirimController
-                                                .selectedOngkosKirim.value
-                                            : null,
-                                        decoration: InputDecoration(
-                                          border: InputBorder
-                                              .none, // Menghilangkan underline
-                                        ),
-                                      ),
+                                        child: Obx(() {
+                                            if (ongkosKirimController.listOngkosKirim.isEmpty) {
+                                                ongkosKirimController.fetchOngkosKirim(alamatKirimController.alamatPengiriman.value.kecamatanId, weight.toString());
+                                              }
+                                          return DropdownButtonFormField(
+                                            hint: ongkosKirimController
+                                                    .isLoading.value
+                                                ? Text("Loading...")
+                                                : Text('Pilih jenis pengiriman'),
+                                            // value: 'COD',
+                                            isDense: true,
+                                            items: ongkosKirimController.listOngkosKirim.isNotEmpty
+                                                ? List.generate(
+                                                    ongkosKirimController
+                                                        .listOngkosKirim.length,
+                                                    (index) => DropdownMenuItem(
+                                                          child: Text(
+                                                            ongkosKirimController.listOngkosKirim[index].nama!,
+                                                            style: TextStyle(
+                                                                fontSize: 12),
+                                                          ),
+                                                          value: ongkosKirimController.listOngkosKirim[index],
+                                                        ))
+                                                : null,
+                                            onChanged: (value) {
+                                              OngkosKirim selectedOngkosKirim = value as OngkosKirim;
+                                              // print(selectedOngkosKirim.nama);
+                                              // subTotal
+                                              biayaPengiriman.value = selectedOngkosKirim.harga ?? 0;
+                                              // print(biayaPengiriman.value);
+                                            },
+                                            value: ongkosKirimController.selectedOngkosKirim.value != null
+                                                ? ongkosKirimController.selectedOngkosKirim.value
+                                                : null,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none, // Menghilangkan underline
+                                            ),
+                                          );
+                                        } 
                                     )),
                                   ),
                                 );
@@ -453,7 +457,17 @@ class CartCheckoutPage extends StatelessWidget {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text("Biaya Pengiriman"),
-                                        Text("Rp 15.000")
+                                        Obx(() {
+                                          return Text(
+                                            NumberFormat.currency(
+                                              locale: 'id_ID',
+                                              symbol: 'Rp ',
+                                              decimalDigits: 0,
+                                            ).format(biayaPengiriman.value),
+                                            style: TextStyle(
+                                                fontSize: 16),
+                                          );
+                                        })
                                       ],
                                     ),
                                   ),
@@ -473,10 +487,18 @@ class CartCheckoutPage extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16),
                                         ),
-                                        Text("Rp 315.000",
+                                        Obx(() {
+                                          return Text(
+                                            NumberFormat.currency(
+                                              locale: 'id_ID',
+                                              symbol: 'Rp ',
+                                              decimalDigits: 0,
+                                            ).format(total.value + biayaPengiriman.value),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16))
+                                                fontSize: 16),
+                                          );
+                                        })
                                       ],
                                     ),
                                   )

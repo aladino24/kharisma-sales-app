@@ -9,8 +9,12 @@ class TableQuantity extends StatelessWidget {
   final String uuid;
   final String stock;
   final int index;
+  final String totalPrice; 
+  final String price;
+  final String productId;
+  final RxInt totalCart;
   TableQuantity({
-    super.key, required this.size, required this.iconSize, required this.quantity, required this.uuid, required this.stock, required this.index,
+    super.key, required this.size, required this.iconSize, required this.quantity, required this.uuid, required this.stock, required this.index, required this.totalPrice, required this.price, required this.productId, required this.totalCart,
   });
 
   final CartController cartController = Get.put(CartController());
@@ -34,7 +38,7 @@ class TableQuantity extends StatelessWidget {
                     size: iconSize.toDouble(),
                   ),
                   onTap: (){
-                    cartController.decrement(uuid, quantity, stock);
+                    cartController.decrement(uuid,productId, quantity, stock, index, price, totalCart);
                   },
                 ),
               ),
@@ -56,6 +60,7 @@ class TableQuantity extends StatelessWidget {
                   child: GetBuilder<CartController>(
                     id: index,
                     builder: (_) {
+                      // quantity update
                       return Text(
                         '${quantity}',
                         style: TextStyle(fontSize: 15.0),
@@ -79,7 +84,7 @@ class TableQuantity extends StatelessWidget {
                     size: iconSize.toDouble(),
                   ),
                   onTap: (){
-                    cartController.increment(uuid, quantity, stock, index);
+                    cartController.increment(quantity, stock, index, price, productId, totalCart);
                   },
                 ),
               ),

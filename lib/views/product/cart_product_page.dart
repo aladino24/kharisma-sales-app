@@ -11,17 +11,33 @@ import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/widgets/tabel_quantity.dart';
 
-class CartProductPage extends StatelessWidget {
+class CartProductPage extends StatefulWidget {
   CartProductPage({Key? key}) : super(key: key);
 
+  @override
+  State<CartProductPage> createState() => _CartProductPageState();
+}
+
+class _CartProductPageState extends State<CartProductPage> {
   final CartController cartController = Get.put(CartController());
 
-  RxInt subTotalCart = 0.obs;
+
+  List<int> listQuantity = <int>[];
+    RxInt subTotalCart = 0.obs;
+
   RxInt totalCart = 0.obs;
 
-  // cart product obs
-  List<CartProduct> cartProductList = <CartProduct>[];
-  
+   @override
+  void dispose() {
+    // Clear the values of observables and reset isSelected to false when disposing the page
+    subTotalCart.close();
+    totalCart.close();
+    for (var cartProduct in cartController.cartProductList) {
+      cartProduct.isSelected = false;
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,28 +117,18 @@ class CartProductPage extends StatelessWidget {
                                     builder: (controller) => CheckboxListTile(
                                     value: cartController.cartProductList[index].isSelected,
                                     onChanged: (value) {
+                                      // cartController.fetchCartProduct();
                                       cartController.selectCartProduct(index,cartController.quantityGlobal.value.obs, cartProduct.uuid!);
-
                                       // jika isSelected sama dengan true maka ambil quantity kemudian kalikan dengan harga
-                                      if (cartController.cartProductList[index].isSelected == true) {
-                                        int parsedQuantity = int.parse(cartProduct.quantity!);
-                                        int parsedPrice = int.parse(cartProduct.price!);
-                                        int total = parsedQuantity * parsedPrice;
-                                        subTotalCart.value += total;
-                                        totalCart.value += total;
-
-                                        // Add the selected cart product to the cartProductList
-                                        cartProductList.add(cartProduct);
+                                      if (value == true) {
+                                       
+                                          subTotalCart.value += int.parse(cartProduct.totalPrice!);
+                                          totalCart.value += int.parse(cartProduct.totalPrice!);
 
                                       }else{
-                                        int parsedQuantity = int.parse(cartProduct.quantity!);
-                                        int parsedPrice = int.parse(cartProduct.price!);
-                                        int total = parsedQuantity * parsedPrice;
-                                        subTotalCart.value -= total;
-                                        totalCart.value -= total;
-                                        
-                                        // Remove the selected cart product from the cartProductList
-                                         cartProductList.removeWhere((item) => item.uuid == cartProduct.uuid);
+                                          subTotalCart.value -= int.parse(cartProduct.totalPrice!);
+                                          totalCart.value -= int.parse(cartProduct.totalPrice!);
+                             
                                       }
                                     },
                                     title: Row(
@@ -186,9 +192,13 @@ class CartProductPage extends StatelessWidget {
                                               TableQuantity(
                                                     size: 25, 
                                                     iconSize: 12,
+                                                    productId: cartProduct.productId!,
                                                     quantity: cartController.quantityGlobal.value.obs,
                                                     stock: cartProduct.product!.stock!,
+                                                    totalPrice: cartProduct.totalPrice!,
+                                                    price : cartProduct.price!,
                                                     uuid: cartProduct.uuid!,
+                                                    totalCart : totalCart,
                                                     index: index,
                                               )
                                             ],
@@ -333,15 +343,21 @@ class CartProductPage extends StatelessWidget {
                               height: 50,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Get.toNamed(
-                                    RoutesName.cartCheckout,
-                                    arguments: 
-                                    {
-                                      "total": totalCart,
-                                      "cartProductList": cartProductList,
-                                    }
-                                  );
-
+                                  // ambil cartController.cartProductList dimana isSelected sama dengan true
+                                  List<CartProduct> cartProductList = cartController.cartProductList.where((element) => element.isSelected == true).toList();
+                                  if(cartProductList.length == 0){
+                                    // Get snackbar
+                                    cartController.errorMessage("Silahkan pilih product terlebih dahulu");
+                                  }else{
+                                     Get.toNamed(
+                                        RoutesName.cartCheckout,
+                                        arguments: 
+                                        {
+                                          "total": totalCart,
+                                          "cartProductList": cartProductList,
+                                        }
+                                    );
+                                  }
                                   // //tampilkan cartProductList
                                   //  cartProductList.forEach((element) {
                                   //    print(element.product!.productName);
