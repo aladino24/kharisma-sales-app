@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badge;
+import 'package:kharisma_sales_app/controllers/api/apps/notification_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/widgets/notification_dialog.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
@@ -17,6 +18,7 @@ class MainHeader extends StatelessWidget {
     required this.iconNotification,
   }) : super(key: key ?? UniqueKey());
   final mainheaderController = Get.put(MainHeaderController());
+  final NotificationController notificationController = Get.put(NotificationController());
 
   @override
   Widget build(BuildContext context) {
@@ -123,13 +125,15 @@ class MainHeader extends StatelessWidget {
               onTap: () {
                 controller.selectNotificationIcon();
                 // Get.toNamed(RoutesName.notificationProduct);
+                // lazyput notification_controller
+                Get.lazyPut(() => NotificationController());
                 Get.dialog(
                   NotificationDialog(),
                 );
               },
               child: badge.Badge(
-                  badgeContent: const Text(
-                    "1",
+                  badgeContent: Text(
+                    notificationController.notificationList.length.toString(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 8,
