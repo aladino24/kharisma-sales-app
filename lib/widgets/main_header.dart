@@ -18,10 +18,16 @@ class MainHeader extends StatelessWidget {
     required this.iconNotification,
   }) : super(key: key ?? UniqueKey());
   final mainheaderController = Get.put(MainHeaderController());
-  final NotificationController notificationController = Get.put(NotificationController());
+  final NotificationController notificationController =
+      Get.put(NotificationController());
 
   @override
   Widget build(BuildContext context) {
+    int countNewNotification = notificationController.notificationList
+        .where((element) => element.isNew == '1')
+        .length;
+    // print(countNewNotification);
+
     return GetBuilder<MainHeaderController>(builder: (controller) {
       return Container(
         padding: const EdgeInsets.all(10),
@@ -131,25 +137,34 @@ class MainHeader extends StatelessWidget {
                   NotificationDialog(),
                 );
               },
-              child: badge.Badge(
-                  badgeContent: Text(
-                    notificationController.notificationList.length.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 8,
+              child: countNewNotification != 0
+                  ? badge.Badge(
+                      badgeContent: Text(
+                        countNewNotification.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                        ),
+                      ),
+                      badgeStyle: badge.BadgeStyle(
+                        badgeColor: AppsColors.loginColorPrimary,
+                        elevation: 0,
+                      ),
+                      child: Icon(
+                        Icons.notifications_none_outlined,
+                        color: controller.isNotificationIconSelected.value
+                            ? AppsColors.loginColorPrimary
+                            : Colors.grey,
+                        size: 25,
+                      ),
+                    )
+                  : Icon(
+                      Icons.notifications_none_outlined,
+                      color: controller.isNotificationIconSelected.value
+                          ? AppsColors.loginColorPrimary
+                          : Colors.grey,
+                      size: 25,
                     ),
-                  ),
-                  badgeStyle: badge.BadgeStyle(
-                    badgeColor: AppsColors.loginColorPrimary,
-                    elevation: 0,
-                  ),
-                  child: Icon(
-                    Icons.notifications_none_outlined,
-                    color: controller.isNotificationIconSelected.value
-                        ? AppsColors.loginColorPrimary
-                        : Colors.grey,
-                    size: 25,
-                  )),
             ),
             const SizedBox(width: 14),
             GestureDetector(
@@ -178,5 +193,3 @@ class MainHeader extends StatelessWidget {
     });
   }
 }
-
-

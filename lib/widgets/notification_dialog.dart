@@ -56,52 +56,57 @@ class NotificationDialog extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                // color with opacity
-                                color: AppsColors.loginColorPrimary
-                                    .withOpacity(0.2),
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor:
-                                            AppsColors.loginColorPrimary,
-                                        child: Icon(
-                                          Icons.notifications,
-                                          color: Colors.white,
+                            GestureDetector(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  // color with opacity
+                                  color: notificationController.notificationList[index].isNew == '1' ? AppsColors.loginColorPrimary
+                                      .withOpacity(0.2) : Colors.white,
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor:
+                                              AppsColors.loginColorPrimary,
+                                          child: Icon(
+                                            Icons.notifications,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              notificationController.notificationList[index].notificationTitle!,
-                                              style: TextStyle(
-                                                fontSize: 14,
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                notificationController.notificationList[index].notificationTitle!,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                                textAlign: TextAlign.left,
                                               ),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              notificationController.notificationList[index].notificationBody!,
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: AppsColors
-                                                      .loginFontColorSecondary),
-                                            ),
-                                          ],
+                                              Text(
+                                                notificationController.notificationList[index].notificationBody!,
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: AppsColors
+                                                        .loginFontColorSecondary),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
+                              onTap: (){
+                                notificationController.markOneRead(notificationController.notificationList[index].id.toString());
+                              },
                             ),
                             Divider(
                               color: Colors.grey,
