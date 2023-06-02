@@ -33,10 +33,15 @@ class NotificationDialog extends StatelessWidget {
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      'Mark All as Read',
-                      style: TextStyle(
-                          color: AppsColors.loginColorPrimary, fontSize: 10.0),
+                    GestureDetector(
+                      child: Text(
+                        'Mark All as Read',
+                        style: TextStyle(
+                            color: AppsColors.loginColorPrimary, fontSize: 10.0),
+                      ),
+                      onTap: (){
+                        notificationController.markAllRead();
+                      },
                     )
                   ],
                 ),
