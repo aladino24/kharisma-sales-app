@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/products/category_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/sidebar_category_controller.dart';
 
 class SidebarFilterPage extends StatelessWidget {
   SidebarFilterPage({super.key});
 
-  final SidebarCategoryController sidebarCategoryController =
-      Get.put(SidebarCategoryController());
+  final ProductController productController = Get.put(ProductController());
+  final CategoryController categoryController = Get.put(CategoryController());
+  final SidebarCategoryController sidebarCategoryController = Get.put(SidebarCategoryController());
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +203,11 @@ class SidebarFilterPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      onTap: () {},
+                      onTap: () async {
+                         await productController.fetchProductByFilter(productController.searchEditController.text, sidebarCategoryController.variantHarga.value, categoryController.selectedValue.value);
+                         // close drawer
+                          Navigator.pop(context);
+                      },
                     ),
                   ),
                 ],

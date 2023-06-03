@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 class CategoryController extends GetxController{
   var _categoryList = <Category>[].obs;
 
-  var selectedValue = 'All Category'.obs;
+  var selectedValue = ''.obs;
 
   List<Category> get categoryList => _categoryList;
   

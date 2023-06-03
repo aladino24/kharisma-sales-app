@@ -23,11 +23,13 @@ class HomePage extends StatelessWidget {
   final MainHeaderController myController = Get.put(MainHeaderController());
   final CategoryController categoryController = Get.put(CategoryController());
   final ProductController productController = Get.put(ProductController());
+  final SidebarCategoryController sidebarCategoryController = Get.put(SidebarCategoryController());
   //cart controller
   final CartController cartController = Get.put(CartController());
   final NetworkController networkController = Get.find<NetworkController>();
   var customer_price;
   var sales_price;
+   String? categoryProduct;
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +158,7 @@ class HomePage extends StatelessWidget {
 
                                   return DropdownButton<String>(
                                     isExpanded: true,
-                                    value: selectedValue,
+                                    value: selectedValue.isEmpty ? 'All Category' : selectedValue,
                                     icon: Icon(Icons.keyboard_arrow_down_outlined),
                                     iconSize: 24,
                                     elevation: 16,
@@ -166,9 +168,18 @@ class HomePage extends StatelessWidget {
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
                                     ),
-                                    onChanged: (newValue) {
-                                      // print(newValue);
+                                    onChanged: (newValue) async {
+                                     
+                                      if (newValue!.isNotEmpty) {
+                                        categoryProduct = newValue;
+                                      }
+
+                                      if (newValue == 'All Category') {
+                                        categoryProduct = '';
+                                      }
                                       categoryController.onDropdownValueChanged(newValue);
+                                      await productController.fetchProductByFilter(productController.searchEditController.text, sidebarCategoryController.variantHarga.value, categoryProduct);
+                                      
                                     },
                                     items: [
                                       DropdownMenuItem<String>(

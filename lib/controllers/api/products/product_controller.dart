@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
@@ -13,7 +14,9 @@ class ProductController extends GetxController{
   List<Product> get products => _products;
 
   final LoginController loginController = Get.put(LoginController());
-  
+
+  // texteditingcontroller value
+  final searchEditController = TextEditingController();
 
   @override
   void onInit() {
@@ -61,6 +64,68 @@ class ProductController extends GetxController{
       isLoading(false);
      }
     
+  }
+
+  Future<void> fetchProductByFilter(String? search, String? filter, String? category) async{
+      String searchQuery = search?.replaceAll(' ', '+') ?? '';
+      String filterQuery = filter?.replaceAll(' ', '+') ?? '';
+      String categoryQuery = category?.replaceAll(' ', '+') ?? '';
+
+      String api_product_url = ApiUrl.apiUrl + 'ecom/product';
+      var response;
+      if (searchQuery.isNotEmpty || filterQuery.isNotEmpty || categoryQuery.isNotEmpty) {
+        api_product_url += '?';
+
+        if (searchQuery.isNotEmpty) {
+          api_product_url += 'search=$searchQuery';
+        }
+        if (filterQuery.isNotEmpty) {
+          api_product_url += '&filter=$filterQuery';
+        }
+        if (categoryQuery.isNotEmpty) {
+          api_product_url += '&kategori=$categoryQuery';
+        }
+
+        print(api_product_url);
+      }else{
+        fetchProduct();
+      }
+
+      try {
+        isLoading(true);
+
+       // jika await getToken() tidak sama dengan null  maka kirimkan header bearer token
+       if(await loginController.getToken() != null){
+          response = await http.get(
+            Uri.parse(api_product_url),
+            headers: {
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+            },
+          );
+       }
+        // jika await getToken() sama dengan null  maka kirimkan header bearer token
+        if(await loginController.getToken() == null){
+            response = await http.get(
+              Uri.parse(api_product_url),
+            );
+        }
+
+        if(response.statusCode == 200){
+          // perbarui _product dengan data yang baru
+          isLoading(false);
+          final data = jsonDecode(response.body)['data'];
+          _products.assignAll(List<Product>.from(data.map((product) => Product.fromJson(product))));
+        }else{
+          isLoading(false);
+          throw Exception('Failed to load data');
+        }
+      } catch (e) {
+        isLoading(false);
+        print(e);
+      } finally{
+        isLoading(false);
+     }
+
   }
 
 

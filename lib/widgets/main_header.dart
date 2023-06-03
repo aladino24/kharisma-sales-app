@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badge;
 import 'package:kharisma_sales_app/controllers/api/apps/notification_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/category_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/sidebar_category_controller.dart';
 import 'package:kharisma_sales_app/widgets/notification_dialog.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
@@ -18,8 +21,10 @@ class MainHeader extends StatelessWidget {
     required this.iconNotification,
   }) : super(key: key ?? UniqueKey());
   final mainheaderController = Get.put(MainHeaderController());
-  final NotificationController notificationController =
-      Get.put(NotificationController());
+  final NotificationController notificationController = Get.put(NotificationController());
+  final ProductController productController = Get.put(ProductController());
+  final SidebarCategoryController sidebarCategoryController = Get.put(SidebarCategoryController());
+  final CategoryController categoryController = Get.put(CategoryController());
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +60,12 @@ class MainHeader extends StatelessWidget {
                         blurRadius: 8)
                   ]),
               child: TextField(
+                controller: productController.searchEditController,
                 autofocus: false,
                 onSubmitted: (val) {},
-                onChanged: (val) {},
+                onChanged: (val) async {
+                 await productController.fetchProductByFilter(productController.searchEditController.text, sidebarCategoryController.variantHarga.value, categoryController.selectedValue.value);
+                },
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
