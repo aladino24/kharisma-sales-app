@@ -7,10 +7,12 @@ import 'package:kharisma_sales_app/controllers/api/products/product_controller.d
 import 'package:kharisma_sales_app/controllers/api/products/save_product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/network/controllers/network_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/sidebar_category_controller.dart';
 import 'package:kharisma_sales_app/models/category.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/views/home/sidebar_filter_page.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/widgets/rating_star.dart';
 import 'package:shimmer/shimmer.dart';
@@ -31,7 +33,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onBackPressed,
-      child: Scaffold(body: Obx(() {
+      child: Scaffold(
+        body: Obx(() {
         if (networkController.connectionStatus.value == 0) {
           return Center(
             // tampilkan gambar no connection
@@ -90,9 +93,8 @@ class HomePage extends StatelessWidget {
                 Container(
                   // width * 0.5
                   height: 60,
-                  width: Get.width * 0.9,
                   padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 10, bottom: 10),
+                      left: 15, right: 20, top: 10, bottom: 10),
                   child: Row(
                     children: [
                       Text(
@@ -119,87 +121,131 @@ class HomePage extends StatelessWidget {
                               ],
                             ),
                             child: Obx(() {
-                              final categoryList = categoryController.categoryList;
-                              final selectedValue = categoryController.selectedValue.value;
-                              if (categoryList.isEmpty) {
-                                return DropdownButton<String>(
-                                  value: 'Loading...',
-                                  icon:
-                                      Icon(Icons.keyboard_arrow_down_outlined),
-                                  iconSize: 24,
-                                  elevation: 16,
-                                  underline: Container(),
-                                  style: TextStyle(
-                                    color: AppsColors.loginFontColorSecondary,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  onChanged:
-                                      null, // Disable dropdown when loading
-                                  items: [
-                                    DropdownMenuItem<String>(
+                                  final categoryList = categoryController.categoryList;
+                                  final selectedValue = categoryController.selectedValue.value;
+                                  if (categoryList.isEmpty) {
+                                    return DropdownButton<String>(
                                       value: 'Loading...',
-                                      child: Text(
-                                        'Loading...',
-                                        style: TextStyle(
-                                          color: AppsColors
-                                              .loginFontColorSecondary,
-                                          fontSize: 12,
+                                      icon:
+                                          Icon(Icons.keyboard_arrow_down_outlined),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      underline: Container(),
+                                      style: TextStyle(
+                                        color: AppsColors.loginFontColorSecondary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      onChanged:
+                                          null, // Disable dropdown when loading
+                                      items: [
+                                        DropdownMenuItem<String>(
+                                          value: 'Loading...',
+                                          child: Text(
+                                            'Loading...',
+                                            style: TextStyle(
+                                              color: AppsColors
+                                                  .loginFontColorSecondary,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+
+                                  return DropdownButton<String>(
+                                    isExpanded: true,
+                                    value: selectedValue,
+                                    icon: Icon(Icons.keyboard_arrow_down_outlined),
+                                    iconSize: 24,
+                                    elevation: 16,
+                                    underline: Container(),
+                                    style: TextStyle(
+                                      color: AppsColors.loginFontColorSecondary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    onChanged: (newValue) {
+                                      // print(newValue);
+                                      categoryController.onDropdownValueChanged(newValue);
+                                    },
+                                    items: [
+                                      DropdownMenuItem<String>(
+                                        value: 'All Category',
+                                        child: Text(
+                                          'All Category',
+                                          style: TextStyle(
+                                            color:
+                                                AppsColors.loginFontColorSecondary,
+                                            fontSize: 12,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                );
-                              }
-
-                              return DropdownButton<String>(
-                                value: selectedValue,
-                                icon: Icon(Icons.keyboard_arrow_down_outlined),
-                                iconSize: 24,
-                                elevation: 16,
-                                underline: Container(),
+                                      ...categoryList.map<DropdownMenuItem<String>>(
+                                        (Category category) {
+                                          return DropdownMenuItem<String>(
+                                            value: category.productTagId,
+                                            child: Text(
+                                              category.name!,
+                                              style: TextStyle(
+                                                color: AppsColors.loginFontColorSecondary,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ).toList(),
+                                    ],
+                                  );
+                                }),),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      // icon button with text filter
+                      Builder(builder: (context){
+                        return InkWell(
+                        onTap: (){
+                            Scaffold.of(context).openEndDrawer();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                blurRadius: 5,
+                                offset: const Offset(0, 0),
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.filter_alt_outlined,
+                                color: AppsColors.loginFontColorSecondary,
+                                size: 20,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Filter",
                                 style: TextStyle(
                                   color: AppsColors.loginFontColorSecondary,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ),
-                                onChanged: (newValue) {
-                                  // print(newValue);
-                                  categoryController.onDropdownValueChanged(newValue);
-                                },
-                                items: [
-                                  DropdownMenuItem<String>(
-                                    value: 'All Category',
-                                    child: Text(
-                                      'All Category',
-                                      style: TextStyle(
-                                        color:
-                                            AppsColors.loginFontColorSecondary,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                  ...categoryList.map<DropdownMenuItem<String>>(
-                                    (Category category) {
-                                      return DropdownMenuItem<String>(
-                                        value: category.productTagId,
-                                        child: Text(
-                                          category.name!,
-                                          style: TextStyle(
-                                            color: AppsColors.loginFontColorSecondary,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ).toList(),
-                                ],
-                              );
-                            })),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                      })
                     ],
                   ),
                 ),
@@ -454,7 +500,12 @@ class HomePage extends StatelessWidget {
             ),
           );
         }
-      })),
+      }
+      ),
+      endDrawer:  Drawer(
+            child: SidebarFilterPage(),
+          ),
+    ),
     );
   }
 
@@ -483,3 +534,4 @@ class HomePage extends StatelessWidget {
     return result ?? false;
   }
 }
+

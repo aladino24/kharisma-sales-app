@@ -385,8 +385,7 @@ class DetailProductPage extends StatelessWidget {
                                           width: 90,
                                           height: 30,
                                           decoration: BoxDecoration(
-                                            color: detailProductController
-                                                        .variant.value ==
+                                            color: detailProductController.variant.value ==
                                                     'Hitam'
                                                 ? AppsColors.loginColorPrimary
                                                 : Colors.white,
