@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
@@ -18,14 +19,14 @@ class CartProductPage extends StatefulWidget {
 
 class _CartProductPageState extends State<CartProductPage> {
   final CartController cartController = Get.put(CartController());
-
+  final ProductController productController = Get.find<ProductController>();
 
   List<int> listQuantity = <int>[];
-    RxInt subTotalCart = 0.obs;
+  RxInt subTotalCart = 0.obs;
 
   RxInt totalCart = 0.obs;
 
-   @override
+  @override
   void dispose() {
     // Clear the values of observables and reset isSelected to false when disposing the page
     subTotalCart.close();
@@ -77,13 +78,13 @@ class _CartProductPageState extends State<CartProductPage> {
                                 Row(
                                   children: [
                                     GetBuilder<CartController>(
-                                      builder: (controller) => Checkbox(
-                                      value: cartController.isAllSelected.value,
-                                      onChanged: (value) {
-                                        // cartController.selectAll();
-                                      },
-                                     )
-                                    ),
+                                        builder: (controller) => Checkbox(
+                                              value: cartController
+                                                  .isAllSelected.value,
+                                              onChanged: (value) {
+                                                // cartController.selectAll();
+                                              },
+                                            )),
                                     const Text("Pilih Semua"),
                                   ],
                                 ),
@@ -97,132 +98,186 @@ class _CartProductPageState extends State<CartProductPage> {
                     // Cart product
                     SizedBox(
                         height: 300,
-                        child: Obx((){
+                        child: Obx(() {
                           if (cartController.isLoading.value) {
                             return Center(
                               child: CircularProgressIndicator(),
                             );
-                          }else{
+                          } else {
                             return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: cartController.cartProductList.length,
-                            itemBuilder: (context, index) {
-                              CartProduct cartProduct = cartController.cartProductList[index];
-                              int parsedQuantity = int.parse(cartProduct.quantity!);
-                              cartController.quantityGlobal.value = parsedQuantity;
-                                return GetBuilder<CartController>(
-                                    id: cartProduct.uuid,
-                                    builder: (controller) => CheckboxListTile(
-                                    value: cartController.cartProductList[index].isSelected,
-                                    onChanged: (value) {
-                                      // cartController.fetchCartProduct();
-                                      cartController.selectCartProduct(index,cartController.quantityGlobal.value.obs, cartProduct.uuid!);
-                                      // jika isSelected sama dengan true maka ambil quantity kemudian kalikan dengan harga
-                                      if (value == true) {
-                                       
-                                          subTotalCart.value += int.parse(cartProduct.totalPrice!);
-                                          totalCart.value += int.parse(cartProduct.totalPrice!);
+                              shrinkWrap: true,
+                              itemCount: cartController.cartProductList.length,
+                              itemBuilder: (context, index) {
+                                CartProduct cartProduct =
+                                    cartController.cartProductList[index];
+                                int parsedQuantity =
+                                    int.parse(cartProduct.quantity!);
+                                cartController.quantityGlobal.value =
+                                    parsedQuantity;
 
-                                      }else{
-                                          subTotalCart.value -= int.parse(cartProduct.totalPrice!);
-                                          totalCart.value -= int.parse(cartProduct.totalPrice!);
-                             
-                                      }
-                                    },
-                                    title: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          width: 90,
-                                          height: 90,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: AppsColors
-                                                .imageProductBackground,
-                                            image: DecorationImage(
-                                              image: cartProduct.product!.gdImagePath != null
-                                                  ? Image.network(cartProduct.product!.gdImagePath!).image
-                                                  : Image.asset("assets/images/image.png").image,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                width: 120,
-                                                child: Text(
-                                                  cartProduct
-                                                      .product!.productName!,
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w600,
+                                return GetBuilder<CartController>(
+                                  id: cartProduct
+                                      .uuid, // Provide a unique identifier based on the UUID
+                                  builder: (controller) {
+                                    final price = cartController.prices[
+                                        cartProduct.product!.productTmplId!];
+
+                                    return cartProduct.product != null
+                                        ? CheckboxListTile(
+                                            value: cartController
+                                                .cartProductList[index]
+                                                .isSelected,
+                                            onChanged: (value) {
+                                              // cartController.fetchCartProduct();
+                                              cartController.selectCartProduct(
+                                                index,
+                                                cartController
+                                                    .quantityGlobal.value.obs,
+                                                cartProduct.uuid!,
+                                              );
+                                              // jika isSelected sama dengan true maka ambil quantity kemudian kalikan dengan harga
+                                              if (value == true) {
+                                                subTotalCart.value += int.parse(
+                                                    cartProduct.totalPrice!);
+                                                totalCart.value += int.parse(
+                                                    cartProduct.totalPrice!);
+                                              } else {
+                                                subTotalCart.value -= int.parse(
+                                                    cartProduct.totalPrice!);
+                                                totalCart.value -= int.parse(
+                                                    cartProduct.totalPrice!);
+                                              }
+                                            },
+                                            title: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: 90,
+                                                  height: 90,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: AppsColors
+                                                        .imageProductBackground,
+                                                    image: DecorationImage(
+                                                      image: cartProduct
+                                                                      .product !=
+                                                                  null &&
+                                                              cartProduct
+                                                                      .product!
+                                                                      .gdImagePath !=
+                                                                  null
+                                                          ? Image.network(
+                                                                  cartProduct
+                                                                      .product!
+                                                                      .gdImagePath!)
+                                                              .image
+                                                          : Image.asset(
+                                                                  "assets/images/image.png")
+                                                              .image,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 2,
                                                 ),
-                                              ),
-                                              DiskonProduct(),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                NumberFormat.currency(
-                                                  locale: 'id_ID',
-                                                  symbol: 'Rp ',
-                                                  decimalDigits: 0,
-                                                ).format(int.parse(
-                                                    cartProduct.price!)),
-                                                style: TextStyle(
-                                                  fontSize: 14,
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        width: 120,
+                                                        child: Text(
+                                                          cartProduct.product !=
+                                                                      null &&
+                                                                  cartProduct
+                                                                          .product!
+                                                                          .productName !=
+                                                                      null
+                                                              ? cartProduct
+                                                                  .product!
+                                                                  .productName
+                                                                  .toString()
+                                                              : '',
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines: 2,
+                                                        ),
+                                                      ),
+                                                      DiskonProduct(),
+                                                      SizedBox(height: 5),
+                                                      Text(
+                                                        NumberFormat.currency(
+                                                          locale: 'id_ID',
+                                                          symbol: 'Rp ',
+                                                          decimalDigits: 0,
+                                                        ).format(int.parse(
+                                                            cartProduct.price ??
+                                                                price ??
+                                                                '0')),
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      TableQuantity(
+                                                        size: 28,
+                                                        iconSize: 12,
+                                                        productId: cartProduct
+                                                            .productId!,
+                                                        productTmplid:
+                                                            cartProduct.product!
+                                                                .productTmplId!,
+                                                        quantity: cartController
+                                                            .quantityGlobal
+                                                            .value
+                                                            .obs,
+                                                        stock: cartProduct
+                                                            .product!.stock!,
+                                                        totalPrice: cartProduct
+                                                            .totalPrice!,
+                                                        price:
+                                                            cartProduct.price!,
+                                                        uuid: cartProduct.uuid!,
+                                                        totalCart: totalCart,
+                                                        index: index,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              TableQuantity(
-                                                    size: 25, 
-                                                    iconSize: 12,
-                                                    productId: cartProduct.productId!,
-                                                    quantity: cartController.quantityGlobal.value.obs,
-                                                    stock: cartProduct.product!.stock!,
-                                                    totalPrice: cartProduct.totalPrice!,
-                                                    price : cartProduct.price!,
-                                                    uuid: cartProduct.uuid!,
-                                                    totalCart : totalCart,
-                                                    index: index,
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    secondary: GestureDetector(
-                                      child: Icon(Icons.delete),
-                                      onTap: (){
-                                        cartController.deleteCartProduct(
-                                          cartProduct.uuid!
-                                        );
-                                      },
-                                    ),
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 10),
-                                  )
-                                  );
-                            },
-                          );
+                                              ],
+                                            ),
+                                            secondary: GestureDetector(
+                                              child: Icon(Icons.delete),
+                                              onTap: () {
+                                                cartController
+                                                    .deleteCartProduct(
+                                                        cartProduct.uuid!);
+                                              },
+                                            ),
+                                            controlAffinity:
+                                                ListTileControlAffinity.leading,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 10),
+                                          )
+                                        : Container();
+                                  },
+                                );
+                              },
+                            );
                           }
-                        }
-                        )),
+                        })),
 
                     // Informasi Order
                     Container(
@@ -274,8 +329,7 @@ class _CartProductPageState extends State<CartProductPage> {
                                             symbol: 'Rp ',
                                             decimalDigits: 0,
                                           ).format(totalCart.value),
-                                          style: TextStyle(
-                                              fontSize: 16),
+                                          style: TextStyle(fontSize: 16),
                                         );
                                       })
                                     ],
@@ -342,25 +396,27 @@ class _CartProductPageState extends State<CartProductPage> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   // ambil cartController.cartProductList dimana isSelected sama dengan true
-                                  List<CartProduct> cartProductList = cartController.cartProductList.where((element) => element.isSelected == true).toList();
-                                  if(cartProductList.length == 0){
+                                  List<CartProduct> cartProductList =
+                                      cartController
+                                          .cartProductList
+                                          .where((element) =>
+                                              element.isSelected == true)
+                                          .toList();
+                                  if (cartProductList.length == 0) {
                                     // Get snackbar
-                                    cartController.errorMessage("Silahkan pilih product terlebih dahulu");
-                                  }else{
-                                     Get.toNamed(
-                                        RoutesName.cartCheckout,
-                                        arguments: 
-                                        {
+                                    cartController.errorMessage(
+                                        "Silahkan pilih product terlebih dahulu");
+                                  } else {
+                                    Get.toNamed(RoutesName.cartCheckout,
+                                        arguments: {
                                           "total": totalCart,
                                           "cartProductList": cartProductList,
-                                        }
-                                    );
+                                        });
                                   }
                                   // //tampilkan cartProductList
                                   //  cartProductList.forEach((element) {
                                   //    print(element.product!.productName);
                                   //  });
-                                  
                                 },
                                 child: Text("Beli Sekarang"),
                                 style: ElevatedButton.styleFrom(

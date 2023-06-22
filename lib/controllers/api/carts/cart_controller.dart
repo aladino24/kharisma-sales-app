@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
@@ -11,7 +12,10 @@ class CartController extends GetxController{
   var isLoading = false.obs;
   var cartProductList = List<CartProduct>.empty().obs;
   var loginController = Get.put(LoginController());
+  final ProductController productController = Get.put(ProductController());
   var isAllSelected = false.obs;
+  var prices = <String, String>{}.obs;
+  var totalPrices = <String, int>{}.obs;
 
   var quantityGlobal = 0.obs;
 
@@ -223,10 +227,43 @@ class CartController extends GetxController{
         }
     }
 
+  Future<void> checkPrice(String? product_tmpl_id, int quantity) async{
+    String api_checkprice = ApiUrl.apiUrl + 'ecom/data-master/check-price?product_tmpl_id=${product_tmpl_id}&quantity=${quantity}';
+
+    try {
+      isLoading(true);
+      final response = await http.get(
+        Uri.parse(api_checkprice),
+        headers: {
+          'Authorization': 'Bearer ${await loginController.getToken()}',
+        },
+      );
+
+      if(response.statusCode == 200){
+        isLoading(false);
+        final data = jsonDecode(response.body)['data'];
+        final price = data['price'];
+        final totalPrice = data['total_price'];
+        prices[product_tmpl_id!] = price; // Simpan price dengan ID yang sesuai
+        totalPrices[product_tmpl_id] = totalPrice; // Simpan totalPrice dengan ID yang sesuai
+        print('ini price' + prices[product_tmpl_id]!);
+      }else{
+        isLoading(false);
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      isLoading(false);
+      print(e);
+    }finally{
+      isLoading(false);
+    }
+  }
+
+
     
-  void increment(RxInt quantity, String stock, int index, String price, String productId, RxInt totalCart){
+  void increment(String uuid, RxInt quantity, String stock, int index, String price,String productTmplid, String productId, RxInt totalCart){
     if(quantity.value < int.parse(stock)){
-      addCartQuantity(productId,price,1);
+       updateCartProduct(uuid, productId, price, quantity.value + 1);
       totalCart.value = 0;
     }
     update(
@@ -234,7 +271,7 @@ class CartController extends GetxController{
     );
   }
 
-  void decrement(String uuid,String productId, RxInt quantity, String stock, int index, String price, RxInt totalCart){
+  void decrement(String uuid,String productTmplid, String productId, RxInt quantity, String stock, int index, String price, RxInt totalCart){
     if(quantity.value > 1){
       updateCartProduct(uuid, productId, price, quantity.value - 1);
       totalCart.value = 0;

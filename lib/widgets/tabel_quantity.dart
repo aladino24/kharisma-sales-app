@@ -11,10 +11,11 @@ class TableQuantity extends StatelessWidget {
   final int index;
   final String totalPrice; 
   final String price;
+  final String productTmplid;
   final String productId;
   final RxInt totalCart;
   TableQuantity({
-    super.key, required this.size, required this.iconSize, required this.quantity, required this.uuid, required this.stock, required this.index, required this.totalPrice, required this.price, required this.productId, required this.totalCart,
+    super.key, required this.size, required this.iconSize, required this.quantity, required this.uuid, required this.stock, required this.index, required this.totalPrice, required this.price, required this.productTmplid,required this.productId, required this.totalCart,
   });
 
   final CartController cartController = Get.put(CartController());
@@ -38,7 +39,7 @@ class TableQuantity extends StatelessWidget {
                     size: iconSize.toDouble(),
                   ),
                   onTap: (){
-                    cartController.decrement(uuid,productId, quantity, stock, index, price, totalCart);
+                    cartController.decrement(uuid, productTmplid ,productId, quantity, stock, index, price, totalCart);
                   },
                 ),
               ),
@@ -84,7 +85,7 @@ class TableQuantity extends StatelessWidget {
                     size: iconSize.toDouble(),
                   ),
                   onTap: (){
-                    cartController.increment(quantity, stock, index, price, productId, totalCart);
+                    cartController.increment(uuid, quantity, stock, index, price, productTmplid, productId, totalCart);
                   },
                 ),
               ),

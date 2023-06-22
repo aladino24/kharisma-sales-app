@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -10,6 +9,8 @@ import 'package:kharisma_sales_app/services/api_url.dart';
 class ProductController extends GetxController{
   var isLoading = false.obs;
   var _products = <Product>[].obs;
+  var price = "0".obs;
+  var totalPrice = 0.obs;
 
   List<Product> get products => _products;
 
@@ -126,6 +127,38 @@ class ProductController extends GetxController{
         isLoading(false);
      }
 
+  }
+
+
+  Future<void> checkPrice(String? product_tmpl_id, int quantity) async{
+    String api_checkprice = ApiUrl.apiUrl + 'ecom/data-master/check-price?product_tmpl_id=${product_tmpl_id}&quantity=${quantity}';
+
+    try {
+      isLoading(true);
+      final response = await http.get(
+        Uri.parse(api_checkprice),
+        headers: {
+          'Authorization': 'Bearer ${await loginController.getToken()}',
+        },
+      );
+
+      if(response.statusCode == 200){
+        isLoading(false);
+        final data = jsonDecode(response.body)['data'];
+        final price = data['price'];
+        final totalPrice = data['total_price'];
+        this.price.value = price;
+        this.totalPrice.value = totalPrice;
+      }else{
+        isLoading(false);
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      isLoading(false);
+      print(e);
+    }finally{
+      isLoading(false);
+    }
   }
 
 

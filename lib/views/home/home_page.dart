@@ -364,12 +364,9 @@ class HomePage extends StatelessWidget {
                                             ),
                                             Text(
                                               product.pricelist != null &&
-                                                      product.pricelist!
-                                                              .length >=
-                                                          2
+                                                      product.pricelist!.length >= 2
                                                   ? product.pricelist![1]
-                                                              .type ==
-                                                          'b2b'
+                                                              .type == 'b2b'
                                                       ? "Seller Price : ${NumberFormat.currency(
                                                           locale: 'id_ID',
                                                           symbol: 'Rp ',

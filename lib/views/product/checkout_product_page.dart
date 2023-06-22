@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/ongkos_kirim.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
@@ -14,13 +15,11 @@ class CheckoutProductPage extends StatelessWidget {
 
   final TextEditingController claimController = TextEditingController();
 
-  final OngkosKirimController ongkosKirimController =
-      Get.put(OngkosKirimController());
+  final OngkosKirimController ongkosKirimController = Get.put(OngkosKirimController());
 
-  final AlamatKirimController alamatKirimController =
-      Get.put(AlamatKirimController());
+  final AlamatKirimController alamatKirimController = Get.put(AlamatKirimController());
 
-
+  final ProductController productController = Get.find<ProductController>();
 
   RxInt biayaPengiriman = 0.obs;
   RxInt subTotal = 0.obs;
@@ -32,6 +31,7 @@ class CheckoutProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
      final arguments = Get.arguments;
       final productId = arguments['productId'];
+      final productTmplid = arguments['productTmplid'];
       final productName = arguments['productName'];
       final price = arguments['price'];
       final quantity = arguments['quantity'];
@@ -41,6 +41,7 @@ class CheckoutProductPage extends StatelessWidget {
 
       int priceProduct = int.parse(price);
       int quantityProduct = quantity;
+
       
     return Scaffold(
       body: SafeArea(
@@ -263,17 +264,16 @@ class CheckoutProductPage extends StatelessWidget {
                                             SizedBox(
                                               height: 5,
                                             ),
-                                             Text(
+                                             Obx(() => Text(
                                                 NumberFormat.currency(
                                                   locale: 'id_ID',
                                                   symbol: 'Rp ',
                                                   decimalDigits: 0,
-                                                ).format(int.parse(
-                                                    price!)),
+                                                ).format(int.parse(productController.price.value.toString())),
                                                 style: TextStyle(
                                                   fontSize: 12,
                                                 ),
-                                              ),
+                                              ),),
                                             SizedBox(
                                               height: 5,
                                             ),
@@ -348,19 +348,16 @@ class CheckoutProductPage extends StatelessWidget {
                                                             style: TextStyle(
                                                                 fontSize: 12),
                                                           ),
-                                                          value: ongkosKirimController.listOngkosKirim[index],
+                                                          value: ongkosKirimController.listOngkosKirim[index].nama,
                                                         ))
                                                 : null,
                                             onChanged: (value) {
-                                              OngkosKirim selectedOngkosKirim = value as OngkosKirim;
-                                              // print(selectedOngkosKirim.nama);
-                                              // subTotal
+                                              String selectedValue = value as String; // Ubah tipe value ke String
+                                              OngkosKirim selectedOngkosKirim = ongkosKirimController.listOngkosKirim.firstWhere((element) => element.nama == selectedValue, orElse: () => OngkosKirim()); // Menggunakan properti 'nama' sebagai nilai yang dicocokkan
+                                              ongkosKirimController.selectedOngkosKirim.value = selectedOngkosKirim;
                                               biayaPengiriman.value = selectedOngkosKirim.harga ?? 0;
-                                              // print(biayaPengiriman.value);
                                             },
-                                            value: ongkosKirimController.selectedOngkosKirim.value != null
-                                                ? ongkosKirimController.selectedOngkosKirim.value
-                                                : null,
+                                           value: ongkosKirimController.selectedOngkosKirim.value?.nama ?? null,
                                             decoration: InputDecoration(
                                               border: InputBorder.none, // Menghilangkan underline
                                             ),
@@ -452,13 +449,12 @@ class CheckoutProductPage extends StatelessWidget {
                                           ],
                                         ),
                                         Obx((){
-                                          subTotal.value = priceProduct * quantityProduct;
                                           return Text(
                                             NumberFormat.currency(
                                                     locale: 'id',
                                                     symbol: 'Rp ',
                                                     decimalDigits: 0)
-                                                .format(subTotal.value),
+                                                .format(productController.totalPrice.value),
                                             style: TextStyle(
                                                 fontSize: 16,
                                                ),
@@ -483,7 +479,7 @@ class CheckoutProductPage extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                          "Rp 100.000",
+                                          "Rp 0",
                                           style: TextStyle(color: Colors.red),
                                         )
                                       ],
@@ -528,7 +524,7 @@ class CheckoutProductPage extends StatelessWidget {
                                               fontSize: 16),
                                         ),
                                         Obx(() {
-                                          total.value = subTotal.value + biayaPengiriman.value;
+                                           total.value = productController.totalPrice.value + biayaPengiriman.value;
                                           return Text(
                                             NumberFormat.currency(
                                                     locale: 'id',

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
@@ -15,8 +16,10 @@ class DetailProductPage extends StatelessWidget {
   DetailProductPage({super.key});
 
   CarouselController? carouselController = CarouselController();
-  final DetailProductController detailProductController = Get.put(DetailProductController());
-   final Product? product = Get.arguments as Product?;
+  final DetailProductController detailProductController =
+      Get.put(DetailProductController());
+  final ProductController productController = Get.find<ProductController>();
+  final Product? product = Get.arguments as Product?;
   void previousImage() {
     carouselController!.previousPage(
         duration: Duration(milliseconds: 300), curve: Curves.ease);
@@ -30,8 +33,7 @@ class DetailProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // get arguments json
-   
-    
+
     // print(product!.productName);
     return Scaffold(
       body: SafeArea(
@@ -57,13 +59,15 @@ class DetailProductPage extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: AppsColors.imageProductBackground,
                                   image: DecorationImage(
-                                    image: product!.gdImagePath != null ? Image.network(
-                                      product!.gdImagePath!,
-                                      fit: BoxFit.cover,
-                                    ).image : Image.asset(
-                                      'assets/images/image.png',
-                                      fit: BoxFit.cover,
-                                    ).image,
+                                    image: product!.gdImagePath != null
+                                        ? Image.network(
+                                            product!.gdImagePath!,
+                                            fit: BoxFit.cover,
+                                          ).image
+                                        : Image.asset(
+                                            'assets/images/image.png',
+                                            fit: BoxFit.cover,
+                                          ).image,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -161,12 +165,22 @@ class DetailProductPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  product!.pricelist != null && product!.pricelist![0].type == 'b2b'
-                                            ? "Seller Price : ${NumberFormat.currency(
+                                  product!.pricelist != null &&
+                                          product!.pricelist!.length >= 2
+                                      ? product!.pricelist![1].type == 'b2b'
+                                          ? "Seller Price : ${NumberFormat.currency(
+                                              locale: 'id_ID',
+                                              symbol: 'Rp ',
+                                              decimalDigits: 0,
+                                            ).format(int.parse(product!.pricelist![1].price.toString()))}"
+                                          : product!.pricelist![1].type == 'b2c'
+                                              ? "Customer Price : ${NumberFormat.currency(
                                                   locale: 'id_ID',
                                                   symbol: 'Rp ',
                                                   decimalDigits: 0,
-                                                ).format(int.parse(product!.pricelist![0].price.toString()))}": "Seller Price : -",
+                                                ).format(int.parse(product!.pricelist![1].price.toString()))}"
+                                              : ""
+                                      : "",
                                   style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontSize: 16,
@@ -174,13 +188,23 @@ class DetailProductPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  product!.pricelist != null && product!.pricelist![0].type == 'b2c'
-                                            ? "Customer Price : ${NumberFormat.currency(
-                                                  locale: 'id_ID',
-                                                  symbol: 'Rp ',
-                                                  decimalDigits: 0,
-                                                ).format(int.parse(product!.pricelist![0].price.toString()))}": "Customer Price : -",
-                                  style: TextStyle(
+                                  product!.pricelist != null &&
+                                          product!.pricelist![0].type == 'b2b'
+                                      ? "Seller Price : ${NumberFormat.currency(
+                                          locale: 'id_ID',
+                                          symbol: 'Rp ',
+                                          decimalDigits: 0,
+                                        ).format(int.parse(product!.pricelist![0].price.toString()))}"
+                                      : product!.pricelist != null &&
+                                              product!.pricelist![0].type ==
+                                                  'b2c'
+                                          ? "Customer Price : ${NumberFormat.currency(
+                                              locale: 'id_ID',
+                                              symbol: 'Rp ',
+                                              decimalDigits: 0,
+                                            ).format(int.parse(product!.pricelist![0].price.toString()))}"
+                                          : "",
+                                   style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontSize: 16,
                                     color: AppsColors.textCustomerPrice,
@@ -265,7 +289,10 @@ class DetailProductPage extends StatelessWidget {
                                                 child: Icon(Icons.add),
                                                 onTap: () {
                                                   detailProductController
-                                                      .increment(detailProductController.quantity.value, product!.stock);
+                                                      .increment(
+                                                          detailProductController
+                                                              .quantity.value,
+                                                          product!.stock);
                                                 },
                                               ),
                                             ),
@@ -313,42 +340,58 @@ class DetailProductPage extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  onTap: (){
+                                  onTap: () {
                                     // lazyput cartcontroller
                                     Get.lazyPut(() => CartController());
-                                    final cartController = Get.find<CartController>();
-                                    cartController.addCartProduct(product!.productId!, product!.pricelist![0].price!, detailProductController.quantity.value );
+                                    final cartController =
+                                        Get.find<CartController>();
+                                    cartController.addCartProduct(
+                                        product!.productId!,
+                                        product!.pricelist![0].price!,
+                                        detailProductController.quantity.value);
                                   },
                                 ),
                                 GestureDetector(
-                                  child: Container(
-                                    width: 150,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: AppsColors.loginColorPrimary,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "Buy Now",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700),
+                                    child: Container(
+                                      width: 150,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: AppsColors.loginColorPrimary,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "Buy Now",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  onTap: () => Get.toNamed(RoutesName.checkoutProduct,
-                                   arguments: {
-                                      "productId" : product!.productId,
-                                      "productName" : product!.productName,
-                                      "price" : product!.pricelist!.where((element) => element.type == 'b2b').first.price,
-                                      "quantity" : detailProductController.quantity.value,
-                                      'imageProduct' : product!.gdImagePath,
-                                      'weight' : product!.weight
-                                   }
-                                  ),
-                                ),
+                                    onTap: () {
+                                      Get.toNamed(RoutesName.checkoutProduct,
+                                          arguments: {
+                                            "productId": product!.productId,
+                                            "productTmplid":
+                                                product!.productTmplId,
+                                            "productName": product!.productName,
+                                            "price": product!.pricelist!
+                                                .where((element) =>
+                                                    element.type == 'b2b')
+                                                .first
+                                                .price,
+                                            "quantity": detailProductController
+                                                .quantity.value,
+                                            'imageProduct':
+                                                product!.gdImagePath,
+                                            'weight': product!.weight,
+                                          });
+                                      productController.checkPrice(
+                                          product!.productTmplId,
+                                          detailProductController
+                                              .quantity.value);
+                                    }),
                               ],
                             ),
                           ),
@@ -385,7 +428,8 @@ class DetailProductPage extends StatelessWidget {
                                           width: 90,
                                           height: 30,
                                           decoration: BoxDecoration(
-                                            color: detailProductController.variant.value ==
+                                            color: detailProductController
+                                                        .variant.value ==
                                                     'Hitam'
                                                 ? AppsColors.loginColorPrimary
                                                 : Colors.white,

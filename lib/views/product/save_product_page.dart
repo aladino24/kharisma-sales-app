@@ -46,14 +46,14 @@ class SaveProductPage extends StatelessWidget {
                   SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    "( 3 Barang )",
+                  Obx(() => Text(
+                    "( ${saveProductController.products.length} Barang )",
                     style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 14,
                       color: AppsColors.loginFontColorSecondary,
                     ),
-                  ),
+                  ),)
                 ],
               ),
             ),
