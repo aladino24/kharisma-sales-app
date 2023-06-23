@@ -4,12 +4,15 @@ import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/orders/salesoder_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
+import 'package:kharisma_sales_app/models/buy_now.dart';
 import 'package:kharisma_sales_app/models/ongkos_kirim.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
+// ignore: must_be_immutable
 class CheckoutProductPage extends StatelessWidget {
   CheckoutProductPage({super.key});
 
@@ -20,8 +23,12 @@ class CheckoutProductPage extends StatelessWidget {
   final AlamatKirimController alamatKirimController = Get.put(AlamatKirimController());
 
   final ProductController productController = Get.find<ProductController>();
+  final SalesorderController salesOrderController = Get.put(SalesorderController());
 
   RxInt biayaPengiriman = 0.obs;
+  RxString estimasi = 'Not Available'.obs;
+  RxString nama = ''.obs;
+  // 
   RxInt subTotal = 0.obs;
   RxInt total = 0.obs;
 
@@ -30,17 +37,17 @@ class CheckoutProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
      final arguments = Get.arguments;
-      final productId = arguments['productId'];
-      final productTmplid = arguments['productTmplid'];
+      // final productId = arguments['productId'];
+      // final productTmplid = arguments['productTmplid'];
       final productName = arguments['productName'];
-      final price = arguments['price'];
+      // final price = arguments['price'];
       final quantity = arguments['quantity'];
       final imageProduct = arguments['imageProduct'];
       final weight = arguments['weight'];
       
 
-      int priceProduct = int.parse(price);
-      int quantityProduct = quantity;
+      // int priceProduct = int.parse(price);
+      // int quantityProduct = quantity;
 
       
     return Scaffold(
@@ -79,8 +86,7 @@ class CheckoutProductPage extends StatelessWidget {
                         ],
                       )),
                       SizedBox(height: 10),
-                      Obx(
-                        () {
+                      Obx(() {
                           if (alamatKirimController.listAlamat.length == 0) {
                             return alamatKirimController.isLoading.value
                                 ? Center(child: CircularProgressIndicator())
@@ -356,6 +362,8 @@ class CheckoutProductPage extends StatelessWidget {
                                               OngkosKirim selectedOngkosKirim = ongkosKirimController.listOngkosKirim.firstWhere((element) => element.nama == selectedValue, orElse: () => OngkosKirim()); // Menggunakan properti 'nama' sebagai nilai yang dicocokkan
                                               ongkosKirimController.selectedOngkosKirim.value = selectedOngkosKirim;
                                               biayaPengiriman.value = selectedOngkosKirim.harga ?? 0;
+                                              estimasi.value = selectedOngkosKirim.estimasi!;
+                                              nama.value = selectedOngkosKirim.nama!;
                                             },
                                            value: ongkosKirimController.selectedOngkosKirim.value?.nama ?? null,
                                             decoration: InputDecoration(
@@ -368,14 +376,14 @@ class CheckoutProductPage extends StatelessWidget {
                                 );
                               },
                             ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Voucher",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
+                            // Text(
+                            //   "Voucher",
+                            //   style: TextStyle(
+                            //       fontSize: 18, fontWeight: FontWeight.bold),
+                            // ),
                             SizedBox(
                               height: 10,
                             ),
@@ -391,12 +399,12 @@ class CheckoutProductPage extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            Row(
+                            Obx(() => Row(
                               children: [
                                 Icon(Icons.calendar_month),
-                                Text("27 Februari 2023")
+                                estimasi.value == '' ? Text('Not Available') : Text(estimasi.value)
                               ],
-                            ),
+                            ),),
                             SizedBox(
                               height: 20,
                             ),
@@ -546,27 +554,49 @@ class CheckoutProductPage extends StatelessWidget {
                               height: 20,
                             ),
                             // Button
-                            Container(
-                              width: Get.width,
-                              child: TextButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            AppsColors.loginColorPrimary),
-                                    shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    )),
-                                  ),
-                                  onPressed: () {},
-                                  child: Text(
-                                    "Lanjutkan",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                            )
+                           Obx(() {
+                             if (productController.buyNowResponse.value.data != null && productController.buyNowResponse.value.data!.isNotEmpty){
+                              BuyNow data = productController.buyNowResponse.value.data![0];
+                                return  Container(
+                                  width: Get.width,
+                                  child: TextButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                AppsColors.loginColorPrimary),
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        )),
+                                      ),
+                                      onPressed: () async {
+                                        var status = await salesOrderController.salesOrderStore(data.uuid, data.product!.weight, biayaPengiriman.toString(), nama.value);
+                                        if (status == '200') {
+                                          Get.offAllNamed(RoutesName.orderSuccess);
+                                        } else {
+                                          Get.snackbar(
+                                            "Failed",
+                                            "Your order has failed",
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                        }
+                                      },
+                                      child: Obx(() => salesOrderController.isLoading.value ? Center(
+                                        child: CircularProgressIndicator(),
+                                      ) : Text(
+                                        "Lanjutkan",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                      )),
+                                );
+                             }else{
+                              return CircularProgressIndicator();
+                             }
+                           })
                           ],
                         ),
                       )

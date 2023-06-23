@@ -17,6 +17,7 @@ import 'package:kharisma_sales_app/views/profile/list_address_page.dart';
 import 'package:kharisma_sales_app/views/profile/profile_customer_page.dart';
 import 'package:kharisma_sales_app/views/profile/termcondition_page.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
+import 'package:kharisma_sales_app/views/success/success_page.dart';
 import 'package:kharisma_sales_app/views/voucher/list_voucher_page.dart';
 
 class AppsRoutes{
@@ -39,6 +40,7 @@ class AppsRoutes{
     GetPage(name: RoutesName.editAddress, page: () => EditAddressPage()),
     GetPage(name: RoutesName.listVoucher, page: () => ListVoucherPage()),
     GetPage(name: RoutesName.editProfile, page: () => EditProfilePage()),
+    GetPage(name: RoutesName.orderSuccess, page: () => SuccessPage()),
 
   ];
 }

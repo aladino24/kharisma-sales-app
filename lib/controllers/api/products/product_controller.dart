@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/models/buy_now.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
 
@@ -13,6 +14,7 @@ class ProductController extends GetxController{
   var totalPrice = 0.obs;
 
   List<Product> get products => _products;
+  Rx<BuyNowResult> buyNowResponse = BuyNowResult().obs;
 
   final LoginController loginController = Get.put(LoginController());
 
@@ -23,6 +25,7 @@ class ProductController extends GetxController{
   void onInit() {
     super.onInit();
     fetchProduct();
+    getBuyNow();
   }
 
 
@@ -127,6 +130,63 @@ class ProductController extends GetxController{
         isLoading(false);
      }
 
+  }
+
+  Future<void> buyNow(String? product_id, int? quantity) async {
+    String api_buy_now_store = ApiUrl.apiUrl + 'ecom/buy-now?product_id=${product_id}&price=0&quantity=${quantity}';
+
+    try {
+      isLoading(true);
+      final response = await http.post(Uri.parse(api_buy_now_store),
+        headers: {
+          'Authorization': 'Bearer ${await loginController.getToken()}',
+        },
+      );
+
+      print(response.statusCode);
+
+      if(response.statusCode == 200){
+        isLoading(false);
+        print("sukses");
+      }else{
+        isLoading(false);
+        throw Exception('ini Failed to load data');
+      }
+
+    } catch (e) {
+      isLoading(false);
+      print(e);
+    }finally{
+      isLoading(false);
+    }
+  }
+
+  Future<void> getBuyNow() async {
+    String api_get_buy_now = ApiUrl.apiUrl + 'ecom/buy-now';
+
+    try {
+      isLoading(true);
+      final response = await http.get(Uri.parse(api_get_buy_now),
+        headers: {
+          'Authorization': 'Bearer ${await loginController.getToken()}',
+        },
+      );
+
+      if(response.statusCode == 200){
+        print(response.body);
+        final data = jsonDecode(response.body);
+        buyNowResponse.value = BuyNowResult.fromJson(data);
+        print(buyNowResponse.value);
+      }else{
+        throw Exception('Failed to load data');
+      }
+
+    } catch (e) {
+      print("ini" + e.toString());
+      isLoading(false);
+    } finally{
+      isLoading(false);
+    }
   }
 
 

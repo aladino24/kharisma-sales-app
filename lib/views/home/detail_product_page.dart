@@ -391,6 +391,9 @@ class DetailProductPage extends StatelessWidget {
                                           product!.productTmplId,
                                           detailProductController
                                               .quantity.value);
+
+                                        productController.buyNow(product!.productId, detailProductController
+                                                .quantity.value).then((value) => productController.getBuyNow());
                                     }),
                               ],
                             ),

@@ -10,6 +10,7 @@ import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
+// ignore: must_be_immutable
 class CartCheckoutPage extends StatelessWidget {
   CartCheckoutPage({super.key});
 

@@ -28,4 +28,8 @@ abstract class RoutesName{
 
   // Voucher
   static const listVoucher = '/list-voucher-page';
+
+
+  // order success page
+  static const orderSuccess = '/order-success-page';
 }
