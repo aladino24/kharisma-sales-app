@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/views/success/components/default_button.dart';
 import 'package:kharisma_sales_app/views/success/empty_section.dart';
@@ -28,12 +29,30 @@ class _SuccessPageState extends State<SuccessPage> {
           SubTitle(
             subTitleText: 'Your order has been successful',
           ),
-          DefaultButton(
-            btnText: 'Ok',
-            onPressed: () {
-              Get.offAllNamed(RoutesName.home);
-            },
-          ),
+          // text button
+          Container(
+            width: 200,
+            child: TextButton(
+              onPressed: () {
+                Get.offAllNamed(RoutesName.home);
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: AppsColors.loginColorPrimary,// Warna teks
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Padding
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8), // Bentuk tombol
+                ),
+              ),
+              child: Text(
+                'Ok',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16, // Ukuran teks
+                  fontWeight: FontWeight.bold, // Ketebalan teks
+                ),
+              ),
+            ),
+          ) 
         ],
       ),
     );

@@ -104,7 +104,7 @@ class _CartProductPageState extends State<CartProductPage> {
                               child: CircularProgressIndicator(),
                             );
                           } else {
-                            return ListView.builder(
+                            return cartController.cartProductList.isNotEmpty ? ListView.builder(
                               shrinkWrap: true,
                               itemCount: cartController.cartProductList.length,
                               itemBuilder: (context, index) {
@@ -275,6 +275,8 @@ class _CartProductPageState extends State<CartProductPage> {
                                   },
                                 );
                               },
+                            ) : Center(
+                              child: Text('Empty Cart'),
                             );
                           }
                         })),
@@ -412,7 +414,11 @@ class _CartProductPageState extends State<CartProductPage> {
                                           "total": totalCart,
                                           "cartProductList": cartProductList,
                                         });
+                                    cartController
+                                        .checkoutProductCart(cartProductList);
+                                    cartController.getCheckout();
                                   }
+                                  // cartController.checkoutProductCart(cartProductList);
                                   // //tampilkan cartProductList
                                   //  cartProductList.forEach((element) {
                                   //    print(element.product!.productName);

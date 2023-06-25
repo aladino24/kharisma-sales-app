@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
+import 'package:kharisma_sales_app/models/checkout.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
 
@@ -13,6 +14,7 @@ class CartController extends GetxController{
   var cartProductList = List<CartProduct>.empty().obs;
   var loginController = Get.put(LoginController());
   final ProductController productController = Get.put(ProductController());
+  Rx<CheckoutResult> checkoutResponse = CheckoutResult().obs;
   var isAllSelected = false.obs;
   var prices = <String, String>{}.obs;
   var totalPrices = <String, int>{}.obs;
@@ -25,6 +27,7 @@ class CartController extends GetxController{
   void onInit() {
     super.onInit();
     fetchCartProduct();
+    getCheckout();
   }
   
 
@@ -32,7 +35,7 @@ class CartController extends GetxController{
      String api_cart_product = ApiUrl.apiUrl + 'ecom/cart';
       try {
         isLoading(true);
-        final response = await http.get(
+        var response = await http.get(
           Uri.parse(api_cart_product),
           headers: {
              'Authorization': 'Bearer ${await loginController.getToken()}',
@@ -104,6 +107,71 @@ class CartController extends GetxController{
 
           // get.snackbar
           errorMessage(e.toString());
+        }finally{
+          isLoading(false);
+        }
+    }
+
+    Future<void> getCheckout() async {
+    String api_get_checkout = ApiUrl.apiUrl + 'ecom/buy-now';
+
+    try {
+      isLoading(true);
+      final response = await http.get(Uri.parse(api_get_checkout),
+        headers: {
+          'Authorization': 'Bearer ${await loginController.getToken()}',
+        },
+      );
+
+      if(response.statusCode == 200){
+        print(response.body);
+        // print('Get Checkout sukses');
+        final data = jsonDecode(response.body);
+        checkoutResponse.value = CheckoutResult.fromJson(data);
+        print(checkoutResponse.value);
+      }else{
+        // print('Get Checkout gagal');
+        throw Exception('Failed to load data');
+      }
+
+    } catch (e) {
+      // print('Get Checkout gagal');
+      print("ini" + e.toString());
+      isLoading(false);
+    } finally{
+      isLoading(false);
+    }
+  }
+
+    Future<void> checkoutProductCart(List<CartProduct> cartProductList)async {
+      String api_cart_product = ApiUrl.apiUrl + 'ecom/checkout';
+      var body = {};
+        try {
+          isLoading(true);
+          for (var i = 0; i < cartProductList.length; i++) {
+              String cartId = cartProductList[i].uuid!;
+              body['cart_uuid[$i]'] = cartId;
+          }
+            final response = await http.post(Uri.parse(api_cart_product),
+              headers: {
+                'Authorization': 'Bearer ${await loginController.getToken()}',
+              },
+              body: body
+            );
+            print(response.statusCode);
+            if(response.statusCode == 200){
+              isLoading(false);
+              var jsonResult = json.decode(response.body);
+              print('Checkout Sukses');
+              print(jsonResult);
+            }else{
+              isLoading(false);
+              throw Exception(jsonDecode(response.body)['message']);
+            }
+          
+        } catch (e) {
+          isLoading(false);
+          print(e.toString());
         }finally{
           isLoading(false);
         }

@@ -45,18 +45,18 @@ class AlamatKirimController extends GetxController {
     fetchAlamatUtama();
   }
 
-  @override
-  void onClose(){
-    super.onClose();
-    // recipientNameController.dispose();
-    // recipientPhoneController.dispose();
-    // recipientAddressController.dispose();
-    // recipientProvinsiController.dispose();
-    // recipientKotaController.dispose();
-    // recipientKecamatanController.dispose();
-    // // recipientKelurahanController.dispose();
-    // recipientKodePosController.dispose();
-  }
+  // @override
+  // void onClose(){
+  //   super.onClose();
+  //   // recipientNameController.dispose();
+  //   // recipientPhoneController.dispose();
+  //   // recipientAddressController.dispose();
+  //   // recipientProvinsiController.dispose();
+  //   // recipientKotaController.dispose();
+  //   // recipientKecamatanController.dispose();
+  //   // // recipientKelurahanController.dispose();
+  //   // recipientKodePosController.dispose();
+  // }
 
   Future<void> fetchAlamatPengiriman() async {
     String api_address_url = ApiUrl.apiUrl + 'ecom/alamat-pengiriman';

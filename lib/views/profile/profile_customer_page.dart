@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/orders/salesoder_controller.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/controllers/components/tabbar_controller.dart';
@@ -11,6 +13,8 @@ class ProfileCustomerPage extends StatelessWidget {
 
   final MyTabController tabController = Get.put(MyTabController());
   final LoginController loginController = Get.put(LoginController());
+  final SalesorderController salesorderController =
+      Get.put(SalesorderController());
   final LoginController userController = Get.find();
 
   final RxBool isExpandedMenu = false.obs;
@@ -65,7 +69,8 @@ class ProfileCustomerPage extends StatelessWidget {
                             if (userController.isLoading.value) {
                               return CircularProgressIndicator();
                             }
-                            final userModel = userController.userModelData.value;
+                            final userModel =
+                                userController.userModelData.value;
                             print(userModel.nama);
                             return Container(
                               margin: EdgeInsets.only(top: 20),
@@ -279,10 +284,15 @@ class ProfileCustomerPage extends StatelessWidget {
                         controller: tabController.tabController,
                         children: [
                           // konten tab starters
-                          ListView.builder(
+                          Obx(
+                            () => ListView.builder(
                               shrinkWrap: true,
-                              itemCount: 2,
+                              itemCount:
+                                  salesorderController.salesOrders.length,
                               itemBuilder: (context, index) {
+                                print(salesorderController.salesOrders.length);
+                                var salesOrder =
+                                    salesorderController.salesOrders[index];
                                 return Container(
                                   margin: EdgeInsets.symmetric(vertical: 10),
                                   width: Get.width * 0.9,
@@ -301,26 +311,27 @@ class ProfileCustomerPage extends StatelessWidget {
                                     trailing: Text(
                                       "Sedang Diproses",
                                       style: TextStyle(
-                                          color: Colors.orange, fontSize: 10),
+                                        color: Colors.orange,
+                                        fontSize: 10,
+                                      ),
                                     ),
                                     title: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                          width: 80,
-                                          height: 80,
+                                          width: 65,
+                                          height: 65,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                             color: AppsColors
                                                 .imageProductBackground,
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                "assets/images/product.png",
-                                              ),
-                                              fit: BoxFit.cover,
-                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.shopping_bag,
+                                            size: 40,
+                                            color: Colors.white,
                                           ),
                                         ),
                                         Expanded(
@@ -332,25 +343,51 @@ class ProfileCustomerPage extends StatelessWidget {
                                               children: [
                                                 Row(
                                                   children: [
-                                                    Text(
-                                                      "Alamat Pengiriman",
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w700,
+                                                    Expanded(
+                                                      child: Container(
+                                                        child: Text(
+                                                          salesOrder
+                                                              .salesOrderProduct![
+                                                                  0]
+                                                              .product!
+                                                              .productName!,
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                          ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
                                                       ),
-                                                    )
+                                                    ),
                                                   ],
+                                                ),
+                                                SizedBox(height: 5),
+                                                Text(
+                                                  "x${salesOrder.salesOrderProduct![0].quantity}",
+                                                  style: TextStyle(
+                                                    color: AppsColors
+                                                        .loginColorPrimary,
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
                                                 SizedBox(
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  "x100",
+                                                  NumberFormat.currency(
+                                                    locale: 'id_ID',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0,
+                                                  ).format(int.parse(salesOrder
+                                                      .totalHarga
+                                                      .toString())),
                                                   style: TextStyle(
-                                                      color: AppsColors
-                                                          .loginColorPrimary,
-                                                      fontSize: 14),
+                                                    fontSize: 13,
+                                                    color: AppsColors
+                                                        .loginFontColorPrimaryDark,
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -362,7 +399,10 @@ class ProfileCustomerPage extends StatelessWidget {
                                         horizontal: 20, vertical: 10),
                                   ),
                                 );
-                              }),
+                              },
+                            ),
+                          ),
+
                           // konten tab main course
                           Center(
                             child: Text("Tunggu ya dikirim"),

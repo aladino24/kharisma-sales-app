@@ -12,6 +12,7 @@ class ProductController extends GetxController{
   var _products = <Product>[].obs;
   var price = "0".obs;
   var totalPrice = 0.obs;
+  var dataUuid = ''.obs;
 
   List<Product> get products => _products;
   Rx<BuyNowResult> buyNowResponse = BuyNowResult().obs;
@@ -147,7 +148,7 @@ class ProductController extends GetxController{
 
       if(response.statusCode == 200){
         isLoading(false);
-        print("sukses");
+        dataUuid.value = jsonDecode(response.body)['data'];
       }else{
         isLoading(false);
         throw Exception('ini Failed to load data');

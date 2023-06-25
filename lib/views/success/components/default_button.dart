@@ -3,7 +3,7 @@ import 'constant.dart';
 
 class DefaultButton extends StatelessWidget {
   final String btnText;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
   const DefaultButton({
     Key? key, required this.btnText, required this.onPressed,
   }) : super(key: key);

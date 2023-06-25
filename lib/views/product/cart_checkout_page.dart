@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/orders/salesoder_controller.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/models/ongkos_kirim.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
@@ -15,19 +16,25 @@ class CartCheckoutPage extends StatelessWidget {
   CartCheckoutPage({super.key});
 
   final TextEditingController claimController = TextEditingController();
-  final OngkosKirimController ongkosKirimController = Get.put(OngkosKirimController());
-  final AlamatKirimController alamatKirimController = Get.put(AlamatKirimController());
+  final OngkosKirimController ongkosKirimController =
+      Get.put(OngkosKirimController());
+  final AlamatKirimController alamatKirimController =
+      Get.put(AlamatKirimController());
+  final SalesorderController salesOrderController =
+      Get.put(SalesorderController());
   RxInt biayaPengiriman = 0.obs;
+  RxString estimasi = 'Not Available'.obs;
+  RxString nama = ''.obs;
   RxInt totalBelanja = 0.obs;
   int weight = 0;
-  
+
   @override
   Widget build(BuildContext context) {
     // tangkap arguments getx
     final Map<String, dynamic> args = Get.arguments;
     final RxInt total = args['total'];
     // cartProductList
-    final List<dynamic> cartProductList = args['cartProductList'];
+    final List<CartProduct> cartProductList = args['cartProductList'];
     // tampilkan cartProductList
     // print(cartProductList);
     return Scaffold(
@@ -83,10 +90,9 @@ class CartCheckoutPage extends StatelessWidget {
                                           },
                                           child:
                                               Text("Tambah Alamat Pengiriman"),
-                                            style: 
-                                            ElevatedButton.styleFrom(
-                                              backgroundColor: AppsColors.loginColorPrimary
-                                            ),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  AppsColors.loginColorPrimary),
                                         )
                                       ],
                                     ),
@@ -104,10 +110,19 @@ class CartCheckoutPage extends StatelessWidget {
                                       SizedBox(width: 5),
                                       Text.rich(
                                         TextSpan(
-                                            text: alamatKirimController.alamatPengiriman.value.penerima,
+                                            text: alamatKirimController
+                                                .alamatPengiriman
+                                                .value
+                                                .penerima,
                                             children: <InlineSpan>[
                                               TextSpan(
-                                                text: alamatKirimController.alamatPengiriman.value.isAlamatToko == "1" ? " ( Alamat Toko )" : "",
+                                                text: alamatKirimController
+                                                            .alamatPengiriman
+                                                            .value
+                                                            .isAlamatToko ==
+                                                        "1"
+                                                    ? " ( Alamat Toko )"
+                                                    : "",
                                               )
                                             ]),
                                       ),
@@ -146,7 +161,8 @@ class CartCheckoutPage extends StatelessWidget {
                                       SizedBox(width: 5),
                                       Text.rich(
                                         TextSpan(
-                                          text: alamatKirimController.alamatPengiriman.value.noTelepon,
+                                          text: alamatKirimController
+                                              .alamatPengiriman.value.noTelepon,
                                         ),
                                       ),
                                     ],
@@ -192,8 +208,8 @@ class CartCheckoutPage extends StatelessWidget {
                             itemCount: cartProductList.length,
                             itemBuilder: (context, index) {
                               // Get the cart product at the current index
-                               CartProduct cartProduct = cartProductList[index];
-                               weight += int.parse(cartProduct.product!.weight!);
+                              CartProduct cartProduct = cartProductList[index];
+                              weight += int.parse(cartProduct.product!.weight!);
                               return Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -234,21 +250,32 @@ class CartCheckoutPage extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                               cartProduct.product!.productName.toString(),
+                                              cartProduct.product!.productName
+                                                  .toString(),
                                               style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
-                                            DiskonProduct(),
+                                            Text(
+                                              NumberFormat.currency(
+                                                locale: 'id_ID',
+                                                symbol: 'Rp ',
+                                                decimalDigits: 0,
+                                              ).format(int.parse(cartProduct
+                                                  .price
+                                                  .toString())),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            // DiskonProduct(),
                                             SizedBox(
                                               height: 5,
                                             ),
                                             Text(
-                                               "Qty: ${cartProduct.quantity.toString()}",
-                                              style: TextStyle(
-                                                fontSize: 12
-                                              ),
+                                              "Qty: ${cartProduct.quantity.toString()}",
+                                              style: TextStyle(fontSize: 12),
                                             ),
                                           ],
                                         ),
@@ -293,56 +320,79 @@ class CartCheckoutPage extends StatelessWidget {
                                         horizontal: 8.0),
                                     child: DropdownButtonHideUnderline(
                                         child: Obx(() {
-                                            if (ongkosKirimController.listOngkosKirim.isEmpty) {
-                                                ongkosKirimController.fetchOngkosKirim(alamatKirimController.alamatPengiriman.value.kecamatanId, weight.toString());
-                                              }
-                                          return DropdownButtonFormField(
-                                            hint: ongkosKirimController
-                                                    .isLoading.value
-                                                ? Text("Loading...")
-                                                : Text('Pilih jenis pengiriman'),
-                                            // value: 'COD',
-                                            isDense: true,
-                                            items: ongkosKirimController.listOngkosKirim.isNotEmpty
-                                                ? List.generate(
-                                                    ongkosKirimController
-                                                        .listOngkosKirim.length,
-                                                    (index) => DropdownMenuItem(
-                                                          child: Text(
-                                                            ongkosKirimController.listOngkosKirim[index].nama!,
-                                                            style: TextStyle(
-                                                                fontSize: 12),
-                                                          ),
-                                                          value: ongkosKirimController.listOngkosKirim[index],
-                                                        ))
-                                                : null,
-                                            onChanged: (value) {
-                                              OngkosKirim selectedOngkosKirim = value as OngkosKirim;
-                                              // print(selectedOngkosKirim.nama);
-                                              // subTotal
-                                              biayaPengiriman.value = selectedOngkosKirim.harga ?? 0;
-                                              // print(biayaPengiriman.value);
-                                            },
-                                            value: ongkosKirimController.selectedOngkosKirim.value != null
-                                                ? ongkosKirimController.selectedOngkosKirim.value
-                                                : null,
-                                            decoration: InputDecoration(
-                                              border: InputBorder.none, // Menghilangkan underline
-                                            ),
-                                          );
-                                        } 
-                                    )),
+                                      if (ongkosKirimController
+                                          .listOngkosKirim.isEmpty) {
+                                        ongkosKirimController.fetchOngkosKirim(
+                                            alamatKirimController
+                                                .alamatPengiriman
+                                                .value
+                                                .kecamatanId,
+                                            weight.toString());
+                                      }
+                                      return DropdownButtonFormField(
+                                        hint: ongkosKirimController
+                                                .isLoading.value
+                                            ? Text("Loading...")
+                                            : Text('Pilih jenis pengiriman'),
+                                        // value: 'COD',
+                                        isDense: true,
+                                        items: ongkosKirimController
+                                                .listOngkosKirim.isNotEmpty
+                                            ? List.generate(
+                                                ongkosKirimController
+                                                    .listOngkosKirim.length,
+                                                (index) => DropdownMenuItem(
+                                                      child: Text(
+                                                        ongkosKirimController
+                                                            .listOngkosKirim[
+                                                                index]
+                                                            .nama!,
+                                                        style: TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                      value:
+                                                          ongkosKirimController
+                                                              .listOngkosKirim[
+                                                                  index]
+                                                              .nama,
+                                                    ))
+                                            : null,
+                                        onChanged: (value) {
+                                          String selectedValue = value
+                                              as String; // Ubah tipe value ke String
+                                          OngkosKirim selectedOngkosKirim =
+                                              ongkosKirimController
+                                                  .listOngkosKirim
+                                                  .firstWhere(
+                                                      (element) =>
+                                                          element.nama ==
+                                                          selectedValue,
+                                                      orElse: () =>
+                                                          OngkosKirim()); // Menggunakan properti 'nama' sebagai nilai yang dicocokkan
+                                          ongkosKirimController
+                                              .selectedOngkosKirim
+                                              .value = selectedOngkosKirim;
+                                          biayaPengiriman.value =
+                                              selectedOngkosKirim.harga ?? 0;
+                                          estimasi.value =
+                                              selectedOngkosKirim.estimasi!;
+                                          nama.value =
+                                              selectedOngkosKirim.nama!;
+                                        },
+                                        value: ongkosKirimController
+                                                .selectedOngkosKirim
+                                                .value
+                                                ?.nama ??
+                                            null,
+                                        decoration: InputDecoration(
+                                          border: InputBorder
+                                              .none, // Menghilangkan underline
+                                        ),
+                                      );
+                                    })),
                                   ),
                                 );
                               },
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Voucher",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(
                               height: 10,
@@ -359,11 +409,15 @@ class CartCheckoutPage extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            Row(
-                              children: [
-                                Icon(Icons.calendar_month),
-                                Text("27 Februari 2023")
-                              ],
+                            Obx(
+                              () => Row(
+                                children: [
+                                  Icon(Icons.calendar_month),
+                                  estimasi.value == ''
+                                      ? Text('Not Available')
+                                      : Text(estimasi.value)
+                                ],
+                              ),
                             ),
                             SizedBox(
                               height: 20,
@@ -417,15 +471,15 @@ class CartCheckoutPage extends StatelessWidget {
                                           ],
                                         ),
                                         Obx(() => Text(
-                                          NumberFormat.currency(
-                                            locale: 'id_ID',
-                                            symbol: 'Rp ',
-                                            decimalDigits: 0,
-                                          ).format(total.value),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
-                                        ))
+                                              NumberFormat.currency(
+                                                locale: 'id_ID',
+                                                symbol: 'Rp ',
+                                                decimalDigits: 0,
+                                              ).format(total.value),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ))
                                       ],
                                     ),
                                   ),
@@ -465,8 +519,7 @@ class CartCheckoutPage extends StatelessWidget {
                                               symbol: 'Rp ',
                                               decimalDigits: 0,
                                             ).format(biayaPengiriman.value),
-                                            style: TextStyle(
-                                                fontSize: 16),
+                                            style: TextStyle(fontSize: 16),
                                           );
                                         })
                                       ],
@@ -494,7 +547,8 @@ class CartCheckoutPage extends StatelessWidget {
                                               locale: 'id_ID',
                                               symbol: 'Rp ',
                                               decimalDigits: 0,
-                                            ).format(total.value + biayaPengiriman.value),
+                                            ).format(total.value +
+                                                biayaPengiriman.value),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 16),
@@ -523,13 +577,36 @@ class CartCheckoutPage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10.0),
                                     )),
                                   ),
-                                  onPressed: () {},
-                                  child: Text(
-                                    "Lanjutkan",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )),
+                                  onPressed: () async {
+                                    var status = await salesOrderController
+                                        .salesOrderCartStore(
+                                            cartProductList,
+                                            weight.toString(),
+                                            biayaPengiriman.value.toString(),
+                                            nama.value);
+                                    if (status == '200') {
+                                      Get.offAllNamed(RoutesName.orderSuccess);
+                                    } else {
+                                      Get.snackbar(
+                                        "Failed",
+                                        "Your order has failed",
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                      );
+                                    }
+                                  },
+                                  child: Obx(
+                                      () => salesOrderController.isLoading.value
+                                          ? Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            )
+                                          : Text(
+                                              "Lanjutkan",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ))),
                             )
                           ],
                         ),
