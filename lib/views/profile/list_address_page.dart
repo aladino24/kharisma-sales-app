@@ -10,8 +10,7 @@ import 'package:kharisma_sales_app/widgets/main_header.dart';
 class ListAddressPage extends StatelessWidget {
   ListAddressPage({super.key});
 
-  final AlamatKirimController listAlamatPengiriman =
-      Get.put(AlamatKirimController());
+  final AlamatKirimController listAlamatPengiriman = Get.put(AlamatKirimController());
   bool _isSnackbarShown = false;
 
   @override

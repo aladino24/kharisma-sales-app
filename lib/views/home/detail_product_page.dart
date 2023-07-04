@@ -9,15 +9,14 @@ import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
-import 'package:kharisma_sales_app/widgets/rating_star.dart';
 import 'package:kharisma_sales_app/controllers/components/detail_product_controller.dart';
 
+// ignore: must_be_immutable
 class DetailProductPage extends StatelessWidget {
   DetailProductPage({super.key});
 
   CarouselController? carouselController = CarouselController();
-  final DetailProductController detailProductController =
-      Get.put(DetailProductController());
+  final DetailProductController detailProductController = Get.put(DetailProductController());
   final ProductController productController = Get.find<ProductController>();
   final Product? product = Get.arguments as Product?;
   void previousImage() {
@@ -26,15 +25,14 @@ class DetailProductPage extends StatelessWidget {
   }
 
   void nextImage() {
-    carouselController!
-        .nextPage(duration: Duration(milliseconds: 300), curve: Curves.ease);
+    carouselController!.nextPage(duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 
   @override
   Widget build(BuildContext context) {
     // get arguments json
-
     // print(product!.productName);
+    final TextEditingController quantityController = TextEditingController();
     return Scaffold(
       body: SafeArea(
           child: Column(
@@ -151,14 +149,14 @@ class DetailProductPage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                DiskonProduct()
+                                // DiskonProduct()
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: RatingStar(),
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(top: 5),
+                          //   child: RatingStar(),
+                          // ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: Column(
@@ -216,7 +214,9 @@ class DetailProductPage extends StatelessWidget {
 
                           // Quantity product
                           GetBuilder<DetailProductController>(
-                            builder: (controller) => Padding(
+                            builder: (controller){
+                              quantityController.text = detailProductController.quantity.value.toString();
+                              return Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: Row(
                                 children: [
@@ -254,7 +254,7 @@ class DetailProductPage extends StatelessWidget {
                                             ),
                                           ),
                                           Container(
-                                            width: 40,
+                                            width: 55,
                                             height: 30,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
@@ -267,12 +267,37 @@ class DetailProductPage extends StatelessWidget {
                                                     color: Colors.grey),
                                               ),
                                               child: Center(
-                                                child: Text(
-                                                  "${detailProductController.quantity.value}",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15,
-                                                  ),
+                                                // child: Text(
+                                                //   "${detailProductController.quantity.value}",
+                                                //   style: TextStyle(
+                                                //     color: Colors.black,
+                                                //     fontSize: 15,
+                                                //   ),
+                                                // ),
+                                                child: TextFormField(
+                                                  controller: quantityController,
+                                                  keyboardType: TextInputType.number,
+                                                  style: TextStyle(fontSize: 15.0),
+                                                  textAlign: TextAlign.center,
+                                                  onChanged: (value) {
+                                                     String cleanedValue = value.replaceAll('-', '');
+                                                      cleanedValue = cleanedValue.replaceAll(',', '').replaceAll('.', '');
+                                                      int quantity = int.tryParse(cleanedValue) ?? 0;
+
+                                                      if (cleanedValue.isNotEmpty && quantity != 0) {
+                                                        if (quantity > int.parse(product!.stock.toString())) {
+                                                          quantityController.text = product!.stock.toString();
+                                                          detailProductController.quantity.value = int.parse(product!.stock.toString());
+                                                        } else if (quantity == 0) {
+                                                          quantityController.text = '0';
+                                                          detailProductController.quantity.value = 1;
+                                                        } else {
+                                                          detailProductController.quantity.value = quantity;
+                                                        }
+                                                      } else {
+                                                        detailProductController.quantity.value = 1;
+                                                      }
+                                                  },
                                                 ),
                                               ),
                                             ),
@@ -312,7 +337,8 @@ class DetailProductPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                            ),
+                            );
+                            }
                           ),
 
                           // Keranjang dan Beli Sekarang
@@ -370,28 +396,22 @@ class DetailProductPage extends StatelessWidget {
                                       ),
                                     ),
                                     onTap: () {
-                                      Get.toNamed(RoutesName.checkoutProduct,
+                                      if(quantityController.text.isNotEmpty && quantityController.text != '0'){
+                                        Get.toNamed(RoutesName.checkoutProduct,
                                           arguments: {
                                             "productId": product!.productId,
-                                            "productTmplid":
-                                                product!.productTmplId,
+                                            "productTmplid": product!.productTmplId,
                                             "productName": product!.productName,
                                             "price": product!.pricelist!
                                                 .where((element) =>
                                                     element.type == 'b2b')
                                                 .first
                                                 .price,
-                                            "quantity": detailProductController
-                                                .quantity.value,
-                                            'imageProduct':
-                                                product!.gdImagePath,
+                                            "quantity": detailProductController.quantity.value,
+                                            'imageProduct':product!.gdImagePath,
                                             'weight': product!.weight,
                                           });
-                                      productController.checkPrice(
-                                          product!.productTmplId,
-                                          detailProductController
-                                              .quantity.value);
-
+                                      productController.checkPrice(product!.productTmplId,detailProductController.quantity.value);
                                       productController
                                           .buyNow(
                                               product!.productId,
@@ -399,6 +419,21 @@ class DetailProductPage extends StatelessWidget {
                                                   .quantity.value)
                                           .then((value) =>
                                               productController.getBuyNow());
+                                      }else if(quantityController.text == '0'){
+                                        Get.snackbar(
+                                          "Gagal", 
+                                          "Quantity tidak boleh kosong",
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                      }else{
+                                        Get.snackbar(
+                                          "Gagal", 
+                                          "Quantity tidak boleh kosong",
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                      }
                                     }),
                               ],
                             ),

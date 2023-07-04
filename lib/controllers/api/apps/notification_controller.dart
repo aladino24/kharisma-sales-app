@@ -61,6 +61,7 @@ class NotificationController extends GetxController{
         var jsonResult = json.decode(response.body);
         // print(jsonResult);
         notificationList.value = List<NotificationItem>.from(jsonResult['data'].map((notification) => NotificationItem.fromJson(notification)));
+   
       }else{
         isLoading(false);
         throw Exception(jsonDecode(response.body)['message']);

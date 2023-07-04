@@ -275,7 +275,7 @@ class CheckoutProductPage extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        DiskonProduct(),
+                                        // DiskonProduct(),
                                         SizedBox(
                                           height: 5,
                                         ),
@@ -395,10 +395,15 @@ class CheckoutProductPage extends StatelessWidget {
                                                           selectedValue,
                                                       orElse: () =>
                                                           OngkosKirim()); // Menggunakan properti 'nama' sebagai nilai yang dicocokkan
-                                          ongkosKirimController.selectedOngkosKirim.value = selectedOngkosKirim;
-                                          biayaPengiriman.value = selectedOngkosKirim.harga ?? 0;
-                                          estimasi.value = selectedOngkosKirim.estimasi!;
-                                          nama.value = selectedOngkosKirim.nama!;
+                                          ongkosKirimController
+                                              .selectedOngkosKirim
+                                              .value = selectedOngkosKirim;
+                                          biayaPengiriman.value =
+                                              selectedOngkosKirim.harga ?? 0;
+                                          estimasi.value =
+                                              selectedOngkosKirim.estimasi!;
+                                          nama.value =
+                                              selectedOngkosKirim.nama!;
                                         },
                                         value: ongkosKirimController
                                                 .selectedOngkosKirim
@@ -496,7 +501,7 @@ class CheckoutProductPage extends StatelessWidget {
                                           children: [
                                             Text("Sub Total"),
                                             SizedBox(width: 5),
-                                            DiskonProduct()
+                                            // DiskonProduct()
                                           ],
                                         ),
                                         Obx(() {
@@ -605,66 +610,81 @@ class CheckoutProductPage extends StatelessWidget {
                                       null &&
                                   productController
                                       .buyNowResponse.value.data!.isNotEmpty) {
-                                BuyNow data = productController.buyNowResponse.value.data![0];
+                                BuyNow data = productController
+                                    .buyNowResponse.value.data![0];
                                 return Container(
                                   width: Get.width,
                                   child: TextButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                AppsColors.loginColorPrimary),
-                                        shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              AppsColors.loginColorPrimary),
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10.0),
-                                        )),
+                                        ),
                                       ),
-                                      onPressed: () async {
-                                        if(nama.value == ''){
-                                          Get.snackbar(
-                                            'Error', 
-                                            'Pilih Jenis Pengiriman Terlebih Dahulu',
-                                            backgroundColor: Colors.red,
-                                            colorText: Colors.white
-                                          );
-                                        }else{
-                                          var status = await salesOrderController
-                                              .salesOrderStore(
-                                                  productController.dataUuid.value,
+                                    ),
+                                    onPressed: salesOrderController
+                                            .isLoading.value
+                                        ? null
+                                        : () async {
+                                            if (nama.value == '') {
+                                              Get.snackbar(
+                                                'Error',
+                                                'Pilih Jenis Pengiriman Terlebih Dahulu',
+                                                backgroundColor: Colors.red,
+                                                colorText: Colors.white,
+                                              );
+                                            } else {
+                                              if (!salesOrderController
+                                                  .isLoading.value) {
+                                                salesOrderController
+                                                    .isLoading.value = true;
+                                                var status =
+                                                    await salesOrderController
+                                                        .salesOrderStore(
+                                                  productController
+                                                      .dataUuid.value,
                                                   data.product!.weight,
                                                   biayaPengiriman.toString(),
-                                                  nama.value);
-                                          if (status == '200') {
-                                            Get.offAllNamed(
-                                                RoutesName.orderSuccess);
-                                          } else {
-                                            Get.snackbar(
-                                              "Failed",
-                                              "Your order has failed",
-                                              backgroundColor: Colors.red,
-                                              colorText: Colors.white,
-                                            );
-                                          }
-                                        }
-                                      },
-                                      child: Obx(() => salesOrderController
-                                              .isLoading.value
-                                          ? Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )
-                                          : Text(
-                                              "Lanjutkan",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                            ))),
+                                                  nama.value,
+                                                );
+                                                salesOrderController
+                                                    .isLoading.value = false;
+
+                                                if (status == '200') {
+                                                  Get.offNamed(RoutesName.orderSuccess);
+                                                } else {
+                                                  Get.snackbar(
+                                                    "Failed",
+                                                    "Your order has failed",
+                                                    backgroundColor: Colors.red,
+                                                    colorText: Colors.white,
+                                                  );
+                                                }
+                                              }
+                                            }
+                                          },
+                                    child: Obx(() => salesOrderController
+                                            .isLoading.value
+                                        ? Center(
+                                            child: CircularProgressIndicator())
+                                        : Text(
+                                            "Lanjutkan",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )),
+                                  ),
                                 );
                               } else {
                                 return CircularProgressIndicator();
                               }
-                            })
+                            }),
                           ],
                         ),
                       )

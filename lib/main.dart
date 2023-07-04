@@ -6,6 +6,7 @@ import 'package:kharisma_sales_app/views/login/login_customer_page.dart';
 import 'package:kharisma_sales_app/routes/apps_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");

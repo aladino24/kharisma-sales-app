@@ -77,14 +77,21 @@ class _CartProductPageState extends State<CartProductPage> {
                               children: [
                                 Row(
                                   children: [
-                                    GetBuilder<CartController>(
-                                        builder: (controller) => Checkbox(
-                                              value: cartController
-                                                  .isAllSelected.value,
-                                              onChanged: (value) {
-                                                // cartController.selectAll();
-                                              },
-                                            )),
+                                    Obx(() => Checkbox(
+                                            value: cartController.isAllSelected.value,
+                                            onChanged: (value) {
+                                              cartController.selectAll();
+                                               if (value == true) {
+                                              // Calculate the sum of all prices
+                                              totalCart.value = cartController.cartProductList.fold(0,
+                                                  (sum, cartProduct) =>
+                                                      sum + int.parse(cartProduct.totalPrice!));
+                                            } else {
+                                              // Reset the sum to 0
+                                              totalCart.value = 0;
+                                            }
+                                          },
+                                      )),
                                     const Text("Pilih Semua"),
                                   ],
                                 ),
@@ -108,16 +115,12 @@ class _CartProductPageState extends State<CartProductPage> {
                               shrinkWrap: true,
                               itemCount: cartController.cartProductList.length,
                               itemBuilder: (context, index) {
-                                CartProduct cartProduct =
-                                    cartController.cartProductList[index];
-                                int parsedQuantity =
-                                    int.parse(cartProduct.quantity!);
-                                cartController.quantityGlobal.value =
-                                    parsedQuantity;
+                                CartProduct cartProduct = cartController.cartProductList[index];
+                                int parsedQuantity = int.parse(cartProduct.quantity!);
+                                cartController.quantityGlobal.value = parsedQuantity;
 
                                 return GetBuilder<CartController>(
-                                  id: cartProduct
-                                      .uuid, // Provide a unique identifier based on the UUID
+                                  id: cartProduct.uuid, // Provide a unique identifier based on the UUID
                                   builder: (controller) {
                                     final price = cartController.prices[
                                         cartProduct.product!.productTmplId!];
@@ -213,7 +216,7 @@ class _CartProductPageState extends State<CartProductPage> {
                                                           maxLines: 2,
                                                         ),
                                                       ),
-                                                      DiskonProduct(),
+                                                      // DiskonProduct(),
                                                       SizedBox(height: 5),
                                                       Text(
                                                         NumberFormat.currency(
@@ -229,27 +232,47 @@ class _CartProductPageState extends State<CartProductPage> {
                                                         ),
                                                       ),
                                                       SizedBox(height: 5),
-                                                      TableQuantity(
-                                                        size: 28,
-                                                        iconSize: 12,
-                                                        productId: cartProduct
-                                                            .productId!,
-                                                        productTmplid:
-                                                            cartProduct.product!
-                                                                .productTmplId!,
-                                                        quantity: cartController
-                                                            .quantityGlobal
-                                                            .value
-                                                            .obs,
-                                                        stock: cartProduct
-                                                            .product!.stock!,
-                                                        totalPrice: cartProduct
-                                                            .totalPrice!,
-                                                        price:
-                                                            cartProduct.price!,
-                                                        uuid: cartProduct.uuid!,
-                                                        totalCart: totalCart,
-                                                        index: index,
+                                                      Row(
+                                                        children: [
+                                                          TableQuantity(
+                                                            size: 28,
+                                                            iconSize: 12,
+                                                            productId: cartProduct
+                                                                .productId!,
+                                                            productTmplid:
+                                                                cartProduct.product!
+                                                                    .productTmplId!,
+                                                            quantity: int.parse(cartProduct.quantity!).obs,
+                                                            stock: cartProduct
+                                                                .product!.stock!,
+                                                            totalPrice: cartProduct
+                                                                .totalPrice!,
+                                                            price:
+                                                                cartProduct.price!,
+                                                            uuid: cartProduct.uuid!,
+                                                            totalCart: totalCart,
+                                                            index: index,
+                                                          ),
+                                                          SizedBox(width: 10),
+                                                          Column(
+                                                            children: [
+                                                              Text(
+                                                                'Stock',
+                                                                style: TextStyle(
+                                                                  fontSize: 10,
+                                                                  color: Colors.black,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                '(${cartProduct.product!.stock.toString()})',
+                                                                style: TextStyle(
+                                                                  fontSize: 10,
+                                                                  color: Colors.black,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),

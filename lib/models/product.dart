@@ -35,6 +35,7 @@ class Product {
   String? unit;
   String? weight;
   String? stock;
+  int? isWishlist;
   ProductTag? productTag;
   List<Pricelist>? pricelist;
 
@@ -55,6 +56,7 @@ class Product {
       this.unit,
       this.weight,
       this.stock,
+      this.isWishlist,
       this.productTag,
       this.pricelist});
 
@@ -75,6 +77,7 @@ class Product {
     unit = json['unit'];
     weight = json['weight'];
     stock = json['stock'];
+    isWishlist = json['is_wishlist'];
     productTag = json['product_tag'] != null
         ? new ProductTag.fromJson(json['product_tag'])
         : null;

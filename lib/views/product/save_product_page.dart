@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/save_product_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
-import 'package:kharisma_sales_app/widgets/rating_star.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SaveProductPage extends StatelessWidget {
   SaveProductPage({Key? key}) : super(key: key);
 
   final ProductController productController = Get.find<ProductController>();
-  final SaveProductController saveProductController =
-      Get.put(SaveProductController());
+  final SaveProductController saveProductController = Get.put(SaveProductController());
+  final CartController cartController = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(child: Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,6 +57,19 @@ class SaveProductPage extends StatelessWidget {
                 ],
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+              child: Text(
+                "Ketuk tahan / klik icon favorite Untuk Menghapus barang dari wishlist",
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 14,
+                  fontStyle: FontStyle.italic,
+                  color: AppsColors.loginFontColorSecondary,
+                ),
+              ),
+            ),
+            
             Expanded(
               child: Obx(() {
                 if (saveProductController.isLoading.value) {
@@ -215,9 +228,9 @@ class SaveProductPage extends StatelessWidget {
                                       left: 10, right: 10, bottom: 10),
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.end,
                                     children: [
-                                      RatingStar(),
+                                      // RatingStar(),
                                       Container(
                                         width:
                                             MediaQuery.of(context).size.width *
@@ -238,25 +251,47 @@ class SaveProductPage extends StatelessWidget {
                                                   )),
                                               child: GestureDetector(
                                                 child: Icon(Icons.favorite,
-                                                    color: Colors.red,
+                                                    color: product.isWishlist == 1 ? Colors.red : Colors.grey,
                                                     size: 18),
+                                                  onTap: () async{
+                                                     Get.lazyPut(() => SaveProductController());
+                                                    final saveProductController = Get.find<SaveProductController>();
+                                                    if(product.isWishlist == 0){ 
+                                                      await saveProductController.saveProduct(int.parse(product.productId!));                                                          
+                                                    }else{
+                                                      await saveProductController.deleteProduct(product.productId!);
+                                                    }
+
+                                                    productController.fetchProduct();
+                                                    saveProductController.fetchProduct();
+                                                  },
                                               ),
                                             ),
-                                            Container(
-                                              width: 28,
-                                              height: 28,
-                                              child: Icon(
-                                                  Icons
-                                                      .add_shopping_cart_outlined,
-                                                  color: Colors.white,
-                                                  size: 17),
-                                              decoration: BoxDecoration(
-                                                  color: AppsColors
-                                                      .loginColorPrimary,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(100),
-                                                  )),
+                                            GestureDetector(
+                                              child: Container(
+                                                width: 28,
+                                                height: 28,
+                                                child: Icon(
+                                                    Icons
+                                                        .add_shopping_cart_outlined,
+                                                    color: Colors.white,
+                                                    size: 17),
+                                                decoration: BoxDecoration(
+                                                    color: AppsColors
+                                                        .loginColorPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(100),
+                                                    )),
+                                              ),
+                                              onTap: () async{
+                                                await cartController.addCartProduct(
+                                                      product.productId!,
+                                                      product
+                                                          .pricelist![0].price
+                                                          .toString(),
+                                                      1);
+                                              },
                                             ),
                                           ],
                                         ),
@@ -293,6 +328,12 @@ class SaveProductPage extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ), onWillPop: _onBackPressed);
+  }
+
+  Future<bool> _onBackPressed() async {
+    // Fetch data saat pengguna kembali ke halaman ini
+    await productController.fetchProduct();
+    return true;
   }
 }

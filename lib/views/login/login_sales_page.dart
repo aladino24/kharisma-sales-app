@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/network/controllers/network_controller.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +11,7 @@ class LoginSalesPage extends StatelessWidget {
   LoginSalesPage({super.key});
 
   final LoginController loginController = Get.put(LoginController());
-
+  final NetworkController networkController = Get.put(NetworkController());
   var isHidePassword = true.obs;
 
   @override

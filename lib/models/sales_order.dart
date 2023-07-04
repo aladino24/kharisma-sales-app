@@ -24,6 +24,7 @@ class SalesOrder {
   String? userId;
   dynamic salesId;
   String? odooOrderId;
+  String? noInvoice;
   String? ongkosKirim;
   String? totalHargaProduk;
   String? totalBerat;
@@ -44,6 +45,7 @@ class SalesOrder {
       this.userId,
       this.salesId,
       this.odooOrderId,
+      this.noInvoice,
       this.ongkosKirim,
       this.totalHargaProduk,
       this.totalBerat,
@@ -64,6 +66,7 @@ class SalesOrder {
     userId = json['user_id'];
     salesId = json['sales_id'];
     odooOrderId = json['odoo_order_id'];
+    noInvoice = json['no_invoice'];
     ongkosKirim = json['ongkos_kirim'];
     totalHargaProduk = json['total_harga_produk'];
     totalBerat = json['total_berat'];

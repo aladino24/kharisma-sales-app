@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
@@ -13,6 +14,7 @@ class SaveProductController extends GetxController{
    var isLoading = false.obs;
 
    final LoginController loginController = Get.find<LoginController>();
+   final MainHeaderController mainHeaderController = Get.find<MainHeaderController>();
 
    @override
     void onInit() {
@@ -75,10 +77,11 @@ class SaveProductController extends GetxController{
             isLoading(false);
             // final data = jsonDecode(response.body)['data'];
             // _products.assignAll(List<Product>.from(data.map((product) => Product.fromJson(product))));
-            Get.toNamed(
-              RoutesName.saveProduct
-            );
+            // Get.toNamed(
+            //   RoutesName.saveProduct
+            // );
             fetchProduct();
+            mainHeaderController.getWishlistCount();
           }else{
             isLoading(false);
             throw Exception('Failed to load data');
@@ -112,6 +115,7 @@ class SaveProductController extends GetxController{
             // final data = jsonDecode(response.body)['data'];
             // _products.assignAll(List<Product>.from(data.map((product) => Product.fromJson(product))));
             fetchProduct();
+            mainHeaderController.getWishlistCount();
           }else{
             isLoading(false);
             throw Exception('Failed to load data');

@@ -45,7 +45,7 @@ class TableQuantity extends StatelessWidget {
               ),
             ),
             Container(
-              width: 40,
+              width: 55,
               height: size.toDouble(),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -62,10 +62,23 @@ class TableQuantity extends StatelessWidget {
                     id: index,
                     builder: (_) {
                       // quantity update
-                      return Text(
-                        '${quantity}',
-                        style: TextStyle(fontSize: 15.0),
-                      );
+                      return TextFormField(
+                      controller: TextEditingController(text: quantity.value.toString()),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) async{
+                        if (value.isNotEmpty) {
+                          
+                          quantity.value = int.parse(value);
+                          // print('ini dari form ' + value);
+                          await cartController.updateCartProduct(uuid, productId, price, int.parse(value));
+                        }
+                      },
+                      style: TextStyle(fontSize: 15.0),
+                      textAlign: TextAlign.center,
+                      // decoration: InputDecoration(
+                      //   labelText: 'Quantity',
+                      // ),
+                    );
                     },
                  ),
                 ),

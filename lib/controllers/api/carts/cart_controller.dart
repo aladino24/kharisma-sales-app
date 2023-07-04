@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/models/checkout.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
@@ -14,11 +15,11 @@ class CartController extends GetxController{
   var cartProductList = List<CartProduct>.empty().obs;
   var loginController = Get.put(LoginController());
   final ProductController productController = Get.put(ProductController());
+  final MainHeaderController mainHeaderController = Get.find<MainHeaderController>();
   Rx<CheckoutResult> checkoutResponse = CheckoutResult().obs;
   var isAllSelected = false.obs;
   var prices = <String, String>{}.obs;
   var totalPrices = <String, int>{}.obs;
-
   var quantityGlobal = 0.obs;
 
   
@@ -96,6 +97,7 @@ class CartController extends GetxController{
             );
 
             fetchCartProduct();
+            mainHeaderController.getCartCount();
             // update();
           }else{
             isLoading(false);
@@ -240,6 +242,7 @@ class CartController extends GetxController{
             var jsonResult = json.decode(response.body);
             print(jsonResult['message']);
             fetchCartProduct();
+            update();
           }else{
             isLoading(false);
             throw Exception(jsonDecode(response.body)['message']);
@@ -275,8 +278,8 @@ class CartController extends GetxController{
             var jsonResult = json.decode(response.body);
             // get.snackbar
            print(jsonResult['message']);
-
             fetchCartProduct();
+            mainHeaderController.getCartCount();
             update(
               ['${uuid}']
             );
@@ -354,9 +357,13 @@ class CartController extends GetxController{
     
     cartProductList.forEach((cartProduct) {
       cartProduct.isSelected = isAllSelected.value;
+      // jumlah semua harga x quantity
+      
+      update([
+        '${cartProduct.uuid}'
+      ]);
     });
     
-    update();
   }
 
   void selectCartProduct(int index, RxInt quantity, String uuid){

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badge;
 import 'package:kharisma_sales_app/controllers/api/apps/notification_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/category_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
@@ -14,6 +15,7 @@ class MainHeader extends StatelessWidget {
   final bool iconBookmark;
   final bool iconCart;
   final bool iconNotification;
+  var countNotif = 0.obs;
   MainHeader({
     Key? key,
     required this.iconBookmark,
@@ -25,12 +27,11 @@ class MainHeader extends StatelessWidget {
   final ProductController productController = Get.put(ProductController());
   final SidebarCategoryController sidebarCategoryController = Get.put(SidebarCategoryController());
   final CategoryController categoryController = Get.put(CategoryController());
+  final CartController cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
-    int countNewNotification = notificationController.notificationList
-        .where((element) => element.isNew == '1')
-        .length;
+    
     // print(countNewNotification);
 
     return GetBuilder<MainHeaderController>(builder: (controller) {
@@ -95,10 +96,13 @@ class MainHeader extends StatelessWidget {
                 Get.toNamed(RoutesName.saveProduct);
               },
               child: badge.Badge(
-                // badgeContent: const Text(
-                //   "1",
-                //   style: TextStyle(color: Colors.white),
-                // ),
+                badgeContent: Text(
+                  mainheaderController.wishlistCount.value.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
                 badgeStyle: badge.BadgeStyle(
                     badgeColor: AppsColors.loginColorPrimary,
                     padding: const EdgeInsets.symmetric(horizontal: 4)),
@@ -118,10 +122,13 @@ class MainHeader extends StatelessWidget {
                 Get.toNamed(RoutesName.cartProduct);
               },
               child: badge.Badge(
-                // badgeContent: const Text(
-                //   "1",
-                //   style: TextStyle(color: Colors.white),
-                // ),
+                badgeContent: Text(
+                  mainheaderController.cartCount.value.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
                 badgeStyle: badge.BadgeStyle(
                     badgeColor: AppsColors.loginColorPrimary,
                     padding: const EdgeInsets.symmetric(horizontal: 4)),
@@ -145,19 +152,18 @@ class MainHeader extends StatelessWidget {
                   NotificationDialog(),
                 );
               },
-              child: countNewNotification != 0
+              child: mainheaderController.notifCount.value != 0
                   ? badge.Badge(
                       badgeContent: Text(
-                        countNewNotification.toString(),
+                         mainheaderController.notifCount.value.toString(),
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 8,
+                          fontSize: 12,
                         ),
                       ),
                       badgeStyle: badge.BadgeStyle(
                         badgeColor: AppsColors.loginColorPrimary,
-                        elevation: 0,
-                      ),
+                        padding: const EdgeInsets.symmetric(horizontal: 4)),
                       child: Icon(
                         Icons.notifications_none_outlined,
                         color: controller.isNotificationIconSelected.value

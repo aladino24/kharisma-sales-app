@@ -32,4 +32,7 @@ abstract class RoutesName{
 
   // order success page
   static const orderSuccess = '/order-success-page';
+
+  // sales order detail
+  static const salesOrderDetail = '/sales-order-detail-page';
 }

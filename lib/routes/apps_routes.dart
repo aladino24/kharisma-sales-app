@@ -7,6 +7,7 @@ import 'package:kharisma_sales_app/views/login/login_sales_page.dart';
 import 'package:kharisma_sales_app/views/product/cart_checkout_page.dart';
 import 'package:kharisma_sales_app/views/product/cart_product_page.dart';
 import 'package:kharisma_sales_app/views/product/checkout_product_page.dart';
+import 'package:kharisma_sales_app/views/product/detail_salesorder_page.dart';
 import 'package:kharisma_sales_app/views/product/save_product_page.dart';
 import 'package:kharisma_sales_app/views/product/notification_product_page.dart';
 import 'package:kharisma_sales_app/views/profile/add_address_page.dart';
@@ -41,6 +42,6 @@ class AppsRoutes{
     GetPage(name: RoutesName.listVoucher, page: () => ListVoucherPage()),
     GetPage(name: RoutesName.editProfile, page: () => EditProfilePage()),
     GetPage(name: RoutesName.orderSuccess, page: () => SuccessPage()),
-
+    GetPage(name: RoutesName.salesOrderDetail, page: () => DetailSalesorderPage()),
   ];
 }

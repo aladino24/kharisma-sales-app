@@ -578,21 +578,25 @@ class CartCheckoutPage extends StatelessWidget {
                                     )),
                                   ),
                                   onPressed: () async {
-                                    var status = await salesOrderController
-                                        .salesOrderCartStore(
-                                            cartProductList,
-                                            weight.toString(),
-                                            biayaPengiriman.value.toString(),
-                                            nama.value);
-                                    if (status == '200') {
-                                      Get.offAllNamed(RoutesName.orderSuccess);
-                                    } else {
-                                      Get.snackbar(
-                                        "Failed",
-                                        "Your order has failed",
-                                        backgroundColor: Colors.red,
-                                        colorText: Colors.white,
-                                      );
+                                    if(salesOrderController.isLoading.value){
+                                      return;
+                                    }else{
+                                      var status = await salesOrderController
+                                          .salesOrderCartStore(
+                                              cartProductList,
+                                              weight.toString(),
+                                              biayaPengiriman.value.toString(),
+                                              nama.value);
+                                      if (status == '200') {
+                                        Get.offNamed(RoutesName.orderSuccess);
+                                      } else {
+                                        Get.snackbar(
+                                          "Failed",
+                                          "Your order has failed",
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                      }
                                     }
                                   },
                                   child: Obx(

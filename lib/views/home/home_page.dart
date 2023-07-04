@@ -14,7 +14,6 @@ import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/views/home/sidebar_filter_page.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
-import 'package:kharisma_sales_app/widgets/rating_star.dart';
 import 'package:shimmer/shimmer.dart';
 
 // ignore: must_be_immutable
@@ -428,17 +427,7 @@ class HomePage extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        RatingStar(),
                                         Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.15,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
                                                 width: 28,
                                                 height: 28,
                                                 decoration: BoxDecoration(
@@ -450,22 +439,33 @@ class HomePage extends StatelessWidget {
                                                     )),
                                                 child: GestureDetector(
                                                   child: Icon(Icons.favorite,
-                                                      color: Colors.red,
+                                                      color: product.isWishlist == 1 ? Colors.red : Colors.grey,
                                                       size: 18),
-                                                  onTap: () {
-                                                    // lazy put
-                                                    Get.lazyPut(() =>
-                                                        SaveProductController());
-                                                    final saveProductController =
-                                                        Get.find<
-                                                            SaveProductController>();
-                                                    saveProductController
-                                                        .saveProduct(int.parse(
-                                                            product
-                                                                .productId!));
+                                                  onTap: () async{
+                                                     // lazy put
+                                                    Get.lazyPut(() => SaveProductController());
+                                                    final saveProductController = Get.find<SaveProductController>();
+                                                    if(product.isWishlist == 0){ 
+                                                      await saveProductController.saveProduct(int.parse(product.productId!));                                                          
+                                                    }else{
+                                                      await saveProductController.deleteProduct(product.productId!);
+                                                    }
+
+                                                    productController.fetchProduct();
+                                                    saveProductController.fetchProduct();
+
                                                   },
                                                 ),
                                               ),
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.15,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
                                               GestureDetector(
                                                 child: Container(
                                                   width: 28,
