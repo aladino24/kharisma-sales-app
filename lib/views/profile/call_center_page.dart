@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_launch/flutter_launch.dart';
+import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/profile/profile_controller.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
 
 
 class CallCenterPage extends StatelessWidget {
-  const CallCenterPage({super.key});
+  CallCenterPage({super.key});
+
+  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +73,21 @@ class CallCenterPage extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: 20),
                         child: TextButton(
-                          onPressed: (){},
+                          onPressed: () async {
+                              bool whatsapp = await FlutterLaunch.hasApp(name: "whatsapp");
+                              if (whatsapp) {
+                                await FlutterLaunch.launchWhatsapp(
+                                    phone: profileController.numberWhatsapp.value, message: "Hallo, Admin saya perlu bantuan");
+                              }else{
+                                Get.snackbar(
+                                  "Error",
+                                  "Whatsapp tidak terinstall",
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white
+                                );
+                              }
+                              
+                          },
                           child: Text(
                             "Hubungi Kami",
                             style: TextStyle(

@@ -70,7 +70,7 @@ class TableQuantity extends StatelessWidget {
                           
                           quantity.value = int.parse(value);
                           // print('ini dari form ' + value);
-                          await cartController.updateCartProduct(uuid, productId, price, int.parse(value));
+                          await cartController.updateCartProduct(uuid, productId, price, int.parse(value)).then((value) => totalCart.value = 0);
                         }
                       },
                       style: TextStyle(fontSize: 15.0),

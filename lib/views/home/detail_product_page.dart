@@ -7,16 +7,19 @@ import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
-import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/controllers/components/detail_product_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../services/global_data.dart';
 
 // ignore: must_be_immutable
 class DetailProductPage extends StatelessWidget {
   DetailProductPage({super.key});
 
   CarouselController? carouselController = CarouselController();
-  final DetailProductController detailProductController = Get.put(DetailProductController());
+  final DetailProductController detailProductController =
+      Get.put(DetailProductController());
   final ProductController productController = Get.find<ProductController>();
   final Product? product = Get.arguments as Product?;
   void previousImage() {
@@ -25,7 +28,8 @@ class DetailProductPage extends StatelessWidget {
   }
 
   void nextImage() {
-    carouselController!.nextPage(duration: Duration(milliseconds: 300), curve: Curves.ease);
+    carouselController!
+        .nextPage(duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 
   @override
@@ -214,9 +218,11 @@ class DetailProductPage extends StatelessWidget {
 
                           // Quantity product
                           GetBuilder<DetailProductController>(
-                            builder: (controller){
-                              quantityController.text = detailProductController.quantity.value.toString();
-                              return Padding(
+                              builder: (controller) {
+                            quantityController.text = detailProductController
+                                .quantity.value
+                                .toString();
+                            return Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: Row(
                                 children: [
@@ -275,28 +281,35 @@ class DetailProductPage extends StatelessWidget {
                                                 //   ),
                                                 // ),
                                                 child: TextFormField(
-                                                  controller: quantityController,
-                                                  keyboardType: TextInputType.number,
-                                                  style: TextStyle(fontSize: 15.0),
+                                                  controller:
+                                                      quantityController,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  style:
+                                                      TextStyle(fontSize: 15.0),
                                                   textAlign: TextAlign.center,
                                                   onChanged: (value) {
-                                                     String cleanedValue = value.replaceAll('-', '');
-                                                      cleanedValue = cleanedValue.replaceAll(',', '').replaceAll('.', '');
-                                                      int quantity = int.tryParse(cleanedValue) ?? 0;
+                                                    String cleanedValue = value.replaceAll('-', '');
+                                                    cleanedValue = cleanedValue.replaceAll(',', '').replaceAll('.', '');
+                                                    int quantity = int.tryParse(cleanedValue) ?? 0;
 
-                                                      if (cleanedValue.isNotEmpty && quantity != 0) {
-                                                        if (quantity > int.parse(product!.stock.toString())) {
-                                                          quantityController.text = product!.stock.toString();
-                                                          detailProductController.quantity.value = int.parse(product!.stock.toString());
-                                                        } else if (quantity == 0) {
-                                                          quantityController.text = '0';
-                                                          detailProductController.quantity.value = 1;
-                                                        } else {
-                                                          detailProductController.quantity.value = quantity;
-                                                        }
-                                                      } else {
+                                                    if (cleanedValue.isNotEmpty && quantity != 0) {
+                                                      if (quantity > int.parse(product!.stock.toString())) {
+                                                        quantityController.text = product!.stock.toString();
+                                                        detailProductController.quantity.value =
+                                                            int.parse(product!.stock.toString());
+                                                      } else if (quantity == 0) {
+                                                        quantityController.text = '0';
                                                         detailProductController.quantity.value = 1;
+                                                      } else {
+                                                        detailProductController
+                                                            .quantity
+                                                            .value = quantity;
                                                       }
+                                                    } else {
+                                                      detailProductController
+                                                          .quantity.value = 1;
+                                                    }
                                                   },
                                                 ),
                                               ),
@@ -338,8 +351,7 @@ class DetailProductPage extends StatelessWidget {
                                 ],
                               ),
                             );
-                            }
-                          ),
+                          }),
 
                           // Keranjang dan Beli Sekarang
                           Padding(
@@ -395,46 +407,92 @@ class DetailProductPage extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    onTap: () {
-                                      if(quantityController.text.isNotEmpty && quantityController.text != '0'){
-                                        Get.toNamed(RoutesName.checkoutProduct,
-                                          arguments: {
-                                            "productId": product!.productId,
-                                            "productTmplid": product!.productTmplId,
-                                            "productName": product!.productName,
-                                            "price": product!.pricelist!
-                                                .where((element) =>
-                                                    element.type == 'b2b')
-                                                .first
-                                                .price,
-                                            "quantity": detailProductController.quantity.value,
-                                            'imageProduct':product!.gdImagePath,
-                                            'weight': product!.weight,
-                                          });
-                                      productController.checkPrice(product!.productTmplId,detailProductController.quantity.value);
-                                      productController
-                                          .buyNow(
-                                              product!.productId,
-                                              detailProductController
-                                                  .quantity.value)
-                                          .then((value) =>
-                                              productController.getBuyNow());
-                                      }else if(quantityController.text == '0'){
-                                        Get.snackbar(
-                                          "Gagal", 
-                                          "Quantity tidak boleh kosong",
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                        );
-                                      }else{
-                                        Get.snackbar(
-                                          "Gagal", 
-                                          "Quantity tidak boleh kosong",
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                        );
+                                    onTap: () async {
+                                      // shared preferences
+                                      final prefs =
+                                          await SharedPreferences.getInstance();
+                                      var hasToken = prefs.getString('token');
+                                      if (hasToken == null) {
+                                        Get.offAllNamed(
+                                            RoutesName.loginCustomer);
+                                      } else {
+                                        if (quantityController
+                                                .text.isNotEmpty &&
+                                            quantityController.text != '0') {
+                                          final int selectedQuantity =
+                                              int.tryParse(quantityController
+                                                      .text) ??
+                                                  0;
+                                          final Pricelist? minPrice = product!
+                                              .pricelist!
+                                              .where((element) =>
+                                                  element.type == 'b2b')
+                                              .reduce((curr, next) =>
+                                                  int.parse(curr.minQuantity!) <
+                                                          int.parse(
+                                                              next.minQuantity!)
+                                                      ? curr
+                                                      : next);
+
+                                          if (minPrice != null &&
+                                              selectedQuantity <
+                                                  int.parse(
+                                                      minPrice.minQuantity!)) {
+                                            Get.snackbar(
+                                              "Gagal",
+                                              'Quantity minimum untuk produk ini adalah ${minPrice.minQuantity}',
+                                              backgroundColor: Colors.red,
+                                              colorText: Colors.white,
+                                            );
+                                          } else {
+                                            Get.toNamed(
+                                              RoutesName.checkoutProduct,
+                                              arguments: {
+                                                "productId": product!.productId,
+                                                "productTmplid":
+                                                    product!.productTmplId,
+                                                "productName":
+                                                    product!.productName,
+                                                "price": minPrice!.price,
+                                                "quantity":
+                                                    detailProductController
+                                                        .quantity.value,
+                                                'imageProduct':
+                                                    product!.gdImagePath,
+                                                'weight': product!.weight,
+                                              },
+                                            );
+                                            productController.checkPrice(
+                                                product!.productTmplId,
+                                                detailProductController
+                                                    .quantity.value);
+                                            productController
+                                                .buyNow(
+                                                    product!.productId,
+                                                    detailProductController
+                                                        .quantity.value)
+                                                .then((value) =>
+                                                    productController
+                                                        .getBuyNow());
+                                          }
+                                        } else if (quantityController.text ==
+                                            '0') {
+                                          Get.snackbar(
+                                            "Gagal",
+                                            "Quantity tidak boleh kosong",
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                        } else {
+                                          Get.snackbar(
+                                            "Gagal",
+                                            "Quantity tidak boleh kosong",
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                        }
                                       }
-                                    }),
+                                    })
                               ],
                             ),
                           ),
@@ -607,22 +665,36 @@ class DetailProductPage extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   final pricelist = product!.pricelist![index];
                                   final priceType = pricelist.type;
-
-                                  // Menampilkan harga berdasarkan tipe ('b2b' atau 'b2c')
                                   String priceLabel = '';
-                                  if (priceType == 'b2b') {
-                                    priceLabel =
-                                        'Seller Price: ${pricelist.price}';
-                                  } else if (priceType == 'b2c') {
-                                    priceLabel =
-                                        'Customer Price: ${pricelist.price}';
+                                  if (GlobalData.hasToken.value) {
+                                    // Tampilkan pricelist dengan tipe 'b2b' jika pengguna sudah login
+                                    if (priceType == 'b2b') {
+                                      priceLabel =
+                                          'Seller Price: ${NumberFormat.currency(
+                                              locale: 'id_ID',
+                                              symbol: 'Rp ',
+                                              decimalDigits: 0,
+                                            ).format(int.parse(pricelist.price!))}';
+                                      return ListTile(
+                                        title: Text(priceLabel),
+                                        subtitle: Text(
+                                            'Min Quantity: ${pricelist.minQuantity}'),
+                                      );
+                                    }
+                                  } else {
+                                    // Tampilkan pricelist dengan tipe 'b2c' jika pengguna belum login
+                                    if (priceType == 'b2c') {
+                                      priceLabel =
+                                          'Customer Price: ${pricelist.price}';
+                                      return ListTile(
+                                        title: Text(priceLabel),
+                                        subtitle: Text(
+                                            'Min Quantity: ${pricelist.minQuantity}'),
+                                      );
+                                    }
                                   }
-
-                                  return ListTile(
-                                    title: Text(priceLabel),
-                                    subtitle: Text(
-                                        'Min Quantity: ${pricelist.minQuantity}'),
-                                  );
+                                  // Jika tipe pricelist tidak sesuai dengan kondisi di atas, tampilkan item kosong
+                                  return SizedBox();
                                 },
                               ),
                             ],

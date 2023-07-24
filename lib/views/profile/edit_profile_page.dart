@@ -9,6 +9,7 @@ class EditProfilePage extends StatelessWidget {
   // formkey
   final _formKey = GlobalKey<FormState>();
   final LoginController userController = Get.find<LoginController>();
+  RxBool isLoading = false.obs;
   // lazyPut ProfileController
   
 
@@ -29,12 +30,14 @@ class EditProfilePage extends StatelessWidget {
           final TextEditingController nameController = TextEditingController(text: user.nama);
           final TextEditingController emailController = TextEditingController(text: user.email);
           final TextEditingController phoneController = TextEditingController(text: user.telepon);
-          final TextEditingController addressController = TextEditingController(text: user.alamat_toko);
+          final TextEditingController addressController = TextEditingController(text: user.alamat);
           final TextEditingController storeNameController = TextEditingController(text: user.nama_toko);
           final TextEditingController storeAddressController = TextEditingController(text: user.alamat_toko);
           final TextEditingController kelurahanController = TextEditingController(text: user.kelurahan);
           final TextEditingController kecamatanController = TextEditingController(text: user.kecamatan);
           final TextEditingController kotaController = TextEditingController(text: user.kota);
+          final TextEditingController provinsiController = TextEditingController(text: user.provinsi);
+          final TextEditingController zipController = TextEditingController(text: user.zip);
 
           return SingleChildScrollView(
           child: Padding(
@@ -79,6 +82,7 @@ class EditProfilePage extends StatelessWidget {
                   TextFormField(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
+                    readOnly: true,
                     decoration: InputDecoration(
                         labelText: 'Email',
                         labelStyle:
@@ -87,7 +91,10 @@ class EditProfilePage extends StatelessWidget {
                         focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: AppsColors.loginColorPrimary,
-                                width: 1.0))),
+                                width: 1.0)),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                      ),
                           validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter some text';
@@ -129,6 +136,127 @@ class EditProfilePage extends StatelessWidget {
                                 color: AppsColors.loginColorPrimary,
                                 width: 1.0))),
                   ),
+                   SizedBox(height: 16.0),
+                  TextFormField(
+                    controller: kelurahanController,
+                    keyboardType: TextInputType.text,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        labelText: 'Kelurahan',
+                        labelStyle:
+                            TextStyle(color: AppsColors.loginFontColorSecondary),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: AppsColors.loginColorPrimary,
+                                width: 1.0)),
+                        filled: true,
+                        fillColor: Colors.grey[200]  
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Kelurahan';
+                        }
+                        return null;
+                      },
+                  ),
+                  SizedBox(height: 16.0),
+                  TextFormField(
+                    controller: kecamatanController,
+                    keyboardType: TextInputType.text,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        labelText: 'Kecamatan',
+                        labelStyle:
+                            TextStyle(color: AppsColors.loginFontColorSecondary),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: AppsColors.loginColorPrimary,
+                                width: 1.0)),
+                        filled: true,
+                        fillColor: Colors.grey[200]  
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Kecamatan';
+                        }
+                        return null;
+                      },
+                  ),
+                  SizedBox(height: 16.0),
+                  TextFormField(
+                    controller: kotaController,
+                    keyboardType: TextInputType.text,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        labelText: 'Kota',
+                        labelStyle:
+                            TextStyle(color: AppsColors.loginFontColorSecondary),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: AppsColors.loginColorPrimary,
+                                width: 1.0)),
+                        filled: true,
+                        fillColor: Colors.grey[200]  
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Kota';
+                        }
+                        return null;
+                      },
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: provinsiController,
+                    keyboardType: TextInputType.text,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        labelText: 'Provinsi',
+                        labelStyle:
+                            TextStyle(color: AppsColors.loginFontColorSecondary),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: AppsColors.loginColorPrimary,
+                                width: 1.0)),
+                        filled: true,
+                        fillColor: Colors.grey[200]                        
+                    ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Provinsi';
+                        }
+                        return null;
+                      },
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: zipController,
+                    keyboardType: TextInputType.text,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        labelText: 'Zip',
+                        labelStyle:
+                            TextStyle(color: AppsColors.loginFontColorSecondary),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: AppsColors.loginColorPrimary,
+                                width: 1.0)),
+                        filled: true,
+                        fillColor: Colors.grey[200]    
+                        ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Kode Pos';
+                        }
+                        return null;
+                      },
+                  ),
+                 
                   SizedBox(height: 32.0),
                   Divider(height: 1.0),
                   SizedBox(height: 32.0),
@@ -177,71 +305,14 @@ class EditProfilePage extends StatelessWidget {
                       },
                   ),
                   SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: kelurahanController,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                        labelText: 'Kelurahan',
-                        labelStyle:
-                            TextStyle(color: AppsColors.loginFontColorSecondary),
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppsColors.loginColorPrimary,
-                                width: 1.0))),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Kelurahan';
-                        }
-                        return null;
-                      },
-                  ),
-                  SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: kecamatanController,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                        labelText: 'Kecamatan',
-                        labelStyle:
-                            TextStyle(color: AppsColors.loginFontColorSecondary),
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppsColors.loginColorPrimary,
-                                width: 1.0))),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Kecamatan';
-                        }
-                        return null;
-                      },
-                  ),
-                  SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: kotaController,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                        labelText: 'Kota',
-                        labelStyle:
-                            TextStyle(color: AppsColors.loginFontColorSecondary),
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppsColors.loginColorPrimary,
-                                width: 1.0))),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Kota';
-                        }
-                        return null;
-                      },
-                  ),
-                  SizedBox(height: 16.0),
-                  ElevatedButton(
+                  
+                  isLoading.value ? Center(child: CircularProgressIndicator()) : ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         backgroundColor: AppsColors.loginColorPrimary),
                     onPressed: () {
+                      
                        if (_formKey.currentState!.validate()) {
+                        isLoading.value = true;
                         Get.lazyPut(() => ProfileController());
                         Get.find<ProfileController>().editProfile(
                             nameController.text,
@@ -253,13 +324,15 @@ class EditProfilePage extends StatelessWidget {
                             kelurahanController.text,
                             kecamatanController.text,
                             kotaController.text,
+                            provinsiController.text,
+                            zipController.text,
                             user.lat!,
                             user.lng!,
-                        );
+                        ).then((value) => isLoading.value = false);
                        }
                     },
                     child: Text('Edit'),
-                  ),
+                  )
                 ],
               ),
             ),

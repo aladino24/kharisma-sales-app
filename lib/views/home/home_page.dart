@@ -26,10 +26,21 @@ class HomePage extends StatelessWidget {
   final SidebarCategoryController sidebarCategoryController = Get.put(SidebarCategoryController());
   //cart controller
   final CartController cartController = Get.put(CartController());
-  final NetworkController networkController = Get.find<NetworkController>();
+  final NetworkController networkController = Get.put(NetworkController());
+  
   var customer_price;
   var sales_price;
    String? categoryProduct;
+
+   // fungsi getRefresh
+  Future<void> getRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    productController.fetchProduct();
+    cartController.fetchCartProduct();
+    myController.getWishlistCount();
+    myController.getCartCount();
+    myController.getNotifCount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +186,7 @@ class HomePage extends StatelessWidget {
                                       }
 
                                       if (newValue == 'All Category') {
-                                        categoryProduct = '';
+                                        categoryProduct = 'All Category';
                                       }
                                       categoryController.onDropdownValueChanged(newValue);
                                       await productController.fetchProductByFilter(productController.searchEditController.text, sidebarCategoryController.variantHarga.value, categoryProduct);
@@ -290,218 +301,221 @@ class HomePage extends StatelessWidget {
                         },
                       );
                     } else {
-                      return GridView.builder(
-                          shrinkWrap: true,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1 / 1.53,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                          ),
-                          padding: const EdgeInsets.all(5),
-                          itemCount: productController.products.length,
-                          itemBuilder: (context, index) {
-                            Product product = productController.products[index];
-
-                            //  print('Ini image ' + product.image!);
-                            return Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: <BoxShadow>[
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 5,
-                                      offset: const Offset(0, 0),
-                                    )
-                                  ]),
-                              child: Column(
-                                children: [
-                                  GestureDetector(
-                                    child: Container(
-                                      // heigh sesuai dengan tinggi parent * 0.5
-                                      height: 165,
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                          color:
-                                              AppsColors.imageProductBackground,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15.0),
-                                            topRight: Radius.circular(15.0),
-                                          )),
-                                      child: product.gdImagePath != null
-                                          ? Image.network(
-                                              product.gdImagePath!,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Image.asset(
-                                              'assets/images/image.png',
-                                              fit: BoxFit.cover,
-                                            ),
-                                    ),
-                                    onTap: () {
-                                      Get.toNamed(RoutesName.detailProduct,
-                                          arguments: product);
-                                    },
-                                  ),
-                                  Expanded(
-                                    child: GestureDetector(
+                      return RefreshIndicator(
+                        onRefresh: getRefresh,
+                        child: GridView.builder(
+                            shrinkWrap: true,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1 / 1.53,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                            ),
+                            padding: const EdgeInsets.all(5),
+                            itemCount: productController.products.length,
+                            itemBuilder: (context, index) {
+                              Product product = productController.products[index];
+                      
+                              //  print('Ini image ' + product.image!);
+                              return Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: <BoxShadow>[
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 0),
+                                      )
+                                    ]),
+                                child: Column(
+                                  children: [
+                                    GestureDetector(
                                       child: Container(
-                                        alignment: Alignment.topLeft,
-                                        padding: EdgeInsets.all(10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              product.productName.toString(),
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: AppsColors
-                                                      .loginFontColorPrimaryDark),
-                                            ),
-                                            Text(
-                                              product.pricelist != null &&
-                                                      product.pricelist!.length >= 2
-                                                  ? product.pricelist![1]
-                                                              .type == 'b2b'
-                                                      ? "Seller Price : ${NumberFormat.currency(
-                                                          locale: 'id_ID',
-                                                          symbol: 'Rp ',
-                                                          decimalDigits: 0,
-                                                        ).format(int.parse(product.pricelist![1].price.toString()))}"
-                                                      : product.pricelist![1]
-                                                                  .type ==
-                                                              'b2c'
-                                                          ? "Customer Price : ${NumberFormat.currency(
-                                                              locale: 'id_ID',
-                                                              symbol: 'Rp ',
-                                                              decimalDigits: 0,
-                                                            ).format(int.parse(product.pricelist![1].price.toString()))}"
-                                                          : ""
-                                                  : "",
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: AppsColors
-                                                      .loginFontColorPrimaryDark),
-                                            ),
-                                            Text(
-                                              product.pricelist != null &&
-                                                      product.pricelist![0]
-                                                              .type ==
-                                                          'b2b'
-                                                  ? "Seller Price : ${NumberFormat.currency(
-                                                      locale: 'id_ID',
-                                                      symbol: 'Rp ',
-                                                      decimalDigits: 0,
-                                                    ).format(int.parse(product.pricelist![0].price.toString()))}"
-                                                  : product.pricelist != null &&
-                                                          product.pricelist![0]
-                                                                  .type ==
-                                                              'b2c'
-                                                      ? "Customer Price : ${NumberFormat.currency(
-                                                          locale: 'id_ID',
-                                                          symbol: 'Rp ',
-                                                          decimalDigits: 0,
-                                                        ).format(int.parse(product.pricelist![0].price.toString()))}"
-                                                      : "",
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.red),
-                                            ),
-                                          ],
-                                        ),
+                                        // heigh sesuai dengan tinggi parent * 0.5
+                                        height: Get.height * 0.2,
+                                        width: MediaQuery.of(context).size.width,
+                                        decoration: BoxDecoration(
+                                            color:
+                                                AppsColors.imageProductBackground,
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15.0),
+                                              topRight: Radius.circular(15.0),
+                                            )),
+                                        child: product.gdImagePath != null
+                                            ? Image.network(
+                                                product.gdImagePath!,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.asset(
+                                                'assets/images/image.png',
+                                                fit: BoxFit.cover,
+                                              ),
                                       ),
                                       onTap: () {
                                         Get.toNamed(RoutesName.detailProduct,
                                             arguments: product);
                                       },
                                     ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                        left: 10, right: 10, bottom: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                                width: 28,
-                                                height: 28,
-                                                decoration: BoxDecoration(
-                                                    color: AppsColors
-                                                        .imageProductBackground,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                      Radius.circular(100),
-                                                    )),
-                                                child: GestureDetector(
-                                                  child: Icon(Icons.favorite,
-                                                      color: product.isWishlist == 1 ? Colors.red : Colors.grey,
-                                                      size: 18),
-                                                  onTap: () async{
-                                                     // lazy put
-                                                    Get.lazyPut(() => SaveProductController());
-                                                    final saveProductController = Get.find<SaveProductController>();
-                                                    if(product.isWishlist == 0){ 
-                                                      await saveProductController.saveProduct(int.parse(product.productId!));                                                          
-                                                    }else{
-                                                      await saveProductController.deleteProduct(product.productId!);
-                                                    }
-
-                                                    productController.fetchProduct();
-                                                    saveProductController.fetchProduct();
-
-                                                  },
-                                                ),
-                                              ),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.15,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                    Expanded(
+                                      child: GestureDetector(
+                                        child: Container(
+                                          alignment: Alignment.topLeft,
+                                          padding: EdgeInsets.all(10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              GestureDetector(
-                                                child: Container(
+                                              Text(
+                                                product.productName.toString(),
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: AppsColors
+                                                        .loginFontColorPrimaryDark),
+                                              ),
+                                              Text(
+                                                product.pricelist != null &&
+                                                        product.pricelist!.length >= 2
+                                                    ? product.pricelist![1]
+                                                                .type == 'b2b'
+                                                        ? "Seller Price : ${NumberFormat.currency(
+                                                            locale: 'id_ID',
+                                                            symbol: 'Rp ',
+                                                            decimalDigits: 0,
+                                                          ).format(int.parse(product.pricelist![1].price.toString()))}"
+                                                        : product.pricelist![1]
+                                                                    .type ==
+                                                                'b2c'
+                                                            ? "Customer Price : ${NumberFormat.currency(
+                                                                locale: 'id_ID',
+                                                                symbol: 'Rp ',
+                                                                decimalDigits: 0,
+                                                              ).format(int.parse(product.pricelist![1].price.toString()))}"
+                                                            : ""
+                                                    : "",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: AppsColors
+                                                        .loginFontColorPrimaryDark),
+                                              ),
+                                              Text(
+                                                product.pricelist != null &&
+                                                        product.pricelist![0]
+                                                                .type ==
+                                                            'b2b'
+                                                    ? "Seller Price : ${NumberFormat.currency(
+                                                        locale: 'id_ID',
+                                                        symbol: 'Rp ',
+                                                        decimalDigits: 0,
+                                                      ).format(int.parse(product.pricelist![0].price.toString()))}"
+                                                    : product.pricelist != null &&
+                                                            product.pricelist![0]
+                                                                    .type ==
+                                                                'b2c'
+                                                        ? "Customer Price : ${NumberFormat.currency(
+                                                            locale: 'id_ID',
+                                                            symbol: 'Rp ',
+                                                            decimalDigits: 0,
+                                                          ).format(int.parse(product.pricelist![0].price.toString()))}"
+                                                        : "",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Colors.red),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Get.toNamed(RoutesName.detailProduct,
+                                              arguments: product);
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          left: 10, right: 10, bottom: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
                                                   width: 28,
                                                   height: 28,
-                                                  child: Icon(
-                                                      Icons
-                                                          .add_shopping_cart_outlined,
-                                                      color: Colors.white,
-                                                      size: 17),
                                                   decoration: BoxDecoration(
                                                       color: AppsColors
-                                                          .loginColorPrimary,
+                                                          .imageProductBackground,
                                                       borderRadius:
                                                           BorderRadius.all(
                                                         Radius.circular(100),
                                                       )),
+                                                  child: GestureDetector(
+                                                    child: Icon(Icons.favorite,
+                                                        color: product.isWishlist == 1 ? Colors.red : Colors.grey,
+                                                        size: 18),
+                                                    onTap: () async{
+                                                       // lazy put
+                                                      Get.lazyPut(() => SaveProductController());
+                                                      final saveProductController = Get.find<SaveProductController>();
+                                                      if(product.isWishlist == 0){ 
+                                                        await saveProductController.saveProduct(int.parse(product.productId!));                                                          
+                                                      }else{
+                                                        await saveProductController.deleteProduct(product.productId!);
+                                                      }
+                      
+                                                      productController.fetchProduct();
+                                                      saveProductController.fetchProduct();
+                      
+                                                    },
+                                                  ),
                                                 ),
-                                                onTap: () {
-                                                  cartController.addCartProduct(
-                                                      product.productId!,
-                                                      product
-                                                          .pricelist![0].price
-                                                          .toString(),
-                                                      1);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.15,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                GestureDetector(
+                                                  child: Container(
+                                                    width: 28,
+                                                    height: 28,
+                                                    child: Icon(
+                                                        Icons
+                                                            .add_shopping_cart_outlined,
+                                                        color: Colors.white,
+                                                        size: 17),
+                                                    decoration: BoxDecoration(
+                                                        color: AppsColors
+                                                            .loginColorPrimary,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                          Radius.circular(100),
+                                                        )),
+                                                  ),
+                                                  onTap: () {
+                                                    cartController.addCartProduct(
+                                                        product.productId!,
+                                                        product
+                                                            .pricelist![0].price
+                                                            .toString(),
+                                                        1);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          });
+                                  ],
+                                ),
+                              );
+                            }),
+                      );
                     }
                   }),
                 )

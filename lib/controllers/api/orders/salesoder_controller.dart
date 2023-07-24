@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/apps/notification_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
@@ -14,6 +15,7 @@ class SalesorderController extends GetxController{
 
   final LoginController loginController = Get.put(LoginController());
   final CartController cartController = Get.put(CartController());
+  final NotificationController notifController = Get.put(NotificationController());
   final MainHeaderController mainHeaderController = Get.find<MainHeaderController>();
   var isLoading = false.obs;
   RxList<SalesOrder> salesOrders = <SalesOrder>[].obs;
@@ -51,6 +53,8 @@ class SalesorderController extends GetxController{
         if (response.statusCode == 200) {
           isLoading(false);
           print(jsonDecode(response.body)['code']);
+          mainHeaderController.getNotifCount();
+          notifController.fetchNotificationLimit();
           return jsonDecode(response.body)['code'].toString();
         } else {
            isLoading(false);
@@ -70,7 +74,7 @@ class SalesorderController extends GetxController{
   Future<String> salesOrderCartStore(List<CartProduct> cartProductList, String? total_berat, String? ongkos_kirim, String? jasa_pengiriman) async {
  
       String api_salesorder_store = ApiUrl.apiUrl + 'ecom/sales-order';
-
+      
       try {
         isLoading(true);
         Map<String, String> body = {
@@ -97,6 +101,8 @@ class SalesorderController extends GetxController{
           cartController.fetchCartProduct();
           print(jsonDecode(response.body)['code']);
           mainHeaderController.getCartCount();
+          mainHeaderController.getNotifCount();
+          notifController.fetchNotificationLimit();
           return jsonDecode(response.body)['code'].toString();
         } else {
           print('salesOrderCartStore gagal');
@@ -168,7 +174,7 @@ class SalesorderController extends GetxController{
             'Authorization': 'Bearer ${await loginController.getToken()}',
           },
         );
-
+        // print(response.statusCode);
         if(response.statusCode == 200){
           isLoading(false);
           var jsonData = json.decode(response.body);
@@ -177,6 +183,7 @@ class SalesorderController extends GetxController{
           countSale.value = result.data!.sale!.toString();
           countDone.value = result.data!.done!.toString();
           countCancel.value = result.data!.cancel!.toString();
+          // print('test' + result.data!.draft!.toString());
         }else{
           isLoading(false);
           print(jsonDecode(response.body)['message']);

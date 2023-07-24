@@ -134,6 +134,33 @@ class LoginSalesPage extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Container(
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Obx(() => loginController.isLoading.value
+                            ? ElevatedButton(
+                                onPressed: () {},
+                                child:
+                                    Center(child: Text("Login as Guest")),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          AppsColors.loginFontColorSecondary),
+                                ),
+                              )
+                            : ElevatedButton(
+                                onPressed: () async {
+                                  Get.toNamed(RoutesName.home);
+                                },
+                                child: Text('Login as Guest'),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          AppsColors.loginFontColorSecondary),
+                                ),
+                              )),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
                         alignment: Alignment.center,
                         child: Text(
                           "OR",
@@ -156,7 +183,7 @@ class LoginSalesPage extends StatelessWidget {
                           child: Text('Login as Customer'),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                AppsColors.loginFontColorSecondary),
+                                AppsColors.loginColorPrimary),
                           ),
                         ),
                       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/notification_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 
 class NotificationDialog extends StatelessWidget {
   NotificationDialog({
@@ -9,6 +10,7 @@ class NotificationDialog extends StatelessWidget {
   });
 
   final NotificationController notificationController = Get.find<NotificationController>();
+  final MainHeaderController mainHeaderController = Get.find<MainHeaderController>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class NotificationDialog extends StatelessWidget {
                             color: AppsColors.loginColorPrimary, fontSize: 10.0),
                       ),
                       onTap: (){
-                        notificationController.markAllRead();
+                        notificationController.markAllRead().then((value) => mainHeaderController.getNotifCount());
                       },
                     )
                   ],
@@ -57,7 +59,7 @@ class NotificationDialog extends StatelessWidget {
                     return ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: notificationController.notificationList.length,
+                      itemCount: notificationController.notificationList.length >= 5 ? 5 : notificationController.notificationList.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
@@ -110,7 +112,7 @@ class NotificationDialog extends StatelessWidget {
                                 ),
                               ),
                               onTap: (){
-                                notificationController.markOneRead(notificationController.notificationList[index].id.toString());
+                                notificationController.markOneRead(notificationController.notificationList[index].id.toString()).then((value) => mainHeaderController.getNotifCount());
                               },
                             ),
                             Divider(

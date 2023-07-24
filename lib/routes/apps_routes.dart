@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:kharisma_sales_app/bindings/mainheader_binding.dart';
+import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/views/home/detail_product_page.dart';
 import 'package:kharisma_sales_app/views/home/home_page.dart';
 import 'package:kharisma_sales_app/views/login/forgot_password_page.dart';
@@ -14,7 +16,9 @@ import 'package:kharisma_sales_app/views/profile/add_address_page.dart';
 import 'package:kharisma_sales_app/views/profile/call_center_page.dart';
 import 'package:kharisma_sales_app/views/profile/edit_address_page.dart';
 import 'package:kharisma_sales_app/views/profile/edit_profile_page.dart';
+import 'package:kharisma_sales_app/views/profile/kebijakan_privasi_page.dart';
 import 'package:kharisma_sales_app/views/profile/list_address_page.dart';
+import 'package:kharisma_sales_app/views/profile/notifikasi_all_page.dart';
 import 'package:kharisma_sales_app/views/profile/profile_customer_page.dart';
 import 'package:kharisma_sales_app/views/profile/termcondition_page.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
@@ -23,14 +27,16 @@ import 'package:kharisma_sales_app/views/voucher/list_voucher_page.dart';
 
 class AppsRoutes{
   static final pages = [
-    GetPage(name: RoutesName.loginCustomer, page: () => LoginCustomerPage()),
-    GetPage(name: RoutesName.loginSales, page: () => LoginSalesPage()),
+    GetPage(name: RoutesName.loginCustomer, page: () => LoginCustomerPage(), binding: MainHeaderBinding()),
+    GetPage(name: RoutesName.loginSales, page: () => LoginSalesPage(),),
     GetPage(name: RoutesName.forgotPassword, page: () => ForgotPasswordPage()),
-    GetPage(name: RoutesName.home, page: ()=> HomePage()),
+    GetPage(name: RoutesName.home, page: ()=> HomePage(), binding: BindingsBuilder(() {
+        Get.lazyPut<MainHeaderController>(() => MainHeaderController());
+      })),
     GetPage(name: RoutesName.detailProduct,  page: () => DetailProductPage()),
     GetPage(name: RoutesName.cartProduct, page: () => CartProductPage()),
     GetPage(name: RoutesName.saveProduct, page: () => SaveProductPage()),
-    GetPage(name: RoutesName.notificationProduct, page: () => NotificationProductPage()),
+    GetPage(name: RoutesName.notificationProduct, page: () => NotificationProductPage(),  binding: MainHeaderBinding()),
     GetPage(name: RoutesName.profile, page: () => ProfileCustomerPage()),
     GetPage(name: RoutesName.termCondition, page: () => TermConditionPage()),
     GetPage(name: RoutesName.callcenter, page: ()=> CallCenterPage()),
@@ -43,5 +49,7 @@ class AppsRoutes{
     GetPage(name: RoutesName.editProfile, page: () => EditProfilePage()),
     GetPage(name: RoutesName.orderSuccess, page: () => SuccessPage()),
     GetPage(name: RoutesName.salesOrderDetail, page: () => DetailSalesorderPage()),
+    GetPage(name: RoutesName.notifikasiAll, page: () => NotifikasiAllPage()),
+    GetPage(name: RoutesName.kebijakanPrivasi, page: () => KebijakanPrivasiPage())
   ];
 }

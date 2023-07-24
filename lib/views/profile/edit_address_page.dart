@@ -74,606 +74,566 @@ class EditAddressPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: Column(
-                          children: [
-                            // label input
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 20, left: 20, top: 20),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Nama Penerima",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            return Future.delayed(Duration(seconds: 1), (){
+                            alamatKirimController.editRecipientNameController.text = data.penerima;
+                            alamatKirimController.editRecipientPhoneController.text = data.noTelepon;
+                            alamatKirimController.editRecipientAddressController.text = data.alamat;
+                            alamatKirimController.editRecipientKodePosController.text = data.kodePos;
 
-                            // input
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 5),
-                              child: Container(
-                                margin: EdgeInsets.only(bottom: 10),
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Nama Penerima tidak boleh kosong';
-                                    }
-                                    return null;
-                                  },
-                                  controller: alamatKirimController.editRecipientNameController,
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    hintText: "Masukkan nama",
-                                    hintStyle: TextStyle(fontSize: 12),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
+                            //value dropdown
+                            provinsiController.clearListProvinsi();
+                            kotaController.clearListKota();
+                            kecamatanController.clearListKecamatan();
+                          });
+                          },
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: 1,
+                            itemBuilder: (context, index){
+                              return Column(
+                            children: [
+                              // label input
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 20, left: 20, top: 20),
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Nama Penerima",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 5),
-
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 20, left: 20),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "No. Telepon",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 5),
-                              child: Container(
-                                margin: EdgeInsets.only(bottom: 10),
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'No. Telepon tidak boleh kosong';
-                                    }
-                                    return null;
-                                  },
-                                  controller: alamatKirimController.editRecipientPhoneController,
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    hintText: "Masukkan No Telepon",
-                                    hintStyle: TextStyle(fontSize: 12),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
+                        
+                              // input
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 5),
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: TextFormField(
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Nama Penerima tidak boleh kosong';
+                                      }
+                                      return null;
+                                    },
+                                    controller: alamatKirimController.editRecipientNameController,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      hintText: "Masukkan nama",
+                                      hintStyle: TextStyle(fontSize: 12),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 5),
-
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 20, left: 20),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Alamat",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 5),
-                              child: Container(
-                                margin: EdgeInsets.only(bottom: 10),
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Alamat tidak boleh kosong';
-                                    }
-                                    return null;
-                                  },
-                                  controller: alamatKirimController.editRecipientAddressController,
-                                  maxLines: 3,
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                    hintText: "Masukkan Alamat",
-                                    hintStyle: TextStyle(fontSize: 12),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1)),
+                              SizedBox(height: 5),
+                        
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 20, left: 20),
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "No. Telepon",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
-                            ),
-
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 20, left: 20),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Provinsi",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      // dropdownform field
-                                      Container(
-                                          width: 150,
-                                          padding:
-                                              const EdgeInsets.only(top: 5),
-                                          child: Obx(
-                                            () => DropdownButtonFormField(
-                                              validator: (value) {
-                                                if (value == null) {
-                                                  return 'Provinsi tidak boleh kosong';
-                                                }
-                                                return null;
-                                              },
-                                              isExpanded: true,
-                                              // isDense: true,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                hintText: provinsiController
-                                                        .listProvinsi.isEmpty
-                                                    ? "Loading..."
-                                                    : "Pilih Provinsi",
-                                                hintStyle:
-                                                    TextStyle(fontSize: 14),
-                                                border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1)),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        borderSide: BorderSide(
-                                                            color: Colors.grey,
-                                                            width: 1)),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        borderSide: BorderSide(
-                                                            color: Colors.grey,
-                                                            width: 1)),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 5),
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: TextFormField(
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'No. Telepon tidak boleh kosong';
+                                      }
+                                      return null;
+                                    },
+                                    controller: alamatKirimController.editRecipientPhoneController,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      hintText: "Masukkan No Telepon",
+                                      hintStyle: TextStyle(fontSize: 12),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                        
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 20, left: 20),
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Alamat",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 5),
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: TextFormField(
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Alamat tidak boleh kosong';
+                                      }
+                                      return null;
+                                    },
+                                    controller: alamatKirimController.editRecipientAddressController,
+                                    maxLines: 3,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      hintText: "Masukkan Alamat",
+                                      hintStyle: TextStyle(fontSize: 12),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey, width: 1)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 20, left: 20),
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Provinsi",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        // dropdownform field
+                                        Container(
+                                            width: 150,
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
+                                            child: Obx(
+                                              () => DropdownButtonFormField(
+                                                validator: (value) {
+                                                  if (value == null) {
+                                                    return 'Provinsi tidak boleh kosong';
+                                                  }
+                                                  return null;
+                                                },
+                                                isExpanded: true,
+                                                // isDense: true,
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  hintText: provinsiController
+                                                          .listProvinsi.isEmpty
+                                                      ? "Loading..."
+                                                      : "Pilih Provinsi",
+                                                  hintStyle:
+                                                      TextStyle(fontSize: 14),
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      borderSide: BorderSide(
+                                                          color: Colors.grey,
+                                                          width: 1)),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          borderSide: BorderSide(
+                                                              color: Colors.grey,
+                                                              width: 1)),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          borderSide: BorderSide(
+                                                              color: Colors.grey,
+                                                              width: 1)),
+                                                ),
+                                                items: List.generate(
+                                                    provinsiController
+                                                        .listProvinsi.length,
+                                                    (index) => DropdownMenuItem(
+                                                          child: Text(
+                                                            provinsiController.listProvinsi[index].province,
+                                                            style: TextStyle(
+                                                                fontSize: 12),
+                                                          ),
+                                                          value: provinsiController.listProvinsi[index],
+                                                        )),
+                                                onChanged: (value) {
+                                                  if (value != null) {
+                                                    Provinsi selectedProvinsi = value as Provinsi;
+                                                    kotaController.clearListKota();
+                                                    kotaController.fetchKotaByProvinsiId(selectedProvinsi.province_id);
+                                                    kotaController.selectedKotaId.value = null;
+                                                    provinsiController.selectedProvinsiId.value = value;
+                                                  }
+                                                },
+                                                value: provinsiController.listProvinsi.firstWhere((provinsi) => provinsi.province == data.provinsi, orElse: () => null),
                                               ),
-                                              items: List.generate(
-                                                  provinsiController
-                                                      .listProvinsi.length,
-                                                  (index) => DropdownMenuItem(
-                                                        child: Text(
-                                                          provinsiController.listProvinsi[index].province,
-                                                          style: TextStyle(
-                                                              fontSize: 12),
-                                                        ),
-                                                        value: provinsiController.listProvinsi[index],
-                                                      )),
-                                              onChanged: (value) {
-                                                if (value != null) {
-                                                  Provinsi selectedProvinsi = value as Provinsi;
-                                                  kotaController.clearListKota();
-                                                  kotaController.fetchKotaByProvinsiId(selectedProvinsi.province_id);
-                                                  kotaController.selectedKotaId.value = null;
-                                                  provinsiController.selectedProvinsiId.value = value;
-                                                }
-                                              },
-                                              value: provinsiController.listProvinsi.firstWhere((provinsi) => provinsi.province == data.provinsi, orElse: () => null),
-                                            ),
-                                          )),
-                                    ],
-                                  ),
-                                  SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Kota",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      // dropdownform field
-                                      Container(
-                                          width: 150,
-                                          padding:
-                                              const EdgeInsets.only(top: 5),
-                                          child: Obx(() => DropdownButtonFormField(
-                                              validator: (value) {
-                                                if (value == null) {
-                                                  return 'Kota tidak boleh kosong';
-                                                }
-                                                return null;
-                                              },
-                                              isExpanded: true,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                hintText: kotaController
-                                                        .isLoading.value
-                                                    ? "Loading..."
-                                                    : "Pilih Kota",
-                                                hintStyle:
-                                                    TextStyle(fontSize: 12),
-                                                border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1)),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        borderSide: BorderSide(
-                                                            color: Colors.grey,
-                                                            width: 1)),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        borderSide: BorderSide(
-                                                            color: Colors.grey,
-                                                            width: 1)),
-                                              ),
-                                              items: kotaController
-                                                      .listKota.isNotEmpty
-                                                  ? List.generate(
-                                                      kotaController
-                                                          .listKota.length,
-                                                      (index) =>
-                                                          DropdownMenuItem(
-                                                            child: Text(
-                                                              kotaController.listKota[index].cityName,
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            ),
-                                                            value: kotaController.listKota[index],
-                                                          ))
-                                                  : null,
-                                              onChanged: (value) {
-                                                if (value != null) {
-                                                  Kota selectedKota = value as Kota;
-                                                  kecamatanController.clearListKecamatan();
-                                                  kecamatanController.fetchKecamatanByKotaId(selectedKota.cityId);
-                                                  kecamatanController.selectedKecamatanId.value = null;
-                                                  kotaController.selectedKotaId.value = value;
-                                                }
-                                              },
-                                              value: kotaController.selectedKotaId.value !=
-                                                      null
-                                                  ? kotaController
-                                                      .selectedKotaId.value
-                                                  : null,
-                                            )
-                                        )),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            SizedBox(height: 10),
-
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 20, left: 20),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Kecamatan",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      // dropdownform field
-                                      Container(
-                                        width: 150,
-                                        padding: const EdgeInsets.only(top: 5),
-                                        margin: EdgeInsets.only(bottom: 15),
-                                        child: Obx(() =>
-                                            DropdownButtonFormField(
-                                              validator: (value) {
-                                                if (value == null) {
-                                                  return 'Kecamatan tidak boleh kosong';
-                                                }
-                                                return null;
-                                              },
-                                              isExpanded: true,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                hintText: kecamatanController
-                                                        .isLoading.value
-                                                    ? "Loading..."
-                                                    : "Pilih Kecamatan",
-                                                hintStyle:
-                                                    TextStyle(fontSize: 12),
-                                                border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1)),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        borderSide: BorderSide(
-                                                            color: Colors.grey,
-                                                            width: 1)),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        borderSide: BorderSide(
-                                                            color: Colors.grey,
-                                                            width: 1)),
-                                              ),
-                                              items: kecamatanController
-                                                      .listKecamatan.isNotEmpty
-                                                  ? List.generate(
-                                                      kecamatanController
-                                                          .listKecamatan.length,
-                                                      (index) =>
-                                                          DropdownMenuItem(
-                                                            child: Text(
-                                                              kecamatanController
-                                                                  .listKecamatan[
-                                                                      index]
-                                                                  .subdistrictName,
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            ),
-                                                            value: kecamatanController
-                                                                    .listKecamatan[
-                                                                index],
-                                                          ))
-                                                  : null,
-                                              onChanged: (value) {
-                                                if (value != null) {
-                                                  Kecamatan selectedKecamatan =
-                                                      value as Kecamatan;
-                                                  kelurahanController
-                                                      .clearListKelurahan();
-                                                  kelurahanController
-                                                      .fetchKelurahanByKecamatanId(
-                                                          selectedKecamatan
-                                                              .subdistrictId);
-                                                  kelurahanController
-                                                      .selectedKelurahanId
-                                                      .value = null;
-                                                  kecamatanController
-                                                      .selectedKecamatanId
-                                                      .value = value;
-                                                }
-                                              },
-                                              value: kecamatanController
-                                                          .selectedKecamatanId
-                                                          .value !=
-                                                      null
-                                                  ? kecamatanController
-                                                      .selectedKecamatanId.value
-                                                  : null,
                                             )),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(width: 10),
-                                  // Column(
-                                  //   crossAxisAlignment:
-                                  //       CrossAxisAlignment.start,
-                                  //   children: [
-                                  //     Text(
-                                  //       "Kelurahan",
-                                  //       style: TextStyle(
-                                  //           fontSize: 14,
-                                  //           fontWeight: FontWeight.bold),
-                                  //     ),
-                                  //     // dropdownform field
-                                  //     Container(
-                                  //       width: 150,
-                                  //       padding: const EdgeInsets.only(top: 5),
-                                  //       child: Obx(() => DropdownButtonFormField(
-                                  //         decoration: InputDecoration(
-                                  //           contentPadding:
-                                  //               EdgeInsets.symmetric(
-                                  //                   horizontal: 10),
-                                  //           hintText: kelurahanController.isLoading.value ? "Loading..." : "Pilih Kelurahan",
-                                  //           hintStyle: TextStyle(fontSize: 12),
-                                  //           border: OutlineInputBorder(
-                                  //               borderRadius:
-                                  //                   BorderRadius.circular(5),
-                                  //               borderSide: BorderSide(
-                                  //                   color: Colors.grey,
-                                  //                   width: 1)),
-                                  //           focusedBorder: OutlineInputBorder(
-                                  //               borderRadius:
-                                  //                   BorderRadius.circular(5),
-                                  //               borderSide: BorderSide(
-                                  //                   color: Colors.grey,
-                                  //                   width: 1)),
-                                  //           enabledBorder: OutlineInputBorder(
-                                  //               borderRadius:
-                                  //                   BorderRadius.circular(5),
-                                  //               borderSide: BorderSide(
-                                  //                   color: Colors.grey,
-                                  //                   width: 1)),
-                                  //         ),
-                                  //         items: kelurahanController.listKelurahan.isNotEmpty ? List.generate(
-                                  //           kelurahanController.listKelurahan.length,
-                                  //           (index) => DropdownMenuItem(
-                                  //                           child: Text(
-                                  //                             kelurahanController.listKelurahan[index].name,
-                                  //                             style: TextStyle(
-                                  //                                 fontSize: 12),
-                                  //                           ),
-                                  //                           value: kelurahanController.listKelurahan[index],
-                                  //                         )
-                                  //         ) : null,
-                                  //         onChanged: (value) {
-                                  //           if(value != null){
-                                  //                 kelurahanController.selectedKelurahanId.value = value as Kelurahan?;
-                                  //             }
-                                  //         },
-                                  //         value: kelurahanController.selectedKelurahanId.value != null ? kelurahanController.selectedKelurahanId.value : null,
-                                  //       ),)
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Kode Pos",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 5),
-                                        child: Container(
+                                      ],
+                                    ),
+                                    SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Kota",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        // dropdownform field
+                                        Container(
+                                            width: 150,
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
+                                            child: Obx(() => DropdownButtonFormField(
+                                                validator: (value) {
+                                                  if (value == null) {
+                                                    return 'Kota tidak boleh kosong';
+                                                  }
+                                                  return null;
+                                                },
+                                                isExpanded: true,
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  hintText: kotaController
+                                                          .isLoading.value
+                                                      ? "Loading..."
+                                                      : data.kota,
+                                                  hintStyle:
+                                                      TextStyle(fontSize: 12),
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      borderSide: BorderSide(
+                                                          color: Colors.grey,
+                                                          width: 1)),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          borderSide: BorderSide(
+                                                              color: Colors.grey,
+                                                              width: 1)),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          borderSide: BorderSide(
+                                                              color: Colors.grey,
+                                                              width: 1)),
+                                                ),
+                                                items: kotaController
+                                                        .listKota.isNotEmpty
+                                                    ? List.generate(
+                                                        kotaController
+                                                            .listKota.length,
+                                                        (index) =>
+                                                            DropdownMenuItem(
+                                                              child: Text(
+                                                                kotaController.listKota[index].cityName,
+                                                                style: TextStyle(
+                                                                    fontSize: 12),
+                                                              ),
+                                                              value: kotaController.listKota[index],
+                                                            ))
+                                                    : null,
+                                                onChanged: (value) {
+                                                  if (value != null) {
+                                                    Kota selectedKota = value as Kota;
+                                                    kecamatanController.clearListKecamatan();
+                                                    kecamatanController.fetchKecamatanByKotaId(selectedKota.cityId);
+                                                    kecamatanController.selectedKecamatanId.value = null;
+                                                    kotaController.selectedKotaId.value = value;
+                                                  }
+                                                },
+                                                value: kotaController.selectedKotaId.value !=
+                                                        null
+                                                    ? kotaController
+                                                        .selectedKotaId.value
+                                                    : null,
+                                              )
+                                          )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        
+                              SizedBox(height: 10),
+                        
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 20, left: 20),
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Kecamatan",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        // dropdownform field
+                                        Container(
                                           width: 150,
+                                          padding: const EdgeInsets.only(top: 5),
                                           margin: EdgeInsets.only(bottom: 15),
-                                          child: TextFormField(
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return "Kode Pos tidak boleh kosong";
-                                              }
-                                              return null;
-                                            },
-                                            controller: alamatKirimController.editRecipientKodePosController,
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              hintText: "Masukkan Kode Pos",
-                                              hintStyle:
-                                                  TextStyle(fontSize: 12),
-                                              border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1)),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1)),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1)),
+                                          child: Obx(() =>
+                                              DropdownButtonFormField(
+                                                validator: (value) {
+                                                  if (value == null) {
+                                                    return 'Kecamatan tidak boleh kosong';
+                                                  }
+                                                  return null;
+                                                },
+                                                isExpanded: true,
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  hintText: kecamatanController
+                                                          .isLoading.value
+                                                      ? "Loading..."
+                                                      : data.kecamatan,
+                                                  hintStyle:
+                                                      TextStyle(fontSize: 12),
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      borderSide: BorderSide(
+                                                          color: Colors.grey,
+                                                          width: 1)),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          borderSide: BorderSide(
+                                                              color: Colors.grey,
+                                                              width: 1)),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          borderSide: BorderSide(
+                                                              color: Colors.grey,
+                                                              width: 1)),
+                                                ),
+                                                items: kecamatanController
+                                                        .listKecamatan.isNotEmpty
+                                                    ? List.generate(
+                                                        kecamatanController
+                                                            .listKecamatan.length,
+                                                        (index) =>
+                                                            DropdownMenuItem(
+                                                              child: Text(
+                                                                kecamatanController
+                                                                    .listKecamatan[
+                                                                        index]
+                                                                    .subdistrictName,
+                                                                style: TextStyle(
+                                                                    fontSize: 12),
+                                                              ),
+                                                              value: kecamatanController
+                                                                      .listKecamatan[
+                                                                  index],
+                                                            ))
+                                                    : null,
+                                                onChanged: (value) {
+                                                  if (value != null) {
+                                                    Kecamatan selectedKecamatan =
+                                                        value as Kecamatan;
+                                                    kelurahanController
+                                                        .clearListKelurahan();
+                                                    kelurahanController
+                                                        .fetchKelurahanByKecamatanId(
+                                                            selectedKecamatan
+                                                                .subdistrictId);
+                                                    kelurahanController
+                                                        .selectedKelurahanId
+                                                        .value = null;
+                                                    kecamatanController
+                                                        .selectedKecamatanId
+                                                        .value = value;
+                                                  }
+                                                },
+                                                value: kecamatanController
+                                                            .selectedKecamatanId
+                                                            .value !=
+                                                        null
+                                                    ? kecamatanController
+                                                        .selectedKecamatanId.value
+                                                    : null,
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Kode Pos",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 5),
+                                          child: Container(
+                                            width: 150,
+                                            margin: EdgeInsets.only(bottom: 15),
+                                            child: TextFormField(
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Kode Pos tidak boleh kosong";
+                                                }
+                                                return null;
+                                              },
+                                              controller: alamatKirimController.editRecipientKodePosController,
+                                              keyboardType: TextInputType.number,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                hintText: "Masukkan Kode Pos",
+                                                hintStyle:
+                                                    TextStyle(fontSize: 12),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(5),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1)),
+                                                focusedBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(5),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1)),
+                                                enabledBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(5),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1)),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-
-                            SizedBox(height: 10),
-
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 20, left: 20, bottom: 15),
-                              child: Obx(() => Container(
-                                width: Get.width,
-                                child: alamatKirimController.isLoading.value ? Center(child: CircularProgressIndicator(),) : ElevatedButton(
-                                  child: Text("Submit"),
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              AppsColors.loginColorPrimary),
-                                      shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ))),
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      alamatKirimController.editAddress(data.id);
-                                    }
-                                    
-                                  },
-                                )
-                              )),
-                            )
-                          ],
-                        ),
+                        
+                              SizedBox(height: 10),
+                        
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 20, left: 20, bottom: 15),
+                                child: Obx(() => Container(
+                                  width: Get.width,
+                                  child: alamatKirimController.isLoading.value ? Center(child: CircularProgressIndicator(),) : ElevatedButton(
+                                    child: Text("Submit"),
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                AppsColors.loginColorPrimary),
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                        ))),
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        alamatKirimController.editAddress(data.id);
+                                      }
+                                      
+                                    },
+                                  )
+                                )),
+                              )
+                            ],
+                          );
+                            }
+                          ),
+                        )
                       )),
                     )
                   ],

@@ -8,7 +8,6 @@ import 'package:kharisma_sales_app/controllers/api/orders/salesoder_controller.d
 import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/models/ongkos_kirim.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
-import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
 // ignore: must_be_immutable
@@ -236,9 +235,17 @@ class CartCheckoutPage extends StatelessWidget {
                                           color:
                                               AppsColors.imageProductBackground,
                                           image: DecorationImage(
-                                            image: AssetImage(
-                                              "assets/images/product.png",
-                                            ),
+                                            image: cartProduct.product !=
+                                                        null &&
+                                                    cartProduct.product!
+                                                            .gdImagePath !=
+                                                        null
+                                                ? Image.network(cartProduct
+                                                        .product!.gdImagePath!)
+                                                    .image
+                                                : Image.asset(
+                                                        "assets/images/image.png")
+                                                    .image,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -467,7 +474,7 @@ class CartCheckoutPage extends StatelessWidget {
                                           children: [
                                             Text("Sub Total"),
                                             SizedBox(width: 5),
-                                            DiskonProduct()
+                                            // DiskonProduct()
                                           ],
                                         ),
                                         Obx(() => Text(
@@ -483,28 +490,28 @@ class CartCheckoutPage extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Total Diskon",
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "Rp 0",
-                                          style: TextStyle(color: Colors.red),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(10.0),
+                                  //   child: Row(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.spaceBetween,
+                                  //     children: [
+                                  //       Row(
+                                  //         children: [
+                                  //           Text(
+                                  //             "Total Diskon",
+                                  //             style:
+                                  //                 TextStyle(color: Colors.red),
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //       Text(
+                                  //         "Rp 0",
+                                  //         style: TextStyle(color: Colors.red),
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
@@ -578,25 +585,61 @@ class CartCheckoutPage extends StatelessWidget {
                                     )),
                                   ),
                                   onPressed: () async {
-                                    if(salesOrderController.isLoading.value){
+                                    if (salesOrderController.isLoading.value) {
                                       return;
-                                    }else{
-                                      var status = await salesOrderController
-                                          .salesOrderCartStore(
-                                              cartProductList,
-                                              weight.toString(),
-                                              biayaPengiriman.value.toString(),
-                                              nama.value);
-                                      if (status == '200') {
-                                        Get.offNamed(RoutesName.orderSuccess);
-                                      } else {
-                                        Get.snackbar(
-                                          "Failed",
-                                          "Your order has failed",
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                        );
-                                      }
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text("Konfirmasi"),
+                                            content: Text(
+                                                "Apakah kamu yakin membuat sales order?"),
+                                            actions: [
+                                              TextButton(
+                                                child: Text(
+                                                  "Cancel",
+                                                  style: TextStyle(
+                                                      color: AppsColors.loginColorPrimary),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: Text("Confirm",
+                                                    style: TextStyle(
+                                                        color: AppsColors.loginColorPrimary), 
+                                                ),
+                                                onPressed: () async {
+                                                  Navigator.of(context).pop();
+                                                  var status =
+                                                      await salesOrderController
+                                                          .salesOrderCartStore(
+                                                    cartProductList,
+                                                    weight.toString(),
+                                                    biayaPengiriman.value
+                                                        .toString(),
+                                                    nama.value,
+                                                  );
+                                                  if (status == '200') {
+                                                    Get.offNamed(RoutesName
+                                                        .orderSuccess);
+                                                  } else {
+                                                    Get.snackbar(
+                                                      "Failed",
+                                                      "Your order has failed",
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                      colorText: Colors.white,
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     }
                                   },
                                   child: Obx(
@@ -606,7 +649,7 @@ class CartCheckoutPage extends StatelessWidget {
                                                   CircularProgressIndicator(),
                                             )
                                           : Text(
-                                              "Lanjutkan",
+                                              "Buat Sales Order",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold),

@@ -9,7 +9,6 @@ import 'package:kharisma_sales_app/controllers/api/products/product_controller.d
 import 'package:kharisma_sales_app/models/buy_now.dart';
 import 'package:kharisma_sales_app/models/ongkos_kirim.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
-import 'package:kharisma_sales_app/widgets/diskon_product.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
 // ignore: must_be_immutable
@@ -520,28 +519,28 @@ class CheckoutProductPage extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Total Diskon",
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "Rp 0",
-                                          style: TextStyle(color: Colors.red),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(10.0),
+                                  //   child: Row(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.spaceBetween,
+                                  //     children: [
+                                  //       Row(
+                                  //         children: [
+                                  //           Text(
+                                  //             "Total Diskon",
+                                  //             style:
+                                  //                 TextStyle(color: Colors.red),
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //       Text(
+                                  //         "Rp 0",
+                                  //         style: TextStyle(color: Colors.red),
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
@@ -633,38 +632,64 @@ class CheckoutProductPage extends StatelessWidget {
                                         : () async {
                                             if (nama.value == '') {
                                               Get.snackbar(
-                                                'Error',
+                                                'Gagal',
                                                 'Pilih Jenis Pengiriman Terlebih Dahulu',
                                                 backgroundColor: Colors.red,
                                                 colorText: Colors.white,
                                               );
                                             } else {
-                                              if (!salesOrderController
-                                                  .isLoading.value) {
-                                                salesOrderController
-                                                    .isLoading.value = true;
-                                                var status =
-                                                    await salesOrderController
-                                                        .salesOrderStore(
-                                                  productController
-                                                      .dataUuid.value,
-                                                  data.product!.weight,
-                                                  biayaPengiriman.toString(),
-                                                  nama.value,
-                                                );
-                                                salesOrderController
-                                                    .isLoading.value = false;
+                                              if (!salesOrderController.isLoading.value) {
+                                                showDialog(
+                                                  context: context, 
+                                                  builder: (BuildContext context){
+                                                    return AlertDialog(
+                                                      title: Text("Konfirmasi"),
+                                                      content: Text("Apakah yakin ingin melanjutkan?"),
+                                                      actions: [
+                                                        TextButton(
+                                                          child: Text(
+                                                            "Cancel",
+                                                            style: TextStyle(
+                                                                color: AppsColors.loginColorPrimary),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop();
+                                                          },
+                                                        ),
+                                                        TextButton(
+                                                          child: Text("Confirm",
+                                                          style: TextStyle(
+                                                            color: AppsColors.loginColorPrimary)
+                                                         ), 
+                                                         onPressed: ()async{
+                                                          Navigator.of(context).pop();
+                                                          salesOrderController.isLoading.value = true;
+                                                          var status = await salesOrderController
+                                                                  .salesOrderStore(
+                                                            productController.dataUuid.value,
+                                                            data.product!.weight,
+                                                            biayaPengiriman.toString(),
+                                                            nama.value,
+                                                          );
+                                                          salesOrderController
+                                                              .isLoading.value = false;
 
-                                                if (status == '200') {
-                                                  Get.offNamed(RoutesName.orderSuccess);
-                                                } else {
-                                                  Get.snackbar(
-                                                    "Failed",
-                                                    "Your order has failed",
-                                                    backgroundColor: Colors.red,
-                                                    colorText: Colors.white,
-                                                  );
-                                                }
+                                                          if (status == '200') {
+                                                            Get.offNamed(RoutesName.orderSuccess);
+                                                          } else {
+                                                            Get.snackbar(
+                                                              "Failed",
+                                                              "Your order has failed",
+                                                              backgroundColor: Colors.red,
+                                                              colorText: Colors.white,
+                                                            );
+                                                          }
+                                                         },
+                                                        )
+                                                      ],
+                                                    );
+                                                  }
+                                                );
                                               }
                                             }
                                           },
@@ -673,7 +698,7 @@ class CheckoutProductPage extends StatelessWidget {
                                         ? Center(
                                             child: CircularProgressIndicator())
                                         : Text(
-                                            "Lanjutkan",
+                                            "Buat Sales Order",
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,

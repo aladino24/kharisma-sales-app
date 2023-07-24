@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kharisma_sales_app/services/api_url.dart';
@@ -19,20 +21,22 @@ class ForgotPasswordController extends GetxController{
         }
      );
 
+    var jsonResult = json.decode(response.body);
      if (response.statusCode == 200) {
+       
       isLoading(false);
        Get.snackbar(
-        'Success', 'Password reset link sent to your email',
+        'Success', jsonResult['message'],
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
      }else{
       isLoading(false);
-        Get.snackbar('Error', 'Invalid email');
+        Get.snackbar('Error', jsonResult['message']);
      }
     } catch (e) {
       isLoading(false);
-      Get.snackbar('Error', 'Telah terjadi kesalahan');
+      Get.snackbar('Error', e.toString());
     }
   }
 }

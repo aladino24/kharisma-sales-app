@@ -25,6 +25,8 @@ abstract class RoutesName{
   static const addAddress = '/add-address-page';
   static const editAddress = '/edit-address-page';
   static const editProfile = '/edit-profile-page';
+  static const notifikasiAll = '/notifikasi-all-page';
+  static const kebijakanPrivasi = '/kebijakan-privasi';
 
   // Voucher
   static const listVoucher = '/list-voucher-page';

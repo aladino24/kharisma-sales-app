@@ -236,9 +236,14 @@ class DetailSalesorderPage extends StatelessWidget {
                                           color:
                                               AppsColors.imageProductBackground,
                                           image: DecorationImage(
-                                            image: AssetImage(
-                                              "assets/images/product.png",
-                                            ),
+                                            image: productList.product!.gdImagePath != null
+                                            ? Image.network(
+                                               productList.product!.gdImagePath,
+                                                fit: BoxFit.cover,
+                                              ).image
+                                            : AssetImage(
+                                                'assets/images/image.png',
+                                              ),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -388,28 +393,28 @@ class DetailSalesorderPage extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Total Diskon",
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "Rp 0",
-                                          style: TextStyle(color: Colors.red),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(10.0),
+                                  //   child: Row(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.spaceBetween,
+                                  //     children: [
+                                  //       Row(
+                                  //         children: [
+                                  //           Text(
+                                  //             "Total Diskon",
+                                  //             style:
+                                  //                 TextStyle(color: Colors.red),
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //       Text(
+                                  //         "Rp 0",
+                                  //         style: TextStyle(color: Colors.red),
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(

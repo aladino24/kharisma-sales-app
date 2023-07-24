@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
-import 'package:kharisma_sales_app/views/success/components/default_button.dart';
 import 'package:kharisma_sales_app/views/success/empty_section.dart';
 import 'package:kharisma_sales_app/views/success/sub_title.dart';
 import 'components/constant.dart';
@@ -34,7 +33,7 @@ class _SuccessPageState extends State<SuccessPage> {
             width: 200,
             child: TextButton(
               onPressed: () {
-                Get.offAllNamed(RoutesName.home);
+                Get.offNamed(RoutesName.profile);
               },
               style: TextButton.styleFrom(
                 backgroundColor: AppsColors.loginColorPrimary,// Warna teks

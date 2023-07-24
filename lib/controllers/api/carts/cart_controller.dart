@@ -9,6 +9,7 @@ import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/models/checkout.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
+import '../../../widgets/loading_animation.dart';
 
 class CartController extends GetxController{
   var isLoading = false.obs;
@@ -20,6 +21,7 @@ class CartController extends GetxController{
   var isAllSelected = false.obs;
   var prices = <String, String>{}.obs;
   var totalPrices = <String, int>{}.obs;
+  RxInt total_bayar = 0.obs;
   var quantityGlobal = 0.obs;
 
   
@@ -27,6 +29,7 @@ class CartController extends GetxController{
    @override
   void onInit() {
     super.onInit();
+    fetchCartProductFirstTime();
     fetchCartProduct();
     getCheckout();
   }
@@ -60,6 +63,125 @@ class CartController extends GetxController{
       }
    }
 
+   Future<void> selectCartAll(String? selectAll)async {
+    print('status' + selectAll!);
+     String api_cart_product = ApiUrl.apiUrl + 'ecom/select-cart/${selectAll}';
+      try {
+        // isLoading(true);
+        var response = await http.get(
+          Uri.parse(api_cart_product),
+          headers: {
+             'Authorization': 'Bearer ${await loginController.getToken()}',
+              'Content-Type': 'application/json',
+           },
+        );
+        print(response.statusCode);
+        if(response.statusCode == 200){
+           isLoading(false);
+           var jsonResult = jsonDecode(response.body);
+           total_bayar.value = int.parse(jsonResult['data']);
+           print(total_bayar.value);
+        }else{
+          isLoading(false);
+          throw Exception(jsonDecode(response.body)['message']);
+        }
+      } catch (e) {
+        isLoading(false);
+        // print(e.toString());
+      }finally{
+        isLoading(false);
+      }
+   }
+
+
+   Future<void> fetchCartProductNoLoading()async {
+     String api_cart_product = ApiUrl.apiUrl + 'ecom/cart';
+      try {
+        var response = await http.get(
+          Uri.parse(api_cart_product),
+          headers: {
+             'Authorization': 'Bearer ${await loginController.getToken()}',
+              // 'Content-Type': 'application/json',
+           },
+        );
+
+        if(response.statusCode == 200){
+           var jsonResult = json.decode(response.body);
+           cartProductList.value = List<CartProduct>.from(jsonResult['data'].map((cartProduct) => CartProduct.fromJson(cartProduct)));
+        }else{
+          isLoading(false);
+          throw Exception(jsonDecode(response.body)['message']);
+        }
+      } catch (e) {
+        print(e.toString());
+      }finally{
+        isLoading(false);
+      }
+   }
+
+   Future<void> fetchCartProductFirstTime()async{
+    String api_cart_product = ApiUrl.apiUrl + 'ecom/cart';
+      try {
+        isLoading(true);
+        var response = await http.get(
+          Uri.parse(api_cart_product),
+          headers: {
+             'Authorization': 'Bearer ${await loginController.getToken()}',
+              // 'Content-Type': 'application/json',
+           },
+        );
+
+        if(response.statusCode == 200){
+           isLoading(false);
+           var jsonResult = json.decode(response.body);
+           cartProductList.value = List<CartProduct>.from(jsonResult['data'].map((cartProduct) => CartProduct.fromJson(cartProduct)));
+        }else{
+          isLoading(false);
+          throw Exception(jsonDecode(response.body)['message']);
+        }
+      } catch (e) {
+        isLoading(false);
+        print(e.toString());
+      }finally{
+        isLoading(false);
+      }
+   }
+
+  // post data
+    Future<void> selectedCheckbox(String uuid, String? isSelected)async {
+      String api_cart_product = ApiUrl.apiUrl + 'ecom/select-cart/${uuid}/${isSelected}';
+        try {
+          // isLoading(true);
+          final response = await http.get(
+            Uri.parse(api_cart_product),
+            headers: {
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+                'Content-Type': 'application/json',
+            },
+          );
+
+          // print(response.body);
+  
+          if(response.statusCode == 200){
+            final data = jsonDecode(response.body);
+            print(data['data']);
+            total_bayar.value = int.parse(data['data']);
+            
+          }else{
+            isLoading(false);
+            throw Exception(jsonDecode(response.body)['message']);
+          }
+        } catch (e) {
+          isLoading(false);
+          print(e.toString());
+          errorMessage(e.toString());
+        }finally{
+          isLoading(false);
+        }
+    }
+
+
+
 
    // post data
     Future<void> addCartProduct(String productId, String price, int qty)async {
@@ -85,12 +207,12 @@ class CartController extends GetxController{
             isLoading(false);
             var jsonResult = json.decode(response.body);
             // get.snackbar
-            Get.snackbar(
-              'Success',
-              jsonResult['message'],
-              backgroundColor: Colors.green,
-              colorText: Colors.white,
-            );
+            // Get.snackbar(
+            //   'Success',
+            //   jsonResult['message'],
+            //   backgroundColor: Colors.green,
+            //   colorText: Colors.white,
+            // );
 
             Get.toNamed(
               RoutesName.cartProduct
@@ -109,10 +231,12 @@ class CartController extends GetxController{
 
           // get.snackbar
           errorMessage(e.toString());
+          await Get.offAllNamed(RoutesName.loginCustomer);
         }finally{
           isLoading(false);
         }
     }
+    
 
     Future<void> getCheckout() async {
     String api_get_checkout = ApiUrl.apiUrl + 'ecom/buy-now';
@@ -144,6 +268,19 @@ class CartController extends GetxController{
       isLoading(false);
     }
   }
+
+  // filter List CartProduct isSelected samadengan true maka jumlah semua quantity*harga
+  void getTotalPrice(){
+    int total = 0;
+    for(var i = 0; i < cartProductList.length; i++){
+      if(cartProductList[i].isSelected == true){
+        total += int.parse(cartProductList[i].quantity!) * int.parse(cartProductList[i].price!);
+      }
+    }
+    total_bayar.value = total;
+    // print(total_bayar.value);
+  }
+  
 
     Future<void> checkoutProductCart(List<CartProduct> cartProductList)async {
       String api_cart_product = ApiUrl.apiUrl + 'ecom/checkout';
@@ -241,6 +378,50 @@ class CartController extends GetxController{
             isLoading(false);
             var jsonResult = json.decode(response.body);
             print(jsonResult['message']);
+            isAllSelected.value = false;
+            getTotalPrice();
+            fetchCartProduct();
+            update();
+          }else{
+            isLoading(false);
+            throw Exception(jsonDecode(response.body)['message']);
+          }
+        } catch (e) {
+          isLoading(false);
+          print(e.toString());
+
+          // get.snackbar
+          errorMessage(e.toString());
+        }finally{
+          isLoading(false);
+        }
+    }
+
+    Future<void> updateCartProductLoading(String uuid, String productId, String price, int quantity)async {
+      String api_cart_product = ApiUrl.apiUrl + 'ecom/cart/${uuid}';
+        try {
+          // showProgressDialog();
+          // isLoading(true);
+          final response = await http.put(
+            Uri.parse(api_cart_product),
+            headers: {
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+                'Content-Type': 'application/json',
+            },
+            body: jsonEncode(<String, String>{
+              'product_id': productId,
+              'price' : price,
+              'quantity': quantity.toString(),
+            }),
+          );
+          // closeProgressDialog();
+          // print(response.body);
+  
+          if(response.statusCode == 200){
+            isLoading(false);
+            var jsonResult = json.decode(response.body);
+            print(jsonResult['message']);
+            isAllSelected.value = false;
             fetchCartProduct();
             update();
           }else{
@@ -259,44 +440,44 @@ class CartController extends GetxController{
     }
 
 
-    Future<void> deleteCartProduct(String uuid) async{
-      String api_cart_product = ApiUrl.apiUrl + 'ecom/cart/' + uuid;
-        try {
-          // isLoading(true);
-          final response = await http.delete(
-            Uri.parse(api_cart_product),
-            headers: {
-              'Authorization': 'Bearer ${await loginController.getToken()}',
-                'Content-Type': 'application/json',
-            },
-          );
 
-          // print(response.body);
+Future<void> deleteCartProduct(String uuid) async {
+  String api_cart_product = ApiUrl.apiUrl + 'ecom/cart/' + uuid;
   
-          if(response.statusCode == 200){
-            isLoading(false);
-            var jsonResult = json.decode(response.body);
-            // get.snackbar
-           print(jsonResult['message']);
-            fetchCartProduct();
-            mainHeaderController.getCartCount();
-            update(
-              ['${uuid}']
-            );
-          }else{
-            isLoading(false);
-            throw Exception(jsonDecode(response.body)['message']);
-          }
-        } catch (e) {
-          isLoading(false);
-          print(e.toString());
+  try {
+    // isLoading(true);
+    showProgressDialog();
 
-          // get.snackbar
-          errorMessage(e.toString());
-        }finally{
-          isLoading(false);
-        }
+    final response = await http.delete(
+      Uri.parse(api_cart_product),
+      headers: {
+        'Authorization': 'Bearer ${await loginController.getToken()}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    closeProgressDialog();
+
+    if (response.statusCode == 200) {
+      isLoading(false);
+      var jsonResult = json.decode(response.body);
+      print(jsonResult['message']);
+      fetchCartProduct();
+      mainHeaderController.getCartCount();
+      update(['${uuid}']);
+    } else {
+      isLoading(false);
+      throw Exception(jsonDecode(response.body)['message']);
     }
+  } catch (e) {
+    isLoading(false);
+    print(e.toString());
+    errorMessage(e.toString());
+  } finally {
+    isLoading(false);
+  }
+}
+
 
   Future<void> checkPrice(String? product_tmpl_id, int quantity) async{
     String api_checkprice = ApiUrl.apiUrl + 'ecom/data-master/check-price?product_tmpl_id=${product_tmpl_id}&quantity=${quantity}';
@@ -334,8 +515,13 @@ class CartController extends GetxController{
     
   void increment(String uuid, RxInt quantity, String stock, int index, String price,String productTmplid, String productId, RxInt totalCart){
     if(quantity.value < int.parse(stock)){
-       updateCartProduct(uuid, productId, price, quantity.value + 1);
-      totalCart.value = 0;
+      //  updateCartProduct(uuid, productId, price, quantity.value + 1);
+      quantity.value++;
+       totalCart.value = 0;
+      Future.delayed(Duration(seconds: 3), () {
+        updateCartProduct(uuid, productId, price, quantity.value);
+      });
+     
     }
     update(
         [index]
@@ -344,21 +530,26 @@ class CartController extends GetxController{
 
   void decrement(String uuid,String productTmplid, String productId, RxInt quantity, String stock, int index, String price, RxInt totalCart){
     if(quantity.value > 1){
-      updateCartProduct(uuid, productId, price, quantity.value - 1);
+      // updateCartProduct(uuid, productId, price, quantity.value - 1);
+      quantity.value--;
       totalCart.value = 0;
+      Future.delayed(Duration(seconds: 3), () {
+        updateCartProduct(uuid, productId, price, quantity.value);
+      });
+      
     }
      update(
         [index]
      );
   }
 
-  void selectAll() {
+  void selectAll(String? isSelectAll) {
     isAllSelected.value = !isAllSelected.value;
     
     cartProductList.forEach((cartProduct) {
       cartProduct.isSelected = isAllSelected.value;
       // jumlah semua harga x quantity
-      
+      selectCartAll(isAllSelected.value.toString());
       update([
         '${cartProduct.uuid}'
       ]);
@@ -374,6 +565,16 @@ class CartController extends GetxController{
     quantityGlobal.value = int.parse(cartProductList[index].quantity!);
     isAllSelected.value = cartProductList.every((cartProduct) => cartProduct.isSelected);
     // update();
+    update(
+      ['${uuid}']
+    );
+  }
+
+  Future<void> selectCartProductCheckbox(int index,String uuid) async{
+    cartProductList[index].isSelected = !cartProductList[index].isSelected;
+    isAllSelected.value = cartProductList.every((cartProduct) => cartProduct.isSelected);
+    // update();
+    // fetchCartProductNoLoading();
     update(
       ['${uuid}']
     );

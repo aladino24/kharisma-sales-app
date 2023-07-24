@@ -10,6 +10,8 @@ class UserModel {
   String? kelurahan;
   String? kecamatan;
   String? kota;
+  String? provinsi;
+  String? zip;
   String? lat;
   String? lng;
   String? email_verified_at;
@@ -32,6 +34,8 @@ class UserModel {
     this.kelurahan,
     this.kecamatan,
     this.kota,
+    this.provinsi,
+    this.zip,
     this.lat,
     this.lng,
     this.email_verified_at,
@@ -55,6 +59,8 @@ class UserModel {
     kelurahan = json['kelurahan'];
     kecamatan = json['kecamatan'];
     kota = json['kota'];
+    provinsi = json['provinsi'];
+    zip = json['zip'];
     lat = json['lat'];
     lng = json['lng'];
     email_verified_at = json['email_verified_at'];
@@ -79,6 +85,8 @@ class UserModel {
     data['kelurahan'] = this.kelurahan;
     data['kecamatan'] = this.kecamatan;
     data['kota'] = this.kota;
+    data['provinsi'] = this.provinsi;
+    data['zip'] = this.zip;
     data['lat'] = this.lat;
     data['lng'] = this.lng;
     data['email_verified_at'] = this.email_verified_at;

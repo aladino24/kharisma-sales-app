@@ -6,6 +6,7 @@ import 'package:kharisma_sales_app/controllers/api/products/category_controller.
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/sidebar_category_controller.dart';
+import 'package:kharisma_sales_app/services/global_data.dart';
 import 'package:kharisma_sales_app/widgets/notification_dialog.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
@@ -22,7 +23,7 @@ class MainHeader extends StatelessWidget {
     required this.iconCart,
     required this.iconNotification,
   }) : super(key: key ?? UniqueKey());
-  final mainheaderController = Get.put(MainHeaderController());
+  final MainHeaderController mainheaderController = Get.put(MainHeaderController());
   final NotificationController notificationController = Get.put(NotificationController());
   final ProductController productController = Get.put(ProductController());
   final SidebarCategoryController sidebarCategoryController = Get.put(SidebarCategoryController());
@@ -31,10 +32,12 @@ class MainHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+    // print(GlobalData.hasToken);
     // print(countNewNotification);
-
-    return GetBuilder<MainHeaderController>(builder: (controller) {
+    print('ini data' + GlobalData.hasToken.value.toString());
+    return GetBuilder<MainHeaderController>(
+      builder: (controller) {
+        print('ini data' + GlobalData.hasToken.value.toString());
       return Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -65,8 +68,21 @@ class MainHeader extends StatelessWidget {
                 autofocus: false,
                 onSubmitted: (val) {},
                 onChanged: (val) async {
-                 await productController.fetchProductByFilter(productController.searchEditController.text, sidebarCategoryController.variantHarga.value, categoryController.selectedValue.value);
-                },
+                  if(Get.currentRoute != RoutesName.home){
+                    await productController.fetchProductByFilter(
+                      productController.searchEditController.text, 
+                      sidebarCategoryController.variantHarga.value, 
+                      categoryController.selectedValue.value
+                      ).then((value) => Get.offAllNamed(RoutesName.home));
+                    }else{
+                      await productController.fetchProductByFilter(
+                      productController.searchEditController.text, 
+                      sidebarCategoryController.variantHarga.value, 
+                      categoryController.selectedValue.value
+                      );
+                    }
+                  },
+                 
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
@@ -181,10 +197,16 @@ class MainHeader extends StatelessWidget {
                     ),
             ),
             const SizedBox(width: 14),
-            GestureDetector(
+            Obx((){
+              return GestureDetector(
               onTap: () {
                 controller.profleIcon();
-                Get.toNamed(RoutesName.profile);
+                if(GlobalData.hasToken.value){
+                  Get.toNamed(RoutesName.profile);
+                }else{
+                  Get.offAllNamed(RoutesName.loginCustomer)!;
+                }
+                
               },
               child: badge.Badge(
                   // badgeContent: const Text(
@@ -195,12 +217,13 @@ class MainHeader extends StatelessWidget {
                       badgeColor: AppsColors.loginColorPrimary,
                       padding: const EdgeInsets.symmetric(horizontal: 4)),
                   child: Icon(
-                    Icons.dehaze,
+                    GlobalData.hasToken.value ? Icons.dehaze : Icons.login,
                     color: controller.isProfileSelected.value
                         ? AppsColors.loginColorPrimary
                         : Colors.grey,
                   )),
-            ),
+            );
+            }),
           ],
         ),
       );

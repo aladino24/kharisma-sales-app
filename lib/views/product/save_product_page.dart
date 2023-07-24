@@ -130,7 +130,7 @@ class SaveProductPage extends StatelessWidget {
                                 GestureDetector(
                                   child: Container(
                                     // heigh sesuai dengan tinggi parent * 0.5
-                                    height: 165,
+                                    height: Get.height * 0.2,
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
                                         color:

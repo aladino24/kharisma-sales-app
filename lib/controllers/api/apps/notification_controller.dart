@@ -2,15 +2,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/models/notification.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
 import 'package:http/http.dart' as http;
+import '../../../widgets/loading_animation.dart';
 
 class NotificationController extends GetxController{
   var isLoading = false.obs;
   var notificationList = List<NotificationItem>.empty().obs;
   final LoginController loginController = Get.find<LoginController>();
-
 
   @override
   void onInit() {
@@ -46,7 +47,7 @@ class NotificationController extends GetxController{
    }
 
    Future<void> fetchNotificationLimit() async{
-    String api_notification_url = ApiUrl.apiUrl + 'ecom/notification?limit=3';
+    String api_notification_url = ApiUrl.apiUrl + 'ecom/notification?limit=5';
     try {
       // isLoading(true);
       final response = await http.get(
@@ -60,6 +61,7 @@ class NotificationController extends GetxController{
         isLoading(false);
         var jsonResult = json.decode(response.body);
         // print(jsonResult);
+        
         notificationList.value = List<NotificationItem>.from(jsonResult['data'].map((notification) => NotificationItem.fromJson(notification)));
    
       }else{
@@ -74,7 +76,11 @@ class NotificationController extends GetxController{
 
    Future<void> markOneRead(String id) async{
     String api_onereadnotification_url = ApiUrl.apiUrl + 'ecom/notification/mark-one-read/${id}';
+     Get.lazyPut(() => MainHeaderController());
+     final MainHeaderController mainHeaderController = Get.find<MainHeaderController>();
     try {
+      showProgressDialog();
+      isLoading(true);
       final response = await http.patch(
         Uri.parse(api_onereadnotification_url),
         headers: {
@@ -82,14 +88,21 @@ class NotificationController extends GetxController{
         },
       );
 
+      closeProgressDialog();
+
       if(response.statusCode == 200){
+        isLoading(false);
         var jsonResult = json.decode(response.body);
         successMessage(jsonResult['message']);
+        mainHeaderController.notifCount();
         fetchNotificationLimit();
+        
       }else{
+        isLoading(false);
         throw Exception(jsonDecode(response.body)['message']);
       }
     } catch (e) {
+      isLoading(false);
       print(e.toString());
       errorMessage(e.toString());
     }
@@ -97,18 +110,22 @@ class NotificationController extends GetxController{
 
    Future<void> markAllRead() async{
     String api_allreadnotification_url = ApiUrl.apiUrl + 'ecom/notification/mark-all-read';
+    Get.lazyPut(() => MainHeaderController());
+     final MainHeaderController mainHeaderController = Get.find<MainHeaderController>();
     try {
+      showProgressDialog();
       final response = await http.patch(
         Uri.parse(api_allreadnotification_url),
         headers: {
           'Authorization': 'Bearer ${await loginController.getToken()}',
         },
       );
-
+      closeProgressDialog();
       if(response.statusCode == 200){
         var jsonResult = json.decode(response.body);
         successMessage(jsonResult['message']);
-        fetchNotificationLimit();
+        mainHeaderController.notifCount();
+        fetchNotificationFull();
       }else{
         throw Exception(jsonDecode(response.body)['message']);
       }

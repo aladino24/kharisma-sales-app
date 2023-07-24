@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:kharisma_sales_app/services/api_url.dart';
+import 'package:kharisma_sales_app/services/global_data.dart';
 
 class ApiLoginService {
   
@@ -17,6 +18,7 @@ class ApiLoginService {
     print(jsonDecode(response.body));
 
     if (response.statusCode == 200) {
+      GlobalData.hasToken.value = true;
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to login');
@@ -34,6 +36,7 @@ class ApiLoginService {
     // print(jsonDecode(response.body));
 
     if (response.statusCode == 200) {
+      GlobalData.hasToken.value = true;
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to login');

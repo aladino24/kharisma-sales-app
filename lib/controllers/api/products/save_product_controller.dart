@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
@@ -73,7 +74,7 @@ class SaveProductController extends GetxController{
             }
         );
           if(response.statusCode == 200){
-            print(jsonDecode(response.body)['data']);
+            print(jsonDecode(response.body));
             isLoading(false);
             // final data = jsonDecode(response.body)['data'];
             // _products.assignAll(List<Product>.from(data.map((product) => Product.fromJson(product))));
@@ -84,11 +85,15 @@ class SaveProductController extends GetxController{
             mainHeaderController.getWishlistCount();
           }else{
             isLoading(false);
-            throw Exception('Failed to load data');
+            throw Exception(jsonDecode(response.body)['message']);
           }
       } catch (e) {
           isLoading(false);
-          print(e);
+          if(e.toString() == 'Exception: Unauthorized'){
+            errorMessage('Silahkan Login Terlebih Dahulu');
+            await Get.offAllNamed(RoutesName.loginCustomer);
+          }
+          print(e.toString());
       }finally{
         isLoading(false);
       }
@@ -127,6 +132,15 @@ class SaveProductController extends GetxController{
         isLoading(false);
       }
    }
+
+    void errorMessage(String message){
+    Get.snackbar(
+      'Gagal',
+      message,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
 
 
 }

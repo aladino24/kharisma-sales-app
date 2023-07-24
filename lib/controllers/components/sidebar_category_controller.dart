@@ -7,7 +7,11 @@ class SidebarCategoryController extends GetxController{
    var variantPublished = ''.obs;
 
    void setVariantHarga(String variantHarga) {
-      this.variantHarga.value = variantHarga;
+      if (this.variantHarga.value == variantHarga) {
+        this.variantHarga.value = '';
+      } else {
+        this.variantHarga.value = variantHarga;
+      }
       update();
    }
 

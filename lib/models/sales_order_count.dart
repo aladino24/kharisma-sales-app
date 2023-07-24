@@ -15,9 +15,9 @@ class SalesOrderCountResult {
 
 class SalesOrderCount {
   String? draft;
-  int? sale;
-  int? done;
-  int? cancel;
+  String? sale;
+  String? done;
+  String? cancel;
 
   SalesOrderCount({this.draft, this.sale, this.done, this.cancel});
 

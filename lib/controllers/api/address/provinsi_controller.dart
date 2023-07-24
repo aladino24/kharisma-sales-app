@@ -35,4 +35,8 @@ class ProvinsiController extends GetxController {
       print(e.toString());
     }
   }
+
+  void clearListProvinsi() {
+    _listProvinsi.clear();
+  }
 }

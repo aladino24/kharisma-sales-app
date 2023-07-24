@@ -77,8 +77,8 @@ class ForgotPasswordPage extends StatelessWidget {
                           return null;
                         },
                         decoration: InputDecoration(
-                          labelText: 'Email/Phone Number',
-                          prefixIcon: Icon(Icons.alternate_email),
+                          labelText: 'Email yang terdaftar',
+                          prefixIcon: Icon(Icons.email),
                         ),
                       ),
                       SizedBox(height: 20),

@@ -123,64 +123,64 @@ class SidebarFilterPage extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                title: Text('Published'),
-                onTap: () {
-                  // Handle sidebar menu item 2 tap
-                },
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 10),
+            //   child: ListTile(
+            //     title: Text('Published'),
+            //     onTap: () {
+            //       // Handle sidebar menu item 2 tap
+            //     },
+            //   ),
+            // ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          width: 90,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: AppsColors.loginColorPrimary,
-                            borderRadius: BorderRadius.circular(10),
-                            border:
-                                Border.all(color: AppsColors.loginColorPrimary),
-                          ),
-                          child: InkWell(
-                            child: Center(
-                                child: Text(
-                              "Terbaru",
-                              style: TextStyle(color: Colors.white),
-                            )),
-                            onTap: () {},
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          width: 90,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: AppsColors.loginColorPrimary,
-                            borderRadius: BorderRadius.circular(10),
-                            border:
-                                Border.all(color: AppsColors.loginColorPrimary),
-                          ),
-                          child: InkWell(
-                            child: Center(
-                                child: Text(
-                              "All",
-                              style: TextStyle(color: Colors.white),
-                            )),
-                            onTap: () {},
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   child: Row(
+                  //     children: [
+                  //       Container(
+                  //         margin: const EdgeInsets.only(right: 5),
+                  //         width: 90,
+                  //         height: 30,
+                  //         decoration: BoxDecoration(
+                  //           color: AppsColors.loginColorPrimary,
+                  //           borderRadius: BorderRadius.circular(10),
+                  //           border:
+                  //               Border.all(color: AppsColors.loginColorPrimary),
+                  //         ),
+                  //         child: InkWell(
+                  //           child: Center(
+                  //               child: Text(
+                  //             "Terbaru",
+                  //             style: TextStyle(color: Colors.white),
+                  //           )),
+                  //           onTap: () {},
+                  //         ),
+                  //       ),
+                  //       Container(
+                  //         margin: const EdgeInsets.only(right: 5),
+                  //         width: 90,
+                  //         height: 30,
+                  //         decoration: BoxDecoration(
+                  //           color: AppsColors.loginColorPrimary,
+                  //           borderRadius: BorderRadius.circular(10),
+                  //           border:
+                  //               Border.all(color: AppsColors.loginColorPrimary),
+                  //         ),
+                  //         child: InkWell(
+                  //           child: Center(
+                  //               child: Text(
+                  //             "All",
+                  //             style: TextStyle(color: Colors.white),
+                  //           )),
+                  //           onTap: () {},
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 50,
                   ),

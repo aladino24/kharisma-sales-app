@@ -7,6 +7,7 @@ import 'package:kharisma_sales_app/controllers/api/apps/notification_controller.
 import 'package:kharisma_sales_app/services/api_url.dart';
 import 'package:http/http.dart' as http;
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
+import 'package:kharisma_sales_app/services/global_data.dart';
 
 class MainHeaderController extends GetxController{
   var isBookmarkIconSelected = false.obs;
@@ -140,6 +141,12 @@ class MainHeaderController extends GetxController{
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  // change GlobalData.hasToken
+  void changeHasToken(){
+    GlobalData.hasToken.value = true;
+    update();
   }
 
   

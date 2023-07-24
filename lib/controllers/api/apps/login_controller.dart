@@ -8,6 +8,7 @@ import 'package:kharisma_sales_app/models/user_model.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_login_service.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
+import 'package:kharisma_sales_app/services/global_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,6 +20,7 @@ class LoginController extends GetxController {
   var isLoading = false.obs;
   // fetch user
   var userModelData = UserModel().obs;
+  
 
   @override
   void onClose() {
@@ -47,10 +49,13 @@ class LoginController extends GetxController {
 
       await saveToken(token);
       await saveAuthData(userModels);
+      GlobalData.hasToken.value = true;
+      update(['mainheader']);
       isLoading(false);
       Get.offNamed(RoutesName.home);
       fetchUser();
     } catch (e) {
+      GlobalData.clearData();
       print(e);
       isLoading(false);
       Get.snackbar(
@@ -74,9 +79,12 @@ class LoginController extends GetxController {
 
       await saveToken(token);
       await saveAuthData(userModels);
+      GlobalData.hasToken.value = true;
+      update(['mainheader']);
       isLoading(false);
       Get.offAllNamed(RoutesName.home);
     } catch (e) {
+       GlobalData.clearData();
       print(e);
       isLoading(false);
       Get.snackbar(
@@ -101,6 +109,8 @@ class LoginController extends GetxController {
       emailSalesController.clear();
       passwordController.clear();
       tokenController.clear();
+
+      GlobalData.clearData();
 
       // hapus semua value getx
       Get.delete<LoginController>();
