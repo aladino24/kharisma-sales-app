@@ -15,13 +15,13 @@ class ProductResult {
     }
     message = json['message'];
   }
-
 }
 
 class Product {
   int? id;
   String? productId;
   String? productTmplId;
+  String? productUomId;
   String? productTagId;
   String? sku;
   String? productName;
@@ -36,13 +36,16 @@ class Product {
   String? weight;
   String? stock;
   int? isWishlist;
+  String? priceUtama;
+  String? labelUtama;
   ProductTag? productTag;
-  List<Pricelist>? pricelist;
+  List<ProductUom>? productUom;
 
   Product(
       {this.id,
       this.productId,
       this.productTmplId,
+      this.productUomId,
       this.productTagId,
       this.sku,
       this.productName,
@@ -57,13 +60,16 @@ class Product {
       this.weight,
       this.stock,
       this.isWishlist,
+      this.priceUtama,
+      this.labelUtama,
       this.productTag,
-      this.pricelist});
+      this.productUom});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     productId = json['product_id'];
     productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
     productTagId = json['product_tag_id'];
     sku = json['sku'];
     productName = json['product_name'];
@@ -78,40 +84,88 @@ class Product {
     weight = json['weight'];
     stock = json['stock'];
     isWishlist = json['is_wishlist'];
+    priceUtama = json['price_utama'];
+    labelUtama = json['label_utama'];
     productTag = json['product_tag'] != null
         ? new ProductTag.fromJson(json['product_tag'])
         : null;
-    if (json['pricelist'] != null) {
-      pricelist = <Pricelist>[];
-      json['pricelist'].forEach((v) {
-        pricelist!.add(new Pricelist.fromJson(v));
+    if (json['product_uom'] != null) {
+      productUom = <ProductUom>[];
+      json['product_uom'].forEach((v) {
+        productUom!.add(new ProductUom.fromJson(v));
       });
     }
   }
+
 }
 
 class ProductTag {
+  String? productTagId;
   String? name;
 
-  ProductTag({this.name});
+  ProductTag({this.productTagId, this.name});
 
   ProductTag.fromJson(Map<String, dynamic> json) {
+    productTagId = json['product_tag_id'];
     name = json['name'];
   }
 
 }
 
-class Pricelist {
+class ProductUom {
+  int? id;
+  String? productTmplId;
+  String? productUomId;
+  String? label;
+  String? stock;
+  String? type;
+  List<ProductPricelist>? productPricelist;
+
+  ProductUom(
+      {this.id,
+      this.productTmplId,
+      this.productUomId,
+      this.label,
+      this.stock,
+      this.type,
+      this.productPricelist});
+
+  ProductUom.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
+    label = json['label'];
+    stock = json['stock'];
+    type = json['type'];
+    if (json['product_pricelist'] != null) {
+      productPricelist = <ProductPricelist>[];
+      json['product_pricelist'].forEach((v) {
+        productPricelist!.add(new ProductPricelist.fromJson(v));
+      });
+    }
+  }
+}
+
+class ProductPricelist {
+  int? id;
+  String? productTmplId;
+  String? productUomId;
   String? price;
   String? minQuantity;
-  String? type;
 
-  Pricelist({this.price, this.minQuantity, this.type});
+  ProductPricelist(
+      {this.id,
+      this.productTmplId,
+      this.productUomId,
+      this.price,
+      this.minQuantity});
 
-  Pricelist.fromJson(Map<String, dynamic> json) {
+  ProductPricelist.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
     price = json['price'];
     minQuantity = json['min_quantity'];
-    type = json['type'];
   }
 
 }

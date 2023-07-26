@@ -172,48 +172,13 @@ class SaveProductPage extends StatelessWidget {
                                                     .loginFontColorPrimaryDark),
                                           ),
                                           Text(
-                                            product.pricelist != null && product.pricelist!.length >= 2
-                                                ? product.pricelist![1].type == 'b2b'
-                                                    ? "Seller Price : ${NumberFormat.currency(
-                                                        locale: 'id_ID',
-                                                        symbol: 'Rp ',
-                                                        decimalDigits: 0,
-                                                      ).format(int.parse(product.pricelist![1].price.toString()))}"
-                                                    : product.pricelist![1].type ==
-                                                            'b2c'
-                                                        ? "Customer Price : ${NumberFormat.currency(
-                                                            locale: 'id_ID',
-                                                            symbol: 'Rp ',
-                                                            decimalDigits: 0,
-                                                          ).format(int.parse(product.pricelist![1].price.toString()))}"
-                                                        : "" : "",
+                                            product.productUom![0].label!,
                                             style: TextStyle(
                                                 fontSize: 13,
                                                 color: AppsColors
                                                     .loginFontColorPrimaryDark),
                                           ),
-                                          Text(
-                                            product.pricelist != null &&
-                                                    product.pricelist![0].type =='b2b'
-                                                ? "Seller Price : ${NumberFormat.currency(
-                                                    locale: 'id_ID',
-                                                    symbol: 'Rp ',
-                                                    decimalDigits: 0,
-                                                  ).format(int.parse(product.pricelist![0].price.toString()))}"
-                                                : product.pricelist != null &&
-                                                        product.pricelist![0]
-                                                                .type ==
-                                                            'b2c'
-                                                    ? "Customer Price : ${NumberFormat.currency(
-                                                        locale: 'id_ID',
-                                                        symbol: 'Rp ',
-                                                        decimalDigits: 0,
-                                                      ).format(int.parse(product.pricelist![0].price.toString()))}"
-                                                    : "",
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                color: Colors.red),
-                                          ),
+                                        
                                         ],
                                       ),
                                     ),
@@ -285,12 +250,12 @@ class SaveProductPage extends StatelessWidget {
                                                     )),
                                               ),
                                               onTap: () async{
-                                                await cartController.addCartProduct(
-                                                      product.productId!,
-                                                      product
-                                                          .pricelist![0].price
-                                                          .toString(),
-                                                      1);
+                                                // await cartController.addCartProduct(
+                                                //       product.productId!,
+                                                //       product
+                                                //           .pricelist![0].price
+                                                //           .toString(),
+                                                //       1);
                                               },
                                             ),
                                           ],

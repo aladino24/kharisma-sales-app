@@ -5,6 +5,7 @@ import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/profile/profile_controller.dart';
 import 'package:kharisma_sales_app/models/user_model.dart';
 
+// ignore: must_be_immutable
 class EditProfilePage extends StatelessWidget {
   // formkey
   final _formKey = GlobalKey<FormState>();

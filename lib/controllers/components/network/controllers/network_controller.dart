@@ -8,6 +8,7 @@ class NetworkController extends GetxController{
 
    var connectionStatus = 0.obs;
    final Connectivity _connectivity = Connectivity();
+   // ignore: unused_field
    late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
     @override

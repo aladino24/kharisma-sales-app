@@ -205,6 +205,7 @@ class CartController extends GetxController{
   
           if(response.statusCode == 200){
             isLoading(false);
+            // ignore: unused_local_variable
             var jsonResult = json.decode(response.body);
             // get.snackbar
             // Get.snackbar(

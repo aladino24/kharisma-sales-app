@@ -12,6 +12,7 @@ import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class MainHeader extends StatelessWidget {
   final bool iconBookmark;
   final bool iconCart;

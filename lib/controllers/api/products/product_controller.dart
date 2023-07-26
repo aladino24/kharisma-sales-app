@@ -133,8 +133,15 @@ class ProductController extends GetxController{
 
   }
 
-  Future<void> buyNow(String? product_id, int? quantity) async {
-    String api_buy_now_store = ApiUrl.apiUrl + 'ecom/buy-now?product_id=${product_id}&price=0&quantity=${quantity}';
+  Future<void> buyNow(
+    String? product_id, 
+    String? product_tmpl_id, 
+    String? product_uom_id,
+    String? satuan,
+    String? satuan_stock,
+    String? price, 
+    int? quantity) async {
+    String api_buy_now_store = ApiUrl.apiUrl + 'ecom/buy-now?product_id=${product_id}&product_tmpl_id=${product_tmpl_id}&product_uom_id=${product_uom_id}&satuan=${satuan}&satuan_stock=${satuan_stock}&price=${price}&quantity=${quantity}';
 
     try {
       isLoading(true);
@@ -191,8 +198,8 @@ class ProductController extends GetxController{
   }
 
 
-  Future<void> checkPrice(String? product_tmpl_id, int quantity) async{
-    String api_checkprice = ApiUrl.apiUrl + 'ecom/data-master/check-price?product_tmpl_id=${product_tmpl_id}&quantity=${quantity}';
+  Future<void> checkPrice(String? product_tmpl_id,String? product_uom_id, int quantity) async{
+    String api_checkprice = ApiUrl.apiUrl + 'ecom/data-master/check-price?product_tmpl_id=${product_tmpl_id}&product_uom_id=${product_uom_id}&quantity=${quantity}';
 
     try {
       isLoading(true);

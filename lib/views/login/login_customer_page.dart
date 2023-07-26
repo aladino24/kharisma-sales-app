@@ -7,6 +7,7 @@ import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class LoginCustomerPage extends StatelessWidget {
   LoginCustomerPage({super.key});
 

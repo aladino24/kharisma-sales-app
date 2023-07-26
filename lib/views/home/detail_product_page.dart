@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
-import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:kharisma_sales_app/controllers/components/detail_product_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../services/global_data.dart';
 
 // ignore: must_be_immutable
 class DetailProductPage extends StatelessWidget {
@@ -21,6 +18,7 @@ class DetailProductPage extends StatelessWidget {
   final DetailProductController detailProductController =
       Get.put(DetailProductController());
   final ProductController productController = Get.find<ProductController>();
+  var jumlah_stock = 0.obs;
   final Product? product = Get.arguments as Product?;
   void previousImage() {
     carouselController!.previousPage(
@@ -166,52 +164,52 @@ class DetailProductPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  product!.pricelist != null &&
-                                          product!.pricelist!.length >= 2
-                                      ? product!.pricelist![1].type == 'b2b'
-                                          ? "Seller Price : ${NumberFormat.currency(
-                                              locale: 'id_ID',
-                                              symbol: 'Rp ',
-                                              decimalDigits: 0,
-                                            ).format(int.parse(product!.pricelist![1].price.toString()))}"
-                                          : product!.pricelist![1].type == 'b2c'
-                                              ? "Customer Price : ${NumberFormat.currency(
-                                                  locale: 'id_ID',
-                                                  symbol: 'Rp ',
-                                                  decimalDigits: 0,
-                                                ).format(int.parse(product!.pricelist![1].price.toString()))}"
-                                              : ""
-                                      : "",
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 16,
-                                    color: AppsColors.loginFontColorPrimaryDark,
-                                  ),
-                                ),
-                                Text(
-                                  product!.pricelist != null &&
-                                          product!.pricelist![0].type == 'b2b'
-                                      ? "Seller Price : ${NumberFormat.currency(
-                                          locale: 'id_ID',
-                                          symbol: 'Rp ',
-                                          decimalDigits: 0,
-                                        ).format(int.parse(product!.pricelist![0].price.toString()))}"
-                                      : product!.pricelist != null &&
-                                              product!.pricelist![0].type ==
-                                                  'b2c'
-                                          ? "Customer Price : ${NumberFormat.currency(
-                                              locale: 'id_ID',
-                                              symbol: 'Rp ',
-                                              decimalDigits: 0,
-                                            ).format(int.parse(product!.pricelist![0].price.toString()))}"
-                                          : "",
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 16,
-                                    color: AppsColors.textCustomerPrice,
-                                  ),
-                                ),
+                                // Text(
+                                //   product!.pricelist != null &&
+                                //           product!.pricelist!.length >= 2
+                                //       ? product!.pricelist![1].type == 'b2b'
+                                //           ? "Seller Price : ${NumberFormat.currency(
+                                //               locale: 'id_ID',
+                                //               symbol: 'Rp ',
+                                //               decimalDigits: 0,
+                                //             ).format(int.parse(product!.pricelist![1].price.toString()))}"
+                                //           : product!.pricelist![1].type == 'b2c'
+                                //               ? "Customer Price : ${NumberFormat.currency(
+                                //                   locale: 'id_ID',
+                                //                   symbol: 'Rp ',
+                                //                   decimalDigits: 0,
+                                //                 ).format(int.parse(product!.pricelist![1].price.toString()))}"
+                                //               : ""
+                                //       : "",
+                                //   style: TextStyle(
+                                //     fontFamily: 'Montserrat',
+                                //     fontSize: 16,
+                                //     color: AppsColors.loginFontColorPrimaryDark,
+                                //   ),
+                                // ),
+                                // Text(
+                                //   product!.pricelist != null &&
+                                //           product!.pricelist![0].type == 'b2b'
+                                //       ? "Seller Price : ${NumberFormat.currency(
+                                //           locale: 'id_ID',
+                                //           symbol: 'Rp ',
+                                //           decimalDigits: 0,
+                                //         ).format(int.parse(product!.pricelist![0].price.toString()))}"
+                                //       : product!.pricelist != null &&
+                                //               product!.pricelist![0].type ==
+                                //                   'b2c'
+                                //           ? "Customer Price : ${NumberFormat.currency(
+                                //               locale: 'id_ID',
+                                //               symbol: 'Rp ',
+                                //               decimalDigits: 0,
+                                //             ).format(int.parse(product!.pricelist![0].price.toString()))}"
+                                //           : "",
+                                //   style: TextStyle(
+                                //     fontFamily: 'Montserrat',
+                                //     fontSize: 16,
+                                //     color: AppsColors.textCustomerPrice,
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -289,18 +287,38 @@ class DetailProductPage extends StatelessWidget {
                                                       TextStyle(fontSize: 15.0),
                                                   textAlign: TextAlign.center,
                                                   onChanged: (value) {
-                                                    String cleanedValue = value.replaceAll('-', '');
-                                                    cleanedValue = cleanedValue.replaceAll(',', '').replaceAll('.', '');
-                                                    int quantity = int.tryParse(cleanedValue) ?? 0;
+                                                    String cleanedValue = value
+                                                        .replaceAll('-', '');
+                                                    cleanedValue = cleanedValue
+                                                        .replaceAll(',', '')
+                                                        .replaceAll('.', '');
+                                                    int quantity = int.tryParse(
+                                                            cleanedValue) ??
+                                                        0;
 
-                                                    if (cleanedValue.isNotEmpty && quantity != 0) {
-                                                      if (quantity > int.parse(product!.stock.toString())) {
-                                                        quantityController.text = product!.stock.toString();
-                                                        detailProductController.quantity.value =
-                                                            int.parse(product!.stock.toString());
-                                                      } else if (quantity == 0) {
-                                                        quantityController.text = '0';
-                                                        detailProductController.quantity.value = 1;
+                                                    if (cleanedValue
+                                                            .isNotEmpty &&
+                                                        quantity != 0) {
+                                                      if (quantity >
+                                                          int.parse(product!
+                                                              .stock
+                                                              .toString())) {
+                                                        quantityController
+                                                                .text =
+                                                            product!.stock
+                                                                .toString();
+                                                        detailProductController
+                                                                .quantity
+                                                                .value =
+                                                            int.parse(product!
+                                                                .stock
+                                                                .toString());
+                                                      } else if (quantity ==
+                                                          0) {
+                                                        quantityController
+                                                            .text = '0';
+                                                        detailProductController
+                                                            .quantity.value = 1;
                                                       } else {
                                                         detailProductController
                                                             .quantity
@@ -380,13 +398,13 @@ class DetailProductPage extends StatelessWidget {
                                   ),
                                   onTap: () {
                                     // lazyput cartcontroller
-                                    Get.lazyPut(() => CartController());
-                                    final cartController =
-                                        Get.find<CartController>();
-                                    cartController.addCartProduct(
-                                        product!.productId!,
-                                        product!.pricelist![0].price!,
-                                        detailProductController.quantity.value);
+                                    // Get.lazyPut(() => CartController());
+                                    // final cartController =
+                                    //     Get.find<CartController>();
+                                    // cartController.addCartProduct(
+                                    //     product!.productId!,
+                                    //     product!.pricelist![0].price!,
+                                    //     detailProductController.quantity.value);
                                   },
                                 ),
                                 GestureDetector(
@@ -413,31 +431,18 @@ class DetailProductPage extends StatelessWidget {
                                           await SharedPreferences.getInstance();
                                       var hasToken = prefs.getString('token');
                                       if (hasToken == null) {
-                                        Get.offAllNamed(
-                                            RoutesName.loginCustomer);
+                                        Get.offAllNamed(RoutesName.loginCustomer);
                                       } else {
-                                        if (quantityController
-                                                .text.isNotEmpty &&
-                                            quantityController.text != '0') {
-                                          final int selectedQuantity =
-                                              int.tryParse(quantityController
-                                                      .text) ??
-                                                  0;
-                                          final Pricelist? minPrice = product!
-                                              .pricelist!
-                                              .where((element) =>
-                                                  element.type == 'b2b')
-                                              .reduce((curr, next) =>
-                                                  int.parse(curr.minQuantity!) <
-                                                          int.parse(
-                                                              next.minQuantity!)
-                                                      ? curr
-                                                      : next);
+                                        if (quantityController.text.isNotEmpty && quantityController.text != '0') {
+                                          final int selectedQuantity = int.tryParse(quantityController .text) ?? 0;
+                                           final ProductUom? selectedProductUom = detailProductController.variant.value != '' ?
+                                          product!.productUom!.firstWhere(
+                                                  (uom) => uom.label == detailProductController.variant.value) : 
+                                                  product!.productUom!.firstWhere((uom) => uom.label == product!.productUom![0].label); // Replace 'KLG' with the desired unit label.
+                                          final ProductPricelist? minPrice = selectedProductUom!.productPricelist!
+                                                  .reduce((curr, next) => int.parse(curr.minQuantity!) < int.parse(next.minQuantity!) ? curr : next);
 
-                                          if (minPrice != null &&
-                                              selectedQuantity <
-                                                  int.parse(
-                                                      minPrice.minQuantity!)) {
+                                          if (minPrice != null && selectedQuantity < int.parse(minPrice.minQuantity!)) {
                                             Get.snackbar(
                                               "Gagal",
                                               'Quantity minimum untuk produk ini adalah ${minPrice.minQuantity}',
@@ -449,29 +454,28 @@ class DetailProductPage extends StatelessWidget {
                                               RoutesName.checkoutProduct,
                                               arguments: {
                                                 "productId": product!.productId,
-                                                "productTmplid":
-                                                    product!.productTmplId,
-                                                "productName":
-                                                    product!.productName,
+                                                "productTmplid": product!.productTmplId,
+                                                "productName": product!.productName,
                                                 "price": minPrice!.price,
-                                                "quantity":
-                                                    detailProductController
-                                                        .quantity.value,
-                                                'imageProduct':
-                                                    product!.gdImagePath,
+                                                "quantity":detailProductController.quantity.value,
+                                                'imageProduct': product!.gdImagePath,
                                                 'weight': product!.weight,
                                               },
                                             );
                                             productController.checkPrice(
                                                 product!.productTmplId,
+                                                selectedProductUom.productUomId,
                                                 detailProductController
                                                     .quantity.value);
-                                            productController
-                                                .buyNow(
+                                            productController.buyNow(
                                                     product!.productId,
-                                                    detailProductController
-                                                        .quantity.value)
-                                                .then((value) =>
+                                                    product!.productTmplId,
+                                                    selectedProductUom.productUomId,
+                                                    selectedProductUom.label,
+                                                    selectedProductUom.stock,
+                                                    minPrice.price,
+                                                    detailProductController.quantity.value
+                                                  ).then((value) =>
                                                     productController
                                                         .getBuyNow());
                                           }
@@ -506,144 +510,74 @@ class DetailProductPage extends StatelessWidget {
                             ),
                           ),
 
-                          // Varian product
-                          // Obx(
-                          //   () => Container(
-                          //     child: Column(
-                          //       crossAxisAlignment: CrossAxisAlignment.start,
-                          //       children: [
-                          //         Text(
-                          //           "Varian (4)",
-                          //           style: TextStyle(
-                          //               fontFamily: 'Montserrat',
-                          //               fontSize: 16,
-                          //               fontWeight: FontWeight.w700),
-                          //         ),
-                          //         SizedBox(height: 5),
-                          //         Container(
-                          //           child: Row(
-                          //             children: [
-                          //               Container(
-                          //                 margin:
-                          //                     const EdgeInsets.only(right: 5),
-                          //                 width: 90,
-                          //                 height: 30,
-                          //                 decoration: BoxDecoration(
-                          //                   color: detailProductController
-                          //                               .variant.value ==
-                          //                           'Hitam'
-                          //                       ? AppsColors.loginColorPrimary
-                          //                       : Colors.white,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(10),
-                          //                   border: Border.all(
-                          //                       color: detailProductController
-                          //                                   .variant.value ==
-                          //                               'Hitam'
-                          //                           ? AppsColors
-                          //                               .loginColorPrimary
-                          //                           : AppsColors
-                          //                               .loginFontColorSecondary),
-                          //                 ),
-                          //                 child: InkWell(
-                          //                   child: Center(
-                          //                       child: Text(
-                          //                     "Hitam",
-                          //                     style: TextStyle(
-                          //                         color: detailProductController
-                          //                                     .variant.value ==
-                          //                                 'Hitam'
-                          //                             ? Colors.white
-                          //                             : AppsColors
-                          //                                 .loginFontColorSecondary),
-                          //                   )),
-                          //                   onTap: () => detailProductController
-                          //                       .setVariant('Hitam'),
-                          //                 ),
-                          //               ),
-                          //               Container(
-                          //                 margin:
-                          //                     const EdgeInsets.only(right: 5),
-                          //                 width: 90,
-                          //                 height: 30,
-                          //                 decoration: BoxDecoration(
-                          //                   color: detailProductController
-                          //                               .variant.value ==
-                          //                           'Merah'
-                          //                       ? AppsColors.loginColorPrimary
-                          //                       : Colors.white,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(10),
-                          //                   border: Border.all(
-                          //                       color: detailProductController
-                          //                                   .variant.value ==
-                          //                               'Merah'
-                          //                           ? AppsColors
-                          //                               .loginColorPrimary
-                          //                           : AppsColors
-                          //                               .loginFontColorSecondary),
-                          //                 ),
-                          //                 child: InkWell(
-                          //                   child: Center(
-                          //                       child: Text(
-                          //                     "Merah",
-                          //                     style: TextStyle(
-                          //                         color: detailProductController
-                          //                                     .variant.value ==
-                          //                                 'Merah'
-                          //                             ? Colors.white
-                          //                             : AppsColors
-                          //                                 .loginFontColorSecondary),
-                          //                   )),
-                          //                   onTap: () => detailProductController
-                          //                       .setVariant('Merah'),
-                          //                 ),
-                          //               ),
-                          //               Container(
-                          //                 margin:
-                          //                     const EdgeInsets.only(right: 5),
-                          //                 width: 90,
-                          //                 height: 30,
-                          //                 decoration: BoxDecoration(
-                          //                   color: detailProductController
-                          //                               .variant.value ==
-                          //                           'Putih'
-                          //                       ? AppsColors.loginColorPrimary
-                          //                       : Colors.white,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(10),
-                          //                   border: Border.all(
-                          //                       color: detailProductController
-                          //                                   .variant.value ==
-                          //                               'Putih'
-                          //                           ? AppsColors
-                          //                               .loginColorPrimary
-                          //                           : AppsColors
-                          //                               .loginFontColorSecondary),
-                          //                 ),
-                          //                 child: InkWell(
-                          //                   child: Center(
-                          //                       child: Text(
-                          //                     "Putih",
-                          //                     style: TextStyle(
-                          //                         color: detailProductController
-                          //                                     .variant.value ==
-                          //                                 'Putih'
-                          //                             ? Colors.white
-                          //                             : AppsColors
-                          //                                 .loginFontColorSecondary),
-                          //                   )),
-                          //                   onTap: () => detailProductController
-                          //                       .setVariant('Putih'),
-                          //                 ),
-                          //               )
-                          //             ],
-                          //           ),
-                          //         )
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
+                          // Satuan product
+                          Obx(
+                            () => Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Satuan (${product!.productUom!.length})",
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Container(
+                                    child: Row(
+                                      children: product!.productUom!
+                                          .map((productItem) {
+                                        final String? label = productItem.label;
+                                        bool isSelected = detailProductController
+                                                    .variant.value ==
+                                                label;
+                                        return Container(
+                                          margin:
+                                              const EdgeInsets.only(right: 5),
+                                          width: 90,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            color: isSelected
+                                                ? AppsColors.loginColorPrimary
+                                                : Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: isSelected
+                                                  ? AppsColors.loginColorPrimary
+                                                  : AppsColors
+                                                      .loginFontColorSecondary,
+                                            ),
+                                          ),
+                                          child: InkWell(
+                                            child: Center(
+                                              child: Text(
+                                                label!,
+                                                style: TextStyle(
+                                                  color: isSelected
+                                                      ? Colors.white
+                                                      : AppsColors
+                                                          .loginFontColorSecondary,
+                                                ),
+                                              ),
+                                            ),
+                                            onTap: () { 
+                                              detailProductController
+                                                .setVariant(label);
+                                            },
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 15),
 
                           // varian diganti pricelist
                           Column(
@@ -661,40 +595,44 @@ class DetailProductPage extends StatelessWidget {
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                itemCount: product!.pricelist?.length ?? 0,
+                                itemCount: product!.productUom!.length,
                                 itemBuilder: (context, index) {
-                                  final pricelist = product!.pricelist![index];
-                                  final priceType = pricelist.type;
-                                  String priceLabel = '';
-                                  if (GlobalData.hasToken.value) {
-                                    // Tampilkan pricelist dengan tipe 'b2b' jika pengguna sudah login
-                                    if (priceType == 'b2b') {
-                                      priceLabel =
-                                          'Seller Price: ${NumberFormat.currency(
-                                              locale: 'id_ID',
-                                              symbol: 'Rp ',
-                                              decimalDigits: 0,
-                                            ).format(int.parse(pricelist.price!))}';
-                                      return ListTile(
-                                        title: Text(priceLabel),
-                                        subtitle: Text(
-                                            'Min Quantity: ${pricelist.minQuantity}'),
-                                      );
-                                    }
+                                  final pricelist = product!.productUom![index];
+
+                                  // Lakukan pengecekan jika pricelist.productPricelist tidak null dan memiliki data.
+                                  if (pricelist.productPricelist != null) {
+                                    return ListTile(
+                                      title:
+                                          Text('Satuan : ${pricelist.label}'),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: pricelist.productPricelist!
+                                            .map((price) {
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  'Price: ${NumberFormat.currency(
+                                                locale: 'id_ID',
+                                                symbol: 'Rp ',
+                                                decimalDigits: 0,
+                                              ).format(int.parse(price.price!))}'),
+                                              Text(
+                                                  'Min Quantity : ${price.minQuantity}'),
+                                              SizedBox(height: 10)
+                                            ],
+                                          );
+                                        }).toList(),
+                                      ),
+                                    );
                                   } else {
-                                    // Tampilkan pricelist dengan tipe 'b2c' jika pengguna belum login
-                                    if (priceType == 'b2c') {
-                                      priceLabel =
-                                          'Customer Price: ${pricelist.price}';
-                                      return ListTile(
-                                        title: Text(priceLabel),
-                                        subtitle: Text(
-                                            'Min Quantity: ${pricelist.minQuantity}'),
-                                      );
-                                    }
+                                    return ListTile(
+                                      title: Text('Unit: ${pricelist.label}'),
+                                      subtitle: Text('No pricelist available'),
+                                    );
                                   }
-                                  // Jika tipe pricelist tidak sesuai dengan kondisi di atas, tampilkan item kosong
-                                  return SizedBox();
                                 },
                               ),
                             ],

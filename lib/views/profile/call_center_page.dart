@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_launch/flutter_launch.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/profile/profile_controller.dart';
@@ -74,18 +73,18 @@ class CallCenterPage extends StatelessWidget {
                         margin: EdgeInsets.only(top: 20),
                         child: TextButton(
                           onPressed: () async {
-                              bool whatsapp = await FlutterLaunch.hasApp(name: "whatsapp");
-                              if (whatsapp) {
-                                await FlutterLaunch.launchWhatsapp(
-                                    phone: profileController.numberWhatsapp.value, message: "Hallo, Admin saya perlu bantuan");
-                              }else{
-                                Get.snackbar(
-                                  "Error",
-                                  "Whatsapp tidak terinstall",
-                                  backgroundColor: Colors.red,
-                                  colorText: Colors.white
-                                );
-                              }
+                              // bool whatsapp = await FlutterLaunch.hasApp(name: "whatsapp");
+                              // if (whatsapp) {
+                              //   await FlutterLaunch.launchWhatsapp(
+                              //       phone: profileController.numberWhatsapp.value, message: "Hallo, Admin saya perlu bantuan");
+                              // }else{
+                              //   Get.snackbar(
+                              //     "Error",
+                              //     "Whatsapp tidak terinstall",
+                              //     backgroundColor: Colors.red,
+                              //     colorText: Colors.white
+                              //   );
+                              // }
                               
                           },
                           child: Text(

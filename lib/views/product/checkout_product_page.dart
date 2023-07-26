@@ -284,9 +284,7 @@ class CheckoutProductPage extends StatelessWidget {
                                               locale: 'id_ID',
                                               symbol: 'Rp ',
                                               decimalDigits: 0,
-                                            ).format(int.parse(productController
-                                                .price.value
-                                                .toString())),
+                                            ).format(int.parse(productController.price.value.toString())),
                                             style: TextStyle(
                                               fontSize: 12,
                                             ),
