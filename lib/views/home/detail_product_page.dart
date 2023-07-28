@@ -15,10 +15,10 @@ class DetailProductPage extends StatelessWidget {
   DetailProductPage({super.key});
 
   CarouselController? carouselController = CarouselController();
-  final DetailProductController detailProductController =
-      Get.put(DetailProductController());
+  final DetailProductController detailProductController = Get.put(DetailProductController(
+    product: Get.arguments
+  ));
   final ProductController productController = Get.find<ProductController>();
-  var jumlah_stock = 0.obs;
   final Product? product = Get.arguments as Product?;
   void previousImage() {
     carouselController!.previousPage(
@@ -30,8 +30,13 @@ class DetailProductPage extends StatelessWidget {
         .nextPage(duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 
+   void initProduct() {
+    detailProductController.setProductStock(product!);
+  }
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => initProduct());
     // get arguments json
     // print(product!.productName);
     final TextEditingController quantityController = TextEditingController();
@@ -296,38 +301,21 @@ class DetailProductPage extends StatelessWidget {
                                                             cleanedValue) ??
                                                         0;
 
-                                                    if (cleanedValue
-                                                            .isNotEmpty &&
-                                                        quantity != 0) {
-                                                      if (quantity >
-                                                          int.parse(product!
-                                                              .stock
-                                                              .toString())) {
-                                                        quantityController
-                                                                .text =
-                                                            product!.stock
-                                                                .toString();
-                                                        detailProductController
-                                                                .quantity
-                                                                .value =
-                                                            int.parse(product!
-                                                                .stock
-                                                                .toString());
-                                                      } else if (quantity ==
-                                                          0) {
-                                                        quantityController
-                                                            .text = '0';
-                                                        detailProductController
-                                                            .quantity.value = 1;
+                                                    if (cleanedValue.isNotEmpty && quantity != 0) {
+                                                      if (quantity > int.parse(product!.stock.toString())) {
+                                                        quantityController.text = product!.stock.toString();
+                                                        detailProductController.quantity.value = int.parse(product!.stock.toString());
+                                                      } else if (quantity == 0) {
+                                                        quantityController.text = '0';
+                                                        detailProductController.quantity.value = 1;
                                                       } else {
-                                                        detailProductController
-                                                            .quantity
-                                                            .value = quantity;
+                                                        detailProductController.quantity.value = quantity;
                                                       }
                                                     } else {
-                                                      detailProductController
-                                                          .quantity.value = 1;
+                                                      detailProductController.quantity.value = 1;
                                                     }
+
+                                                    detailProductController.updateTotalStock();
                                                   },
                                                 ),
                                               ),
@@ -357,15 +345,14 @@ class DetailProductPage extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  Text(
-                                    "( Stock : ${product!.stock} )",
-                                    style: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontSize: 12,
-                                      color:
-                                          AppsColors.loginFontColorPrimaryDark,
-                                    ),
-                                  ),
+                                  Obx(() => Text(
+                                      "( Stock : ${detailProductController.totalStock.value} )",
+                                      style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontSize: 12,
+                                        color: AppsColors.loginFontColorPrimaryDark,
+                                      ),
+                                    )),
                                 ],
                               ),
                             );
@@ -407,7 +394,9 @@ class DetailProductPage extends StatelessWidget {
                                     //     detailProductController.quantity.value);
                                   },
                                 ),
-                                GestureDetector(
+                                Obx(() {
+                                  var totalStock = detailProductController.totalStock.value;
+                                  return GestureDetector(
                                     child: Container(
                                       width: 150,
                                       height: 40,
@@ -426,6 +415,7 @@ class DetailProductPage extends StatelessWidget {
                                       ),
                                     ),
                                     onTap: () async {
+                                      print("total stock : ${totalStock}");
                                       // shared preferences
                                       final prefs =
                                           await SharedPreferences.getInstance();
@@ -449,6 +439,13 @@ class DetailProductPage extends StatelessWidget {
                                               backgroundColor: Colors.red,
                                               colorText: Colors.white,
                                             );
+                                          } else if(totalStock < 0){
+                                            Get.snackbar(
+                                            "Gagal",
+                                            "Pembelian melebihi jumlah stock",
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
                                           } else {
                                             Get.toNamed(
                                               RoutesName.checkoutProduct,
@@ -479,15 +476,14 @@ class DetailProductPage extends StatelessWidget {
                                                     productController
                                                         .getBuyNow());
                                           }
-                                        } else if (quantityController.text ==
-                                            '0') {
+                                        } else if (quantityController.text == '0') {
                                           Get.snackbar(
                                             "Gagal",
                                             "Quantity tidak boleh kosong",
                                             backgroundColor: Colors.red,
                                             colorText: Colors.white,
                                           );
-                                        } else {
+                                        }else {
                                           Get.snackbar(
                                             "Gagal",
                                             "Quantity tidak boleh kosong",
@@ -496,7 +492,8 @@ class DetailProductPage extends StatelessWidget {
                                           );
                                         }
                                       }
-                                    })
+                                    });
+                                })
                               ],
                             ),
                           ),
