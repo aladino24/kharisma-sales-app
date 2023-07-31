@@ -49,6 +49,7 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   shared_preferences: ^2.1.0
   shimmer: ^2.0.0
+  sqflite: ^2.3.0
   timeago: ^3.5.0
 
 dev_dependencies:

@@ -150,8 +150,10 @@ class SaveProductPage extends StatelessWidget {
                                           ),
                                   ),
                                   onTap: () {
-                                    Get.toNamed(RoutesName.detailProduct,
-                                        arguments: product);
+                                    // Get.toNamed(RoutesName.detailProduct,
+                                    //     arguments: product);
+                                    // print product
+                                    print(product.productUom);
                                   },
                                 ),
                                 Expanded(
@@ -171,13 +173,24 @@ class SaveProductPage extends StatelessWidget {
                                                 color: AppsColors
                                                     .loginFontColorPrimaryDark),
                                           ),
-                                          Text(
-                                            product.productUom![0].label!,
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                color: AppsColors
-                                                    .loginFontColorPrimaryDark),
-                                          ),
+                                           Text(
+                                                  'Price : ${NumberFormat.currency(
+                                                    locale: 'id_ID',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0,
+                                                  ).format(int.parse(product.priceUtama!))}',
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: AppsColors
+                                                          .loginFontColorPrimaryDark),
+                                                ),
+                                                Text(
+                                                  'Satuan : ${product.labelUtama}',
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Colors.red
+                                                    ),
+                                                ),
                                         
                                         ],
                                       ),

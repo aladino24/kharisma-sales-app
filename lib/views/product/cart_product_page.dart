@@ -257,7 +257,10 @@ class _CartProductPageState extends State<CartProductPage> {
                                                                     size: 28,
                                                                     iconSize: 12,
                                                                     productId:cartProduct.productId!,
-                                                                    productTmplid:cartProduct.product!.productTmplId!,
+                                                                    productTmplid:cartProduct.productTmplId!,
+                                                                    productUomId: cartProduct.productUomId!,
+                                                                    satuan: cartProduct.satuan!,
+                                                                    satuanStock: cartProduct.satuanStock!,
                                                                     quantity:int.parse(cartProduct.quantity!).obs,
                                                                     stock: cartProduct.product!.stock!,
                                                                     totalPrice:cartProduct.totalPrice!,
@@ -281,7 +284,7 @@ class _CartProductPageState extends State<CartProductPage> {
                                                                         ),
                                                                       ),
                                                                       Text(
-                                                                        '(${cartProduct.product!.stock.toString()})',
+                                                                        '(${cartProduct.sisaStock.toString()})',
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
@@ -452,7 +455,9 @@ class _CartProductPageState extends State<CartProductPage> {
                                       // Get snackbar
                                       cartController.errorMessage(
                                           "Silahkan pilih product terlebih dahulu");
-                                    } else {
+                                    } else if(cartProductList.any((element) => element.sisaStock! < 0)){
+                                       cartController.errorMessage("Terdapat stock product yang tidak mencukupi");
+                                    }else {
                                       Get.toNamed(RoutesName.cartCheckout,
                                           arguments: {
                                             "total": cartController.total_bayar,

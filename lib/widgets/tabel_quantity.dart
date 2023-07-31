@@ -12,10 +12,13 @@ class TableQuantity extends StatelessWidget {
   final String totalPrice; 
   final String price;
   final String productTmplid;
+  final String productUomId;
+  final String satuan;
+  final String satuanStock;
   final String productId;
   final RxInt totalCart;
   TableQuantity({
-    super.key, required this.size, required this.iconSize, required this.quantity, required this.uuid, required this.stock, required this.index, required this.totalPrice, required this.price, required this.productTmplid,required this.productId, required this.totalCart,
+    super.key, required this.size, required this.iconSize, required this.quantity, required this.uuid, required this.stock, required this.index, required this.totalPrice, required this.price, required this.productTmplid,required this.productUomId,required this.satuan,required this.satuanStock,required this.productId, required this.totalCart,
   });
 
   final CartController cartController = Get.put(CartController());
@@ -39,7 +42,7 @@ class TableQuantity extends StatelessWidget {
                     size: iconSize.toDouble(),
                   ),
                   onTap: (){
-                    cartController.decrement(uuid, productTmplid ,productId, quantity, stock, index, price, totalCart);
+                    cartController.decrement(uuid, productTmplid ,productId, productUomId, satuan, satuanStock, quantity, stock, index, price, totalCart);
                   },
                 ),
               ),
@@ -70,7 +73,7 @@ class TableQuantity extends StatelessWidget {
                           
                           quantity.value = int.parse(value);
                           // print('ini dari form ' + value);
-                          await cartController.updateCartProduct(uuid, productId, price, int.parse(value)).then((value) => totalCart.value = 0);
+                          await cartController.updateCartProduct(uuid, productId, productTmplid, productUomId,satuan, satuanStock, price, int.parse(value)).then((value) => totalCart.value = 0);
                         }
                       },
                       style: TextStyle(fontSize: 15.0),
@@ -98,7 +101,7 @@ class TableQuantity extends StatelessWidget {
                     size: iconSize.toDouble(),
                   ),
                   onTap: (){
-                    cartController.increment(uuid, quantity, stock, index, price, productTmplid, productId, totalCart);
+                    cartController.increment(uuid, quantity, stock, index, price, productTmplid,productUomId,satuan, satuanStock, productId, totalCart);
                   },
                 ),
               ),

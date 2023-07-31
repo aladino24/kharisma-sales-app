@@ -184,7 +184,16 @@ class CartController extends GetxController{
 
 
    // post data
-    Future<void> addCartProduct(String productId, String price, int qty)async {
+    Future<void> addCartProduct(
+      String productId, 
+      String productTmplId, 
+      String productUomId, 
+      String satuan,
+      String satuanStock,
+      String price, 
+      int qty
+    )async {
+      // print('uom' + productUomId);
       String api_cart_product = ApiUrl.apiUrl + 'ecom/cart';
         try {
           isLoading(true);
@@ -196,6 +205,10 @@ class CartController extends GetxController{
             },
             body: jsonEncode(<String, String>{
               'product_id': productId,
+              'product_tmpl_id': productTmplId,
+              'product_uom_id': productUomId,
+              'satuan': satuan,
+              'satuan_stock': satuanStock,
               'price' : price,
               'quantity': qty.toString(),
             }),
@@ -232,7 +245,7 @@ class CartController extends GetxController{
 
           // get.snackbar
           errorMessage(e.toString());
-          await Get.offAllNamed(RoutesName.loginCustomer);
+          // await Get.offAllNamed(RoutesName.loginCustomer);
         }finally{
           isLoading(false);
         }
@@ -356,7 +369,15 @@ class CartController extends GetxController{
         }
     }
 
-    Future<void> updateCartProduct(String uuid, String productId, String price, int quantity)async {
+    Future<void> updateCartProduct(
+      String uuid, 
+      String productId,
+      String productTmplid, 
+      String productUomId, 
+      String satuan, 
+      String satuanStock, 
+      String price, 
+      int quantity)async {
       String api_cart_product = ApiUrl.apiUrl + 'ecom/cart/${uuid}';
         try {
           // isLoading(true);
@@ -368,6 +389,10 @@ class CartController extends GetxController{
             },
             body: jsonEncode(<String, String>{
               'product_id': productId,
+              'product_tmpl_id': productTmplid,
+              'product_uom_id': productUomId,
+              'satuan': satuan,
+              'satuan_stock': satuanStock,
               'price' : price,
               'quantity': quantity.toString(),
             }),
@@ -514,13 +539,24 @@ Future<void> deleteCartProduct(String uuid) async {
 
 
     
-  void increment(String uuid, RxInt quantity, String stock, int index, String price,String productTmplid, String productId, RxInt totalCart){
+  void increment(
+    String uuid, 
+    RxInt quantity, 
+    String stock, 
+    int index, 
+    String price,
+    String productTmplid,
+    String productUomId, 
+    String satuan, 
+    String satuanStock, 
+    String productId, 
+    RxInt totalCart){
     if(quantity.value < int.parse(stock)){
       //  updateCartProduct(uuid, productId, price, quantity.value + 1);
       quantity.value++;
        totalCart.value = 0;
       Future.delayed(Duration(seconds: 3), () {
-        updateCartProduct(uuid, productId, price, quantity.value);
+        updateCartProduct(uuid, productId,productTmplid, productUomId, satuan, satuanStock, price, quantity.value);
       });
      
     }
@@ -529,13 +565,24 @@ Future<void> deleteCartProduct(String uuid) async {
     );
   }
 
-  void decrement(String uuid,String productTmplid, String productId, RxInt quantity, String stock, int index, String price, RxInt totalCart){
+  void decrement(
+    String uuid,
+    String productTmplid, 
+    String productId, 
+    String productUomId,
+    String satuan,
+    String satuanStock,
+    RxInt quantity, 
+    String stock, 
+    int index, 
+    String price, 
+    RxInt totalCart){
     if(quantity.value > 1){
       // updateCartProduct(uuid, productId, price, quantity.value - 1);
       quantity.value--;
       totalCart.value = 0;
       Future.delayed(Duration(seconds: 3), () {
-        updateCartProduct(uuid, productId, price, quantity.value);
+        updateCartProduct(uuid, productId,productTmplid, productUomId, satuan, satuanStock, price, quantity.value);
       });
       
     }

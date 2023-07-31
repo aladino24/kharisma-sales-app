@@ -23,14 +23,20 @@ class CartProduct {
   String? uuid;
   String? userId;
   String? productId;
+  String? productTmplId;
+  String? productUomId;
+  String? satuan;
+  String? satuanStock;
   String? quantity;
   bool isSelected = false;
   String? price;
   String? totalPrice;
   String? status;
+  String? isBuyNow;
   String? isCheckout;
   String? createdAt;
   String? updatedAt;
+  int? sisaStock;
   Product? product;
 
   CartProduct(
@@ -38,13 +44,19 @@ class CartProduct {
       this.uuid,
       this.userId,
       this.productId,
+      this.productTmplId,
+      this.productUomId,
+      this.satuan,
+      this.satuanStock,
       this.quantity,
       this.price,
       this.totalPrice,
       this.status,
+      this.isBuyNow,
       this.isCheckout,
       this.createdAt,
       this.updatedAt,
+      this.sisaStock,
       this.product});
 
   CartProduct.fromJson(Map<String, dynamic> json) {
@@ -52,22 +64,30 @@ class CartProduct {
     uuid = json['uuid'];
     userId = json['user_id'];
     productId = json['product_id'];
+    productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
+    satuan = json['satuan'];
+    satuanStock = json['satuan_stock'];
     quantity = json['quantity'];
     price = json['price'];
     totalPrice = json['total_price'];
     status = json['status'];
+    isBuyNow = json['is_buy_now'];
     isCheckout = json['is_checkout'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    product = json['product'] != null ? new Product.fromJson(json['product']) : null;
+    sisaStock = json['sisa_stock'];
+    product =
+        json['product'] != null ? new Product.fromJson(json['product']) : null;
   }
 
 }
 
 class Product {
-   int? id;
+  int? id;
   String? productId;
   String? productTmplId;
+  String? productUomId;
   String? productTagId;
   String? sku;
   String? productName;
@@ -81,12 +101,16 @@ class Product {
   String? unit;
   String? weight;
   String? stock;
+  int? isWishlist;
+  String? priceUtama;
+  String? labelUtama;
   ProductTag? productTag;
 
   Product(
       {this.id,
       this.productId,
       this.productTmplId,
+      this.productUomId,
       this.productTagId,
       this.sku,
       this.productName,
@@ -100,12 +124,16 @@ class Product {
       this.unit,
       this.weight,
       this.stock,
+      this.isWishlist,
+      this.priceUtama,
+      this.labelUtama,
       this.productTag});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     productId = json['product_id'];
     productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
     productTagId = json['product_tag_id'];
     sku = json['sku'];
     productName = json['product_name'];
@@ -119,6 +147,9 @@ class Product {
     unit = json['unit'];
     weight = json['weight'];
     stock = json['stock'];
+    isWishlist = json['is_wishlist'];
+    priceUtama = json['price_utama'];
+    labelUtama = json['label_utama'];
     productTag = json['product_tag'] != null
         ? new ProductTag.fromJson(json['product_tag'])
         : null;
@@ -127,11 +158,13 @@ class Product {
 }
 
 class ProductTag {
+  String? productTagId;
   String? name;
 
-  ProductTag({this.name});
+  ProductTag({this.productTagId, this.name});
 
   ProductTag.fromJson(Map<String, dynamic> json) {
+    productTagId = json['product_tag_id'];
     name = json['name'];
   }
 

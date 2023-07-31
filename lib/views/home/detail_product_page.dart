@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
+import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
@@ -169,52 +170,24 @@ class DetailProductPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Text(
-                                //   product!.pricelist != null &&
-                                //           product!.pricelist!.length >= 2
-                                //       ? product!.pricelist![1].type == 'b2b'
-                                //           ? "Seller Price : ${NumberFormat.currency(
-                                //               locale: 'id_ID',
-                                //               symbol: 'Rp ',
-                                //               decimalDigits: 0,
-                                //             ).format(int.parse(product!.pricelist![1].price.toString()))}"
-                                //           : product!.pricelist![1].type == 'b2c'
-                                //               ? "Customer Price : ${NumberFormat.currency(
-                                //                   locale: 'id_ID',
-                                //                   symbol: 'Rp ',
-                                //                   decimalDigits: 0,
-                                //                 ).format(int.parse(product!.pricelist![1].price.toString()))}"
-                                //               : ""
-                                //       : "",
-                                //   style: TextStyle(
-                                //     fontFamily: 'Montserrat',
-                                //     fontSize: 16,
-                                //     color: AppsColors.loginFontColorPrimaryDark,
-                                //   ),
-                                // ),
-                                // Text(
-                                //   product!.pricelist != null &&
-                                //           product!.pricelist![0].type == 'b2b'
-                                //       ? "Seller Price : ${NumberFormat.currency(
-                                //           locale: 'id_ID',
-                                //           symbol: 'Rp ',
-                                //           decimalDigits: 0,
-                                //         ).format(int.parse(product!.pricelist![0].price.toString()))}"
-                                //       : product!.pricelist != null &&
-                                //               product!.pricelist![0].type ==
-                                //                   'b2c'
-                                //           ? "Customer Price : ${NumberFormat.currency(
-                                //               locale: 'id_ID',
-                                //               symbol: 'Rp ',
-                                //               decimalDigits: 0,
-                                //             ).format(int.parse(product!.pricelist![0].price.toString()))}"
-                                //           : "",
-                                //   style: TextStyle(
-                                //     fontFamily: 'Montserrat',
-                                //     fontSize: 16,
-                                //     color: AppsColors.textCustomerPrice,
-                                //   ),
-                                // ),
+                                 Text(
+                                                  'Price : ${NumberFormat.currency(
+                                                    locale: 'id_ID',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0,
+                                                  ).format(int.parse(product!.priceUtama!))}',
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: AppsColors
+                                                          .loginFontColorPrimaryDark),
+                                                ),
+                                                Text(
+                                                  'Satuan : ${product!.labelUtama}',
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.red
+                                                    ),
+                                                ),
                               ],
                             ),
                           ),
@@ -292,6 +265,9 @@ class DetailProductPage extends StatelessWidget {
                                                       TextStyle(fontSize: 15.0),
                                                   textAlign: TextAlign.center,
                                                   onChanged: (value) {
+                                                    final ProductUom? selectedVariant = detailProductController.variant.value != '' ? product!.productUom!.firstWhere(
+                                                  (uom) => uom.label == detailProductController.variant.value) : 
+                                                  product!.productUom!.firstWhere((uom) => uom.label == product!.productUom![0].label);
                                                     String cleanedValue = value
                                                         .replaceAll('-', '');
                                                     cleanedValue = cleanedValue
@@ -302,7 +278,19 @@ class DetailProductPage extends StatelessWidget {
                                                         0;
 
                                                     if (cleanedValue.isNotEmpty && quantity != 0) {
+                                                      
                                                       if (quantity > int.parse(product!.stock.toString())) {
+                                                        // if(detailProductController.variant.value.isNotEmpty){
+                                                        //    int selectedVariantStock = int.parse(selectedVariant!.stock!);
+                                                        //     int inputQuantity = int.tryParse(value.replaceAll('-', '').replaceAll(',', '').replaceAll('.', '')) ?? 0;
+                                                        //     int maxAllowedQuantity = int.parse(product!.stock!);
+                                                            
+                                                        //     int calculatedQuantity = selectedVariantStock * inputQuantity;
+                                                        //     int finalQuantity = calculatedQuantity < maxAllowedQuantity ? calculatedQuantity : maxAllowedQuantity;
+
+                                                        //     quantityController.text = finalQuantity.toString();
+                                                        //      detailProductController.quantity.value = int.parse(product!.stock.toString());
+                                                        // }
                                                         quantityController.text = product!.stock.toString();
                                                         detailProductController.quantity.value = int.parse(product!.stock.toString());
                                                       } else if (quantity == 0) {
@@ -350,6 +338,7 @@ class DetailProductPage extends StatelessWidget {
                                       style: TextStyle(
                                         fontFamily: 'Montserrat',
                                         fontSize: 12,
+                                        fontWeight: FontWeight.w600,
                                         color: AppsColors.loginFontColorPrimaryDark,
                                       ),
                                     )),
@@ -384,14 +373,21 @@ class DetailProductPage extends StatelessWidget {
                                     ),
                                   ),
                                   onTap: () {
+                                     final ProductUom? selectedVariant = detailProductController.variant.value != '' ? product!.productUom!.firstWhere(
+                                                  (uom) => uom.label == detailProductController.variant.value) : 
+                                                  product!.productUom!.firstWhere((uom) => uom.label == product!.productUom![0].label);
                                     // lazyput cartcontroller
-                                    // Get.lazyPut(() => CartController());
-                                    // final cartController =
-                                    //     Get.find<CartController>();
-                                    // cartController.addCartProduct(
-                                    //     product!.productId!,
-                                    //     product!.pricelist![0].price!,
-                                    //     detailProductController.quantity.value);
+                                    Get.lazyPut(() => CartController());
+                                    final cartController =
+                                        Get.find<CartController>();
+                                    cartController.addCartProduct(
+                                        product!.productId!,
+                                        selectedVariant!.productTmplId!,
+                                        selectedVariant.productUomId!,
+                                        selectedVariant.label!,
+                                        selectedVariant.stock!,
+                                        selectedVariant.productPricelist![0].price!,
+                                        detailProductController.quantity.value);
                                   },
                                 ),
                                 Obx(() {
