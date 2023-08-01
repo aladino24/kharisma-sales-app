@@ -502,6 +502,12 @@ class HomePage extends StatelessWidget {
                                                       //         .pricelist![0].price
                                                       //         .toString(),
                                                       //     1);
+
+                                                      // to detail product page
+                                                      Get.toNamed(
+                                                          RoutesName
+                                                              .detailProduct,
+                                                          arguments: product);
                                                     },
                                                   ),
                                                 ],
