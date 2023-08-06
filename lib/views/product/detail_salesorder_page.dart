@@ -238,7 +238,7 @@ class DetailSalesorderPage extends StatelessWidget {
                                           image: DecorationImage(
                                             image: productList.product!.gdImagePath != null
                                             ? Image.network(
-                                               productList.product!.gdImagePath,
+                                               productList.product!.gdImagePath!,
                                                 fit: BoxFit.cover,
                                               ).image
                                             : AssetImage(
@@ -262,6 +262,25 @@ class DetailSalesorderPage extends StatelessWidget {
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
+                                            SizedBox(height: 2),
+                                            Text// satuan dari productUom
+                                              .rich(
+                                                TextSpan(
+                                                  text: "Satuan : ",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                  children: <InlineSpan>[
+                                                    TextSpan(
+                                                      text: productList.productUom!.label,
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    )
+                                                  ]
+                                                ),
+                                              ),
                                             Text(
                                               NumberFormat.currency(
                                                 locale: 'id_ID',

@@ -416,6 +416,12 @@ class ProfileCustomerPage extends StatelessWidget {
                                                             ),
                                                             SizedBox(height: 1),
                                                             Text(
+                                                              'Satuan : ${product.productUom!.label!}',
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                            Text(
                                                               "x${product.quantity}",
                                                               style: TextStyle(
                                                                 color: AppsColors

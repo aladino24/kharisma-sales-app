@@ -62,22 +62,36 @@ class LoginSalesPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
-                      TextFormField(
-                        controller: loginController.emailSalesController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Email can't be empty";
-                          } else if (!GetUtils.isEmail(value)) {
-                            return 'Email tidak valid';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.person),
+                        Obx(
+                          () => DropdownButtonFormField<String>(
+                           validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Email can't be empty";
+                              } else if (!GetUtils.isEmail(value)) {
+                                return 'Email tidak valid';
+                              }
+                              return null;
+                            },
+                            value: loginController.selectedEmail.value.isNotEmpty
+                                ? loginController.selectedEmail.value
+                                : null,
+                            onChanged: (newValue) {
+                              loginController.selectedEmail.value = newValue!;
+                              loginController.emailSalesController.text = newValue;
+                            },
+                            items: loginController.emails.map((email) {
+                              return DropdownMenuItem<String>(
+                                value: email,
+                                child: Text(email),
+                              );
+                            }).toList(),
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              prefixIcon: Icon(Icons.person),
+                            ),
+                          ),
                         ),
-                      ),
+
                       SizedBox(height: 20),
                       Obx(
                         () => TextFormField(

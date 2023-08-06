@@ -347,6 +347,77 @@ class DetailProductPage extends StatelessWidget {
                             );
                           }),
 
+                          SizedBox(
+                            height: 15,
+                          ),
+
+                            // Satuan product
+                          Obx(
+                            () => Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Satuan (${product!.productUom!.length})",
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Container(
+                                    child: Row(
+                                      children: product!.productUom!
+                                          .map((productItem) {
+                                        final String? label = productItem.label;
+                                        bool isSelected = detailProductController
+                                                    .variant.value ==
+                                                label;
+                                        return Container(
+                                          margin:
+                                              const EdgeInsets.only(right: 5),
+                                          width: 90,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            color: isSelected
+                                                ? AppsColors.loginColorPrimary
+                                                : Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: isSelected
+                                                  ? AppsColors.loginColorPrimary
+                                                  : AppsColors
+                                                      .loginFontColorSecondary,
+                                            ),
+                                          ),
+                                          child: InkWell(
+                                            child: Center(
+                                              child: Text(
+                                                label!,
+                                                style: TextStyle(
+                                                  color: isSelected
+                                                      ? Colors.white
+                                                      : AppsColors
+                                                          .loginFontColorSecondary,
+                                                ),
+                                              ),
+                                            ),
+                                            onTap: () { 
+                                              detailProductController
+                                                .setVariant(label);
+                                            },
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
                           // Keranjang dan Beli Sekarang
                           Padding(
                             padding: const EdgeInsets.only(top: 15),
@@ -453,6 +524,7 @@ class DetailProductPage extends StatelessWidget {
                                                 "quantity":detailProductController.quantity.value,
                                                 'imageProduct': product!.gdImagePath,
                                                 'weight': product!.weight,
+                                                'satuan' : detailProductController.variant.value
                                               },
                                             );
                                             productController.checkPrice(
@@ -503,72 +575,7 @@ class DetailProductPage extends StatelessWidget {
                             ),
                           ),
 
-                          // Satuan product
-                          Obx(
-                            () => Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Satuan (${product!.productUom!.length})",
-                                    style: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Container(
-                                    child: Row(
-                                      children: product!.productUom!
-                                          .map((productItem) {
-                                        final String? label = productItem.label;
-                                        bool isSelected = detailProductController
-                                                    .variant.value ==
-                                                label;
-                                        return Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 5),
-                                          width: 90,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            color: isSelected
-                                                ? AppsColors.loginColorPrimary
-                                                : Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                              color: isSelected
-                                                  ? AppsColors.loginColorPrimary
-                                                  : AppsColors
-                                                      .loginFontColorSecondary,
-                                            ),
-                                          ),
-                                          child: InkWell(
-                                            child: Center(
-                                              child: Text(
-                                                label!,
-                                                style: TextStyle(
-                                                  color: isSelected
-                                                      ? Colors.white
-                                                      : AppsColors
-                                                          .loginFontColorSecondary,
-                                                ),
-                                              ),
-                                            ),
-                                            onTap: () { 
-                                              detailProductController
-                                                .setVariant(label);
-                                            },
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                        
 
                           SizedBox(height: 15),
 

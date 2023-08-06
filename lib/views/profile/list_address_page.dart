@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/controllers/api/address/alamat_kirim_controller.dart';
+import 'package:kharisma_sales_app/models/alamat_pengiriman.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
@@ -63,38 +64,38 @@ class ListAddressPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: GestureDetector(
-                        child: Container(
-                          width: 200,
-                          decoration: BoxDecoration(
-                            color: AppsColors.loginColorPrimary,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                "Tambah Alamat Baru",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                        onTap: () => Get.toNamed(RoutesName.addAddress),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //       horizontal: 20, vertical: 10),
+                    //   child: GestureDetector(
+                    //     child: Container(
+                    //       width: 200,
+                    //       decoration: BoxDecoration(
+                    //         color: AppsColors.loginColorPrimary,
+                    //         borderRadius: BorderRadius.circular(5),
+                    //       ),
+                    //       padding:
+                    //           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    //       child: Row(
+                    //         children: [
+                    //           Icon(
+                    //             Icons.add,
+                    //             color: Colors.white,
+                    //           ),
+                    //           SizedBox(width: 10),
+                    //           Text(
+                    //             "Tambah Alamat Baru",
+                    //             style: TextStyle(
+                    //                 color: Colors.white,
+                    //                 fontSize: 14,
+                    //                 fontWeight: FontWeight.bold),
+                    //           )
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     onTap: () => Get.toNamed(RoutesName.addAddress),
+                    //   ),
+                    // ),
                     Obx(
                       () => listAlamatPengiriman.isLoading.value
                           ? Center(child: CircularProgressIndicator())
@@ -149,19 +150,19 @@ class ListAddressPage extends StatelessWidget {
                                         ),
                                         child: GestureDetector(
                                           child: ListTile(
-                                            trailing: GestureDetector(
-                                              child: Icon(
-                                                Icons.edit,
-                                                size: 16,
-                                                color: AppsColors
-                                                    .loginColorPrimary,
-                                              ),
-                                              onTap: () => Get.toNamed(
-                                                  RoutesName.editAddress,
-                                                  arguments: {
-                                                    'data': data,
-                                                  }),
-                                            ),
+                                            // trailing: GestureDetector(
+                                            //   child: Icon(
+                                            //     Icons.edit,
+                                            //     size: 16,
+                                            //     color: AppsColors
+                                            //         .loginColorPrimary,
+                                            //   ),
+                                            //   onTap: () => Get.toNamed(
+                                            //       RoutesName.editAddress,
+                                            //       arguments: {
+                                            //         'data': data,
+                                            //       }),
+                                            // ),
                                             title: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -296,6 +297,20 @@ class ListAddressPage extends StatelessWidget {
                                                     horizontal: 20,
                                                     vertical: 10),
                                           ),
+                                          onTap: () {
+                                            Get.toNamed(RoutesName.detailAddress, 
+                                              arguments: AlamatPengiriman(
+                                                penerima: displayName,
+                                                noTelepon: data.noTelepon,
+                                                provinsi: data.provinsi,
+                                                kota: data.kota,
+                                                kecamatan: data.kecamatan,
+                                                kelurahan: data.kelurahan,
+                                                kodePos: data.kodePos,
+                                                alamatLengkap: data.alamatLengkap
+                                              ),
+                                            );
+                                          },
                                           onLongPress: () {
                                             // alert dialog
                                             Get.defaultDialog(

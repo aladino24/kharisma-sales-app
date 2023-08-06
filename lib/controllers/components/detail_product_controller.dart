@@ -11,11 +11,18 @@ class DetailProductController extends GetxController{
   var variant = ''.obs;
   var totalStock = 0.obs;
 
+// init variant
+  @override
+  void onInit() {
+    super.onInit();
+    variant.value = product!.productUom![0].label!;
+  }
+
 void setProductStock(Product product) {
    final ProductUom? selectedVariant = variant.value != '' ?
                                           product.productUom!.firstWhere(
                                                   (uom) => uom.label == variant.value) : 
-                                                  product.productUom!.firstWhere((uom) => uom.label == product!.productUom![0].label);
+                                                  product.productUom!.firstWhere((uom) => uom.label == product.productUom![0].label);
     // Set the initial total stock
     if(variant.value.isEmpty){
       totalStock.value = int.parse(product.stock!) - int.parse(product.productUom![0].stock!);

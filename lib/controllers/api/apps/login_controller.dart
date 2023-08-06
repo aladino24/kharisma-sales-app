@@ -17,6 +17,10 @@ class LoginController extends GetxController {
   final emailSalesController = TextEditingController();
   final passwordController = TextEditingController();
   final tokenController = TextEditingController();
+    final _emails = <String>[].obs;
+  List<String> get emails => _emails;
+
+  final selectedEmail = RxString('');
   var isLoading = false.obs;
   // fetch user
   var userModelData = UserModel().obs;
@@ -34,6 +38,7 @@ class LoginController extends GetxController {
   @override
   void onInit(){
     super.onInit();
+    fetchEmailSales();
     fetchUser();
   }
 
@@ -186,6 +191,24 @@ class LoginController extends GetxController {
       return null;
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> fetchEmailSales() async{
+    String apiUrl = ApiUrl.apiUrl + 'sales-email';
+    final response = await http.get(Uri.parse(apiUrl));
+    try {
+      if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final List<String> emails = (jsonData['data'] as List)
+          .map((data) => data['email'] as String)
+          .toList();
+      _emails.assignAll(emails);
+      } else {
+        throw Exception(json.decode(response.body)['message']);
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

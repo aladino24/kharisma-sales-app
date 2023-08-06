@@ -14,6 +14,7 @@ import 'package:kharisma_sales_app/views/product/save_product_page.dart';
 import 'package:kharisma_sales_app/views/product/notification_product_page.dart';
 import 'package:kharisma_sales_app/views/profile/add_address_page.dart';
 import 'package:kharisma_sales_app/views/profile/call_center_page.dart';
+import 'package:kharisma_sales_app/views/profile/detail_address_page.dart';
 import 'package:kharisma_sales_app/views/profile/edit_address_page.dart';
 import 'package:kharisma_sales_app/views/profile/edit_profile_page.dart';
 import 'package:kharisma_sales_app/views/profile/kebijakan_privasi_page.dart';
@@ -50,6 +51,7 @@ class AppsRoutes{
     GetPage(name: RoutesName.orderSuccess, page: () => SuccessPage()),
     GetPage(name: RoutesName.salesOrderDetail, page: () => DetailSalesorderPage()),
     GetPage(name: RoutesName.notifikasiAll, page: () => NotifikasiAllPage()),
-    GetPage(name: RoutesName.kebijakanPrivasi, page: () => KebijakanPrivasiPage())
+    GetPage(name: RoutesName.kebijakanPrivasi, page: () => KebijakanPrivasiPage()),
+    GetPage(name: RoutesName.detailAddress, page: () => DetailAddressPage())
   ];
 }

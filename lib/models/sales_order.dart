@@ -22,7 +22,7 @@ class SalesOrder {
   int? id;
   String? uuid;
   String? userId;
-  dynamic salesId;
+  String? salesId;
   String? odooOrderId;
   String? noInvoice;
   String? ongkosKirim;
@@ -33,10 +33,13 @@ class SalesOrder {
   String? jasaPengiriman;
   String? createdAt;
   String? updatedAt;
-  dynamic deletedAt;
+  String? deletedAt;
   String? createdBy;
-  dynamic updatedBy;
-  dynamic deletedBy;
+  String? updatedBy;
+  String? deletedBy;
+  String? color;
+  String? createdAtDesc;
+  String? statusDesc;
   List<SalesOrderProduct>? salesOrderProduct;
 
   SalesOrder(
@@ -58,6 +61,9 @@ class SalesOrder {
       this.createdBy,
       this.updatedBy,
       this.deletedBy,
+      this.color,
+      this.createdAtDesc,
+      this.statusDesc,
       this.salesOrderProduct});
 
   SalesOrder.fromJson(Map<String, dynamic> json) {
@@ -79,6 +85,9 @@ class SalesOrder {
     createdBy = json['created_by'];
     updatedBy = json['updated_by'];
     deletedBy = json['deleted_by'];
+    color = json['color'];
+    createdAtDesc = json['created_at_desc'];
+    statusDesc = json['status_desc'];
     if (json['sales_order_product'] != null) {
       salesOrderProduct = <SalesOrderProduct>[];
       json['sales_order_product'].forEach((v) {
@@ -94,21 +103,27 @@ class SalesOrderProduct {
   String? salesOrderId;
   String? cartId;
   String? productId;
+  String? productTmplId;
+  String? productUomId;
   String? quantity;
   String? harga;
   String? createdAt;
   String? updatedAt;
-  dynamic deletedAt;
+  String? deletedAt;
   String? createdBy;
-  dynamic updatedBy;
-  dynamic deletedBy;
+  String? updatedBy;
+  String? deletedBy;
+  int? totalHargaProduk;
   Product? product;
+  ProductUom? productUom;
 
   SalesOrderProduct(
       {this.id,
       this.salesOrderId,
       this.cartId,
       this.productId,
+      this.productTmplId,
+      this.productUomId,
       this.quantity,
       this.harga,
       this.createdAt,
@@ -117,14 +132,17 @@ class SalesOrderProduct {
       this.createdBy,
       this.updatedBy,
       this.deletedBy,
-      this.product
-    });
+      this.totalHargaProduk,
+      this.product,
+      this.productUom});
 
   SalesOrderProduct.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     salesOrderId = json['sales_order_id'];
     cartId = json['cart_id'];
     productId = json['product_id'];
+    productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
     quantity = json['quantity'];
     harga = json['harga'];
     createdAt = json['created_at'];
@@ -133,17 +151,23 @@ class SalesOrderProduct {
     createdBy = json['created_by'];
     updatedBy = json['updated_by'];
     deletedBy = json['deleted_by'];
+    totalHargaProduk = json['total_harga_produk'];
     product =
         json['product'] != null ? new Product.fromJson(json['product']) : null;
+    productUom = json['product_uom'] != null
+        ? new ProductUom.fromJson(json['product_uom'])
+        : null;
   }
+
 }
 
 class Product {
   int? id;
   String? productId;
   String? productTmplId;
-  String? productTagId;
   String? productUomId;
+  String? productTagId;
+  String? arrayProductTagId;
   String? sku;
   String? productName;
   String? productNameSlug;
@@ -156,13 +180,18 @@ class Product {
   String? unit;
   String? weight;
   String? stock;
+  dynamic deletedAt;
+  int? isWishlist;
+  String? priceUtama;
+  String? labelUtama;
 
   Product(
       {this.id,
       this.productId,
       this.productTmplId,
-      this.productTagId,
       this.productUomId,
+      this.productTagId,
+      this.arrayProductTagId,
       this.sku,
       this.productName,
       this.productNameSlug,
@@ -174,14 +203,19 @@ class Product {
       this.gdImageSmallPath,
       this.unit,
       this.weight,
-      this.stock});
+      this.stock,
+      this.deletedAt,
+      this.isWishlist,
+      this.priceUtama,
+      this.labelUtama});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     productId = json['product_id'];
     productTmplId = json['product_tmpl_id'];
-    productTagId = json['product_tag_id'];
     productUomId = json['product_uom_id'];
+    productTagId = json['product_tag_id'];
+    arrayProductTagId = json['array_product_tag_id'];
     sku = json['sku'];
     productName = json['product_name'];
     productNameSlug = json['product_name_slug'];
@@ -194,5 +228,69 @@ class Product {
     unit = json['unit'];
     weight = json['weight'];
     stock = json['stock'];
+    deletedAt = json['deleted_at'];
+    isWishlist = json['is_wishlist'];
+    priceUtama = json['price_utama'];
+    labelUtama = json['label_utama'];
   }
+
+}
+
+class ProductUom {
+  int? id;
+  String? productTmplId;
+  String? productUomId;
+  String? label;
+  String? stock;
+  String? type;
+  List<ProductPricelist>? productPricelist;
+
+  ProductUom(
+      {this.id,
+      this.productTmplId,
+      this.productUomId,
+      this.label,
+      this.stock,
+      this.type,
+      this.productPricelist});
+
+  ProductUom.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
+    label = json['label'];
+    stock = json['stock'];
+    type = json['type'];
+    if (json['product_pricelist'] != null) {
+      productPricelist = <ProductPricelist>[];
+      json['product_pricelist'].forEach((v) {
+        productPricelist!.add(new ProductPricelist.fromJson(v));
+      });
+    }
+  }
+
+}
+
+class ProductPricelist {
+  int? id;
+  String? productTmplId;
+  String? productUomId;
+  String? price;
+  String? minQuantity;
+
+  ProductPricelist(
+      {this.id,
+      this.productTmplId,
+      this.productUomId,
+      this.price,
+      this.minQuantity});
+
+  ProductPricelist.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
+    price = json['price'];
+    minQuantity = json['min_quantity'];
+  }
+
 }

@@ -22,6 +22,7 @@ abstract class RoutesName{
   static const termCondition = '/termcondition-page';
   static const callcenter = '/callcenter-page';
   static const listAddress = '/list-address-page';
+  static const detailAddress = '/detail-address-page';
   static const addAddress = '/add-address-page';
   static const editAddress = '/edit-address-page';
   static const editProfile = '/edit-profile-page';
@@ -37,4 +38,6 @@ abstract class RoutesName{
 
   // sales order detail
   static const salesOrderDetail = '/sales-order-detail-page';
+
+
 }
