@@ -125,8 +125,13 @@ class DetailProductPage extends StatelessWidget {
                               width: 80,
                               height: 80,
                               decoration: BoxDecoration(
-                                  color: AppsColors.imageProductBackground,
-                                  borderRadius: BorderRadius.circular(15)),
+                                color: Colors.grey, // Ganti dengan warna latar belakang yang Anda inginkan.
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Image.asset(
+                                'assets/images/image.png', // Ganti dengan path gambar yang sesuai.
+                                fit: BoxFit.contain, // Atur tampilan gambar agar sesuai di dalam kontainer.
+                              ),
                             ),
                           ),
                         );
@@ -444,6 +449,7 @@ class DetailProductPage extends StatelessWidget {
                                     ),
                                   ),
                                   onTap: () {
+                                    print("data saya");
                                      final ProductUom? selectedVariant = detailProductController.variant.value != '' ? product!.productUom!.firstWhere(
                                                   (uom) => uom.label == detailProductController.variant.value) : 
                                                   product!.productUom!.firstWhere((uom) => uom.label == product!.productUom![0].label);

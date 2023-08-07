@@ -310,93 +310,100 @@ class CartCheckoutPage extends StatelessWidget {
                             ),
                             FormField<String>(
                               builder: (FormFieldState<String> state) {
-                                return InputDecorator(
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          EdgeInsets.symmetric(vertical: 5.0),
-                                      errorStyle: TextStyle(
-                                          color: Colors.redAccent,
-                                          fontSize: 16.0),
-                                      hintText: 'Pilih jenis pengiriman',
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10))),
-                                  isEmpty: false,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: DropdownButtonHideUnderline(
-                                        child: Obx(() {
-                                      if (ongkosKirimController
-                                          .listOngkosKirim.isEmpty) {
-                                        ongkosKirimController.fetchOngkosKirim(
-                                            alamatKirimController
-                                                .alamatPengiriman
-                                                .value
-                                                .kecamatanId,
-                                            weight.toString());
-                                      }
-                                      return DropdownButtonFormField(
-                                        hint: ongkosKirimController
-                                                .isLoading.value
-                                            ? Text("Loading...")
-                                            : Text('Pilih jenis pengiriman'),
-                                        // value: 'COD',
-                                        isDense: true,
-                                        items: ongkosKirimController
-                                                .listOngkosKirim.isNotEmpty
-                                            ? List.generate(
-                                                ongkosKirimController
-                                                    .listOngkosKirim.length,
-                                                (index) => DropdownMenuItem(
-                                                      child: Text(
-                                                        ongkosKirimController
-                                                            .listOngkosKirim[
-                                                                index]
-                                                            .nama!,
-                                                        style: TextStyle(
-                                                            fontSize: 12),
-                                                      ),
-                                                      value:
+                                return Container(
+                                  decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: AppsColors.loginColorPrimary, // Replace this with your desired border color
+                                    width: 1.0,
+                                  ),
+                                  ),
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.symmetric(vertical: 5.0),
+                                        errorStyle: TextStyle(
+                                            color: Colors.redAccent,
+                                            fontSize: 16.0),
+                                        hintText: 'Pilih jenis pengiriman',
+                                        border: InputBorder.none),
+                                    isEmpty: false,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: DropdownButtonHideUnderline(
+                                          child: Obx(() {
+                                        if (ongkosKirimController
+                                            .listOngkosKirim.isEmpty) {
+                                          ongkosKirimController.fetchOngkosKirim(
+                                              alamatKirimController
+                                                  .alamatPengiriman
+                                                  .value
+                                                  .kecamatanId,
+                                              weight.toString());
+                                        }
+                                        return DropdownButtonFormField(
+                                          hint: ongkosKirimController
+                                                  .isLoading.value
+                                              ? Text("Loading...")
+                                              : Text('Pilih jenis pengiriman'),
+                                          // value: 'COD',
+                                          isDense: true,
+                                          items: ongkosKirimController
+                                                  .listOngkosKirim.isNotEmpty
+                                              ? List.generate(
+                                                  ongkosKirimController
+                                                      .listOngkosKirim.length,
+                                                  (index) => DropdownMenuItem(
+                                                        child: Text(
                                                           ongkosKirimController
                                                               .listOngkosKirim[
                                                                   index]
-                                                              .nama,
-                                                    ))
-                                            : null,
-                                        onChanged: (value) {
-                                          String selectedValue = value
-                                              as String; // Ubah tipe value ke String
-                                          OngkosKirim selectedOngkosKirim =
-                                              ongkosKirimController
-                                                  .listOngkosKirim
-                                                  .firstWhere(
-                                                      (element) =>
-                                                          element.nama ==
-                                                          selectedValue,
-                                                      orElse: () =>
-                                                          OngkosKirim()); // Menggunakan properti 'nama' sebagai nilai yang dicocokkan
-                                          ongkosKirimController
-                                              .selectedOngkosKirim
-                                              .value = selectedOngkosKirim;
-                                          biayaPengiriman.value =
-                                              selectedOngkosKirim.harga ?? 0;
-                                          estimasi.value =
-                                              selectedOngkosKirim.estimasi!;
-                                          nama.value =
-                                              selectedOngkosKirim.nama!;
-                                        },
-                                        value: ongkosKirimController
+                                                              .nama!,
+                                                          style: TextStyle(
+                                                              fontSize: 12),
+                                                        ),
+                                                        value:
+                                                            ongkosKirimController
+                                                                .listOngkosKirim[
+                                                                    index]
+                                                                .nama,
+                                                      ))
+                                              : null,
+                                          onChanged: (value) {
+                                            String selectedValue = value
+                                                as String; // Ubah tipe value ke String
+                                            OngkosKirim selectedOngkosKirim =
+                                                ongkosKirimController
+                                                    .listOngkosKirim
+                                                    .firstWhere(
+                                                        (element) =>
+                                                            element.nama ==
+                                                            selectedValue,
+                                                        orElse: () =>
+                                                            OngkosKirim()); // Menggunakan properti 'nama' sebagai nilai yang dicocokkan
+                                            ongkosKirimController
                                                 .selectedOngkosKirim
-                                                .value
-                                                ?.nama ??
-                                            null,
-                                        decoration: InputDecoration(
-                                          border: InputBorder
-                                              .none, // Menghilangkan underline
-                                        ),
-                                      );
-                                    })),
+                                                .value = selectedOngkosKirim;
+                                            biayaPengiriman.value =
+                                                selectedOngkosKirim.harga ?? 0;
+                                            estimasi.value =
+                                                selectedOngkosKirim.estimasi!;
+                                            nama.value =
+                                                selectedOngkosKirim.nama!;
+                                          },
+                                          value: ongkosKirimController
+                                                  .selectedOngkosKirim
+                                                  .value
+                                                  ?.nama ??
+                                              null,
+                                          decoration: InputDecoration(
+                                            border: InputBorder
+                                                .none, // Menghilangkan underline
+                                          ),
+                                        );
+                                      })),
+                                    ),
                                   ),
                                 );
                               },
