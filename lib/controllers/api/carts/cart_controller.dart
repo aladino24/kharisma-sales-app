@@ -5,10 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
+import 'package:kharisma_sales_app/models/cart_offline.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/models/checkout.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
+import 'package:kharisma_sales_app/services/database_helper.dart';
 import '../../../widgets/loading_animation.dart';
 
 class CartController extends GetxController{
@@ -51,6 +53,40 @@ class CartController extends GetxController{
            isLoading(false);
            var jsonResult = json.decode(response.body);
            cartProductList.value = List<CartProduct>.from(jsonResult['data'].map((cartProduct) => CartProduct.fromJson(cartProduct)));
+
+        //    if (cartProductList.isNotEmpty) {
+        //     var databaseHelper = DatabaseHelper();
+        //     for (var cartProduct in cartProductList) {
+        //       // Convert CartProduct to CartOffline object
+        //       var cartOffline = CartOffline(
+        //         id: cartProduct.id!,
+        //         uuid: cartProduct.uuid!,
+        //         userId: cartProduct.userId!,
+        //         productId: cartProduct.productId!,
+        //         productTmplId: cartProduct.productTmplId!,
+        //         productUomId: cartProduct.productUomId!,
+        //         satuan: cartProduct.satuan!,
+        //         satuanStock: cartProduct.satuanStock!,
+        //         quantity: int.parse(cartProduct.quantity!),
+        //         price: cartProduct.price!,
+        //         totalPrice: cartProduct.totalPrice!,
+        //         status: cartProduct.status!,
+        //         isBuyNow: cartProduct.isBuyNow!,
+        //         isCheckout: cartProduct.isCheckout!,
+        //         createdAt: cartProduct.createdAt!,
+        //         updatedAt: cartProduct.updatedAt!,
+        //         sisaStock: cartProduct.sisaStock.toString(),
+        //         productName: cartProduct.product!.productName!,
+        //         labelUtama: cartProduct.product!.labelUtama!,
+        //         priceUtama: cartProduct.product!.priceUtama!,
+        //         unit: cartProduct.product!.unit!,
+        //         stock: cartProduct.product!.stock!, 
+        //         productNameSlug: ''
+        //       );
+        //       // Insert or update the CartOffline object in the database
+        //       await databaseHelper.insertOrUpdateCartOffline(cartOffline);
+        //     }
+        // }
         }else{
           isLoading(false);
           throw Exception(jsonDecode(response.body)['message']);

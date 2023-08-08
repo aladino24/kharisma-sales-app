@@ -162,6 +162,24 @@ class DetailProductPage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                                //button
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: AppsColors.loginColorPrimary,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      Get.toNamed(RoutesName.testPage);
+                                    },
+                                    icon: Icon(
+                                      Icons.access_alarms_sharp,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                                 // DiskonProduct()
                               ],
                             ),

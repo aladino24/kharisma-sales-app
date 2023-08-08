@@ -3,6 +3,7 @@ import 'package:kharisma_sales_app/bindings/mainheader_binding.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/views/home/detail_product_page.dart';
 import 'package:kharisma_sales_app/views/home/home_page.dart';
+import 'package:kharisma_sales_app/views/home/test_page.dart';
 import 'package:kharisma_sales_app/views/login/forgot_password_page.dart';
 import 'package:kharisma_sales_app/views/login/login_customer_page.dart';
 import 'package:kharisma_sales_app/views/login/login_sales_page.dart';
@@ -52,6 +53,9 @@ class AppsRoutes{
     GetPage(name: RoutesName.salesOrderDetail, page: () => DetailSalesorderPage()),
     GetPage(name: RoutesName.notifikasiAll, page: () => NotifikasiAllPage()),
     GetPage(name: RoutesName.kebijakanPrivasi, page: () => KebijakanPrivasiPage()),
-    GetPage(name: RoutesName.detailAddress, page: () => DetailAddressPage())
+    GetPage(name: RoutesName.detailAddress, page: () => DetailAddressPage()),
+
+    // test page
+    GetPage(name: RoutesName.testPage, page: () => TestPage())
   ];
 }
