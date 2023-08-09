@@ -5,12 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:kharisma_sales_app/controllers/api/apps/login_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
-import 'package:kharisma_sales_app/models/cart_offline.dart';
 import 'package:kharisma_sales_app/models/cart_product.dart';
 import 'package:kharisma_sales_app/models/checkout.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/services/api_url.dart';
-import 'package:kharisma_sales_app/services/database_helper.dart';
 import '../../../widgets/loading_animation.dart';
 
 class CartController extends GetxController{
@@ -25,6 +23,7 @@ class CartController extends GetxController{
   var totalPrices = <String, int>{}.obs;
   RxInt total_bayar = 0.obs;
   var quantityGlobal = 0.obs;
+  RxInt remainingStock = 0.obs;
 
   
 
@@ -33,6 +32,7 @@ class CartController extends GetxController{
     super.onInit();
     fetchCartProductFirstTime();
     fetchCartProduct();
+    calculateTotalPrice();
     getCheckout();
   }
   
@@ -53,40 +53,7 @@ class CartController extends GetxController{
            isLoading(false);
            var jsonResult = json.decode(response.body);
            cartProductList.value = List<CartProduct>.from(jsonResult['data'].map((cartProduct) => CartProduct.fromJson(cartProduct)));
-
-        //    if (cartProductList.isNotEmpty) {
-        //     var databaseHelper = DatabaseHelper();
-        //     for (var cartProduct in cartProductList) {
-        //       // Convert CartProduct to CartOffline object
-        //       var cartOffline = CartOffline(
-        //         id: cartProduct.id!,
-        //         uuid: cartProduct.uuid!,
-        //         userId: cartProduct.userId!,
-        //         productId: cartProduct.productId!,
-        //         productTmplId: cartProduct.productTmplId!,
-        //         productUomId: cartProduct.productUomId!,
-        //         satuan: cartProduct.satuan!,
-        //         satuanStock: cartProduct.satuanStock!,
-        //         quantity: int.parse(cartProduct.quantity!),
-        //         price: cartProduct.price!,
-        //         totalPrice: cartProduct.totalPrice!,
-        //         status: cartProduct.status!,
-        //         isBuyNow: cartProduct.isBuyNow!,
-        //         isCheckout: cartProduct.isCheckout!,
-        //         createdAt: cartProduct.createdAt!,
-        //         updatedAt: cartProduct.updatedAt!,
-        //         sisaStock: cartProduct.sisaStock.toString(),
-        //         productName: cartProduct.product!.productName!,
-        //         labelUtama: cartProduct.product!.labelUtama!,
-        //         priceUtama: cartProduct.product!.priceUtama!,
-        //         unit: cartProduct.product!.unit!,
-        //         stock: cartProduct.product!.stock!, 
-        //         productNameSlug: ''
-        //       );
-        //       // Insert or update the CartOffline object in the database
-        //       await databaseHelper.insertOrUpdateCartOffline(cartOffline);
-        //     }
-        // }
+            calculateTotalPrice();
         }else{
           isLoading(false);
           throw Exception(jsonDecode(response.body)['message']);
@@ -185,6 +152,8 @@ class CartController extends GetxController{
 
   // post data
     Future<void> selectedCheckbox(String uuid, String? isSelected)async {
+      print(uuid);
+      print(isSelected);
       String api_cart_product = ApiUrl.apiUrl + 'ecom/select-cart/${uuid}/${isSelected}';
         try {
           // isLoading(true);
@@ -233,6 +202,7 @@ class CartController extends GetxController{
       String api_cart_product = ApiUrl.apiUrl + 'ecom/cart';
         try {
           isLoading(true);
+           showProgressDialog();
           final response = await http.post(
             Uri.parse(api_cart_product),
             headers: {
@@ -249,30 +219,24 @@ class CartController extends GetxController{
               'quantity': qty.toString(),
             }),
           );
-
           // print(response.body);
   
           if(response.statusCode == 200){
+             
             isLoading(false);
             // ignore: unused_local_variable
             var jsonResult = json.decode(response.body);
-            // get.snackbar
-            // Get.snackbar(
-            //   'Success',
-            //   jsonResult['message'],
-            //   backgroundColor: Colors.green,
-            //   colorText: Colors.white,
-            // );
-
-            Get.toNamed(
-              RoutesName.cartProduct
-            );
-
-            fetchCartProduct();
+            await fetchCartProduct().then((value){
+              closeProgressDialog();
+              Get.toNamed(
+                 RoutesName.cartProduct
+              );
+            });
             mainHeaderController.getCartCount();
             // update();
           }else{
             isLoading(false);
+            closeProgressDialog();
             throw Exception(jsonDecode(response.body)['message']);
           }
         } catch (e) {
@@ -459,6 +423,57 @@ class CartController extends GetxController{
         }
     }
 
+    Future<void> updateCart(
+      String uuid, 
+      String productId,
+      String productTmplid, 
+      String productUomId, 
+      String satuan, 
+      String satuanStock, 
+      String price, 
+      int quantity)async {
+      String api_cart_product = ApiUrl.apiUrl + 'ecom/cart/${uuid}';
+        try {
+          // isLoading(true);
+          final response = await http.put(
+            Uri.parse(api_cart_product),
+            headers: {
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+                'Content-Type': 'application/json',
+            },
+            body: jsonEncode(<String, String>{
+              'product_id': productId,
+              'product_tmpl_id': productTmplid,
+              'product_uom_id': productUomId,
+              'satuan': satuan,
+              'satuan_stock': satuanStock,
+              'price' : price,
+              'quantity': quantity.toString(),
+            }),
+          );
+
+          // print(response.body);
+  
+          if(response.statusCode == 200){
+            isLoading(false);
+            var jsonResult = json.decode(response.body);
+            print(jsonResult['message']);
+            isAllSelected.value = false;
+          }else{
+            isLoading(false);
+            throw Exception(jsonDecode(response.body)['message']);
+          }
+        } catch (e) {
+          isLoading(false);
+          print(e.toString());
+
+          // get.snackbar
+          errorMessage(e.toString());
+        }finally{
+          isLoading(false);
+        }
+    }
+
     Future<void> updateCartProductLoading(String uuid, String productId, String price, int quantity)async {
       String api_cart_product = ApiUrl.apiUrl + 'ecom/cart/${uuid}';
         try {
@@ -518,17 +533,17 @@ Future<void> deleteCartProduct(String uuid) async {
       },
     );
 
-    closeProgressDialog();
-
     if (response.statusCode == 200) {
       isLoading(false);
       var jsonResult = json.decode(response.body);
       print(jsonResult['message']);
-      fetchCartProduct();
+      await fetchCartProduct();
+       closeProgressDialog();
       mainHeaderController.getCartCount();
       update(['${uuid}']);
     } else {
       isLoading(false);
+      closeProgressDialog();
       throw Exception(jsonDecode(response.body)['message']);
     }
   } catch (e) {
@@ -591,8 +606,9 @@ Future<void> deleteCartProduct(String uuid) async {
       //  updateCartProduct(uuid, productId, price, quantity.value + 1);
       quantity.value++;
        totalCart.value = 0;
+       cartProductList[index].quantity = quantity.value.toString();
       Future.delayed(Duration(seconds: 3), () {
-        updateCartProduct(uuid, productId,productTmplid, productUomId, satuan, satuanStock, price, quantity.value);
+        updateCart(uuid, productId,productTmplid, productUomId, satuan, satuanStock, price, quantity.value);
       });
      
     }
@@ -617,8 +633,9 @@ Future<void> deleteCartProduct(String uuid) async {
       // updateCartProduct(uuid, productId, price, quantity.value - 1);
       quantity.value--;
       totalCart.value = 0;
+      cartProductList[index].quantity = quantity.value.toString();
       Future.delayed(Duration(seconds: 3), () {
-        updateCartProduct(uuid, productId,productTmplid, productUomId, satuan, satuanStock, price, quantity.value);
+        updateCart(uuid, productId,productTmplid, productUomId, satuan, satuanStock, price, quantity.value);
       });
       
     }
@@ -664,6 +681,15 @@ Future<void> deleteCartProduct(String uuid) async {
     );
   }
 
+  Future<void> selectCartProductCheckboxFalse(int index,String uuid) async{
+    cartProductList[index].isSelected = false;
+    // update();
+    // fetchCartProductNoLoading();
+    update(
+      ['${uuid}']
+    );
+  }
+
   // function error message
   void errorMessage(String message){
     Get.snackbar(
@@ -674,6 +700,35 @@ Future<void> deleteCartProduct(String uuid) async {
     );
   }
 
+  // calculate totalprice dimana cartProductList dimana isSelected samadengan true
+  void calculateTotalPrice() {
+    int totalPrice = 0;
+    for (var cartProduct in cartProductList) {
+      if (cartProduct.isSelected) {
+        int quantity = int.parse(cartProduct.quantity!);
+        int price = int.parse(cartProduct.price!);
+        totalPrice += quantity * price;
+      }
+    }
+    total_bayar.value = totalPrice; // Update the reactive value
+  }
 
+  // calculate sisa stock dimana cartProductList[index].product.stock -  RxInt quantity,
+  void calculateRemainingStock(int index, int satuanStock, RxInt quantity) {
+  if (index >= 0 && index < cartProductList.length) {
+    CartProduct cartProduct = cartProductList[index];
+    int currentStock = int.parse(cartProduct.product!.stock!);
+    int selectedQuantity = quantity.value; // Get the value from RxInt
+    int remainingStock = currentStock - (selectedQuantity * satuanStock);
+
+    cartProduct.sisaStock = remainingStock;
+
+    cartProductList.refresh();
+    
+  }
+}
+
+
+  
   
 }

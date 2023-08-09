@@ -534,28 +534,6 @@ class CheckoutProductPage extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.all(10.0),
-                                  //   child: Row(
-                                  //     mainAxisAlignment:
-                                  //         MainAxisAlignment.spaceBetween,
-                                  //     children: [
-                                  //       Row(
-                                  //         children: [
-                                  //           Text(
-                                  //             "Total Diskon",
-                                  //             style:
-                                  //                 TextStyle(color: Colors.red),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //       Text(
-                                  //         "Rp 0",
-                                  //         style: TextStyle(color: Colors.red),
-                                  //       )
-                                  //     ],
-                                  //   ),
-                                  // ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(

@@ -43,6 +43,9 @@ class TableQuantity extends StatelessWidget {
                   ),
                   onTap: (){
                     cartController.decrement(uuid, productTmplid ,productId, productUomId, satuan, satuanStock, quantity, stock, index, price, totalCart);
+                     cartController.selectCartProductCheckboxFalse(index, uuid);
+                        cartController.calculateTotalPrice();
+                          cartController.calculateRemainingStock(index, int.parse(satuanStock), quantity);
                   },
                 ),
               ),
@@ -72,8 +75,13 @@ class TableQuantity extends StatelessWidget {
                         if (value.isNotEmpty) {
                           
                           quantity.value = int.parse(value);
+                          cartController.cartProductList[index].quantity = value;
                           // print('ini dari form ' + value);
-                          await cartController.updateCartProduct(uuid, productId, productTmplid, productUomId,satuan, satuanStock, price, int.parse(value)).then((value) => totalCart.value = 0);
+                          cartController.selectCartProductCheckboxFalse(index, uuid);
+                    
+                          await cartController.updateCart(uuid, productId, productTmplid, productUomId,satuan, satuanStock, price, int.parse(value)).then((value) => totalCart.value = 0);
+                          cartController.calculateTotalPrice();
+                            cartController.calculateRemainingStock(index, int.parse(satuanStock), quantity);
                         }
                       },
                       style: TextStyle(fontSize: 15.0),
@@ -100,9 +108,12 @@ class TableQuantity extends StatelessWidget {
                     Icons.add,
                     size: iconSize.toDouble(),
                   ),
-                  onTap: (){
-                    cartController.increment(uuid, quantity, stock, index, price, productTmplid,productUomId,satuan, satuanStock, productId, totalCart);
-                  },
+                  onTap: () async {
+                     cartController.increment(uuid, quantity, stock, index, price, productTmplid,productUomId,satuan, satuanStock, productId, totalCart);
+                      cartController.selectCartProductCheckboxFalse(index, uuid);
+                      cartController.calculateTotalPrice();
+                      cartController.calculateRemainingStock(index, int.parse(satuanStock), quantity);
+                  },  
                 ),
               ),
             ),

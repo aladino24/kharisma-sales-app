@@ -9,29 +9,43 @@ import 'package:kharisma_sales_app/services/api_url.dart';
 
 class ProductController extends GetxController{
   var isLoading = false.obs;
+  var isLoadingMore = false.obs;
   var _products = <Product>[].obs;
   var price = "0".obs;
   var totalPrice = 0.obs;
   var dataUuid = ''.obs;
+  var page = 1;
 
   List<Product> get products => _products;
   Rx<BuyNowResult> buyNowResponse = BuyNowResult().obs;
 
   final LoginController loginController = Get.put(LoginController());
 
+  final scrollController = ScrollController();
   // texteditingcontroller value
   final searchEditController = TextEditingController();
 
   @override
   void onInit() {
     super.onInit();
-    fetchProduct();
+    fetchProductLimit();
     getBuyNow();
+    scrollController.addListener(scrollListener);
+  } 
+
+   Future<void> scrollListener() async {
+    if(scrollController.position.pixels == scrollController.position.maxScrollExtent){
+      isLoadingMore(true);
+      page = page + 1;
+      await fetchProductLimit();
+      print("Scroll Listener Call ${page}");
+      isLoadingMore(false);
+    }
+    
   }
 
-
   Future<void> fetchProduct() async {
-    String api_product_url = ApiUrl.apiUrl + 'ecom/product';
+    String api_product_url = ApiUrl.apiUrl + 'ecom/product?page=1';
     var response;
 
      try {
@@ -69,6 +83,56 @@ class ProductController extends GetxController{
       isLoading(false);
      }
     
+  }
+
+
+  Future<void> fetchProductLimit() async{
+    String api_product_limit = ApiUrl.apiUrl + 'ecom/product?page=${page}';
+    var response;
+     try {
+      if(_products.isEmpty){
+        isLoading(true);
+      }else{
+        isLoading(false);
+      }
+
+       // jika await getToken() tidak sama dengan null  maka kirimkan header bearer token
+       if(await loginController.getToken() != null){
+          response = await http.get(
+            Uri.parse(api_product_limit),
+            headers: {
+              'Authorization': 'Bearer ${await loginController.getToken()}',
+            },
+          );
+       }
+        // jika await getToken() sama dengan null  maka kirimkan header bearer token
+        if(await loginController.getToken() == null){
+            response = await http.get(
+              Uri.parse(api_product_limit),
+            );
+        }
+       
+        if(response.statusCode == 200){
+          print(jsonDecode(response.body)['data']);
+          isLoading(false);
+          final data = jsonDecode(response.body)['data'];
+          if(_products.length < 1){
+            _products.assignAll(List<Product>.from(data.map((product) => Product.fromJson(product))));
+          }else{
+            // tambahkan list _product yang sudah ada dengan data yang baru
+          _products.addAll(List<Product>.from(data.map((product) => Product.fromJson(product))));
+          }
+          
+        }else{
+          isLoading(false);
+          throw Exception('Failed to load data');
+        }
+     } catch (e) {
+        isLoading(false);
+        print(e);
+     }finally{
+      isLoading(false);
+     }
   }
 
   Future<void> fetchProductByFilter(String? search, String? filter, String? category) async{

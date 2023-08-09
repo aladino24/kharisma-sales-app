@@ -23,8 +23,7 @@ class HomePage extends StatelessWidget {
   final MainHeaderController myController = Get.put(MainHeaderController());
   final CategoryController categoryController = Get.put(CategoryController());
   final ProductController productController = Get.put(ProductController());
-  final SidebarCategoryController sidebarCategoryController =
-      Get.put(SidebarCategoryController());
+  final SidebarCategoryController sidebarCategoryController = Get.put(SidebarCategoryController());
   //cart controller
   final CartController cartController = Get.put(CartController());
   final NetworkController networkController = Get.put(NetworkController());
@@ -249,6 +248,7 @@ class HomePage extends StatelessWidget {
                     child: Obx(() {
                       if (productController.isLoading.value) {
                         return GridView.builder(
+                          controller: productController.scrollController,
                           padding: const EdgeInsets.all(5),
                           itemCount: 6,
                           gridDelegate:
@@ -278,6 +278,7 @@ class HomePage extends StatelessWidget {
                         return RefreshIndicator(
                           onRefresh: getRefresh,
                           child: GridView.builder(
+                             controller: productController.scrollController,
                               shrinkWrap: true,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
@@ -725,6 +726,7 @@ class HomePage extends StatelessWidget {
                     child: Obx(() {
                       if (productController.isLoading.value) {
                         return GridView.builder(
+                           controller: productController.scrollController,
                           padding: const EdgeInsets.all(5),
                           itemCount: 6,
                           gridDelegate:
@@ -754,6 +756,7 @@ class HomePage extends StatelessWidget {
                         return RefreshIndicator(
                           onRefresh: getRefresh,
                           child: GridView.builder(
+                             controller: productController.scrollController,
                               shrinkWrap: true,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
@@ -763,11 +766,11 @@ class HomePage extends StatelessWidget {
                                 crossAxisSpacing: 10,
                               ),
                               padding: const EdgeInsets.all(5),
-                              itemCount: productController.products.length,
+                              itemCount: productController.isLoadingMore.value ? productController.products.length + 1 : productController.products.length,
                               itemBuilder: (context, index) {
-                                Product product =
-                                    productController.products[index];
-
+                                if(index < productController.products.length){
+                                  
+                                Product product = productController.products[index];
                                 //  print('Ini image ' + product.image!);
                                 return Container(
                                   decoration: BoxDecoration(
@@ -958,6 +961,15 @@ class HomePage extends StatelessWidget {
                                     ],
                                   ),
                                 );
+                                }else{
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 160,
+                                        bottom: 110
+                                    ),
+                                    child: Center(child: CircularProgressIndicator())
+                                  );
+                                }
                               }),
                         );
                       }

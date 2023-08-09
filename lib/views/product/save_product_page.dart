@@ -269,6 +269,10 @@ class SaveProductPage extends StatelessWidget {
                                                 //           .pricelist![0].price
                                                 //           .toString(),
                                                 //       1);
+                                                   Get.toNamed(
+                                                          RoutesName
+                                                              .detailProduct,
+                                                          arguments: product);
                                               },
                                             ),
                                           ],
@@ -311,7 +315,7 @@ class SaveProductPage extends StatelessWidget {
 
   Future<bool> _onBackPressed() async {
     // Fetch data saat pengguna kembali ke halaman ini
-    await productController.fetchProduct();
+    // await productController.fetchProduct();
     return true;
   }
 }

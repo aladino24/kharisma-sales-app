@@ -163,23 +163,6 @@ class DetailProductPage extends StatelessWidget {
                                   ),
                                 ),
                                 //button
-                                Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: AppsColors.loginColorPrimary,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      Get.toNamed(RoutesName.testPage);
-                                    },
-                                    icon: Icon(
-                                      Icons.access_alarms_sharp,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
                                 // DiskonProduct()
                               ],
                             ),
@@ -288,9 +271,9 @@ class DetailProductPage extends StatelessWidget {
                                                       TextStyle(fontSize: 15.0),
                                                   textAlign: TextAlign.center,
                                                   onChanged: (value) {
-                                                    final ProductUom? selectedVariant = detailProductController.variant.value != '' ? product!.productUom!.firstWhere(
-                                                  (uom) => uom.label == detailProductController.variant.value) : 
-                                                  product!.productUom!.firstWhere((uom) => uom.label == product!.productUom![0].label);
+                                                  //   final ProductUom? selectedVariant = detailProductController.variant.value != '' ? product!.productUom!.firstWhere(
+                                                  // (uom) => uom.label == detailProductController.variant.value) : 
+                                                  // product!.productUom!.firstWhere((uom) => uom.label == product!.productUom![0].label);
                                                     String cleanedValue = value
                                                         .replaceAll('-', '');
                                                     cleanedValue = cleanedValue
@@ -303,17 +286,6 @@ class DetailProductPage extends StatelessWidget {
                                                     if (cleanedValue.isNotEmpty && quantity != 0) {
                                                       
                                                       if (quantity > int.parse(product!.stock.toString())) {
-                                                        // if(detailProductController.variant.value.isNotEmpty){
-                                                        //    int selectedVariantStock = int.parse(selectedVariant!.stock!);
-                                                        //     int inputQuantity = int.tryParse(value.replaceAll('-', '').replaceAll(',', '').replaceAll('.', '')) ?? 0;
-                                                        //     int maxAllowedQuantity = int.parse(product!.stock!);
-                                                            
-                                                        //     int calculatedQuantity = selectedVariantStock * inputQuantity;
-                                                        //     int finalQuantity = calculatedQuantity < maxAllowedQuantity ? calculatedQuantity : maxAllowedQuantity;
-
-                                                        //     quantityController.text = finalQuantity.toString();
-                                                        //      detailProductController.quantity.value = int.parse(product!.stock.toString());
-                                                        // }
                                                         quantityController.text = product!.stock.toString();
                                                         detailProductController.quantity.value = int.parse(product!.stock.toString());
                                                       } else if (quantity == 0) {

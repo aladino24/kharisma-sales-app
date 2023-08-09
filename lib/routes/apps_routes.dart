@@ -3,7 +3,6 @@ import 'package:kharisma_sales_app/bindings/mainheader_binding.dart';
 import 'package:kharisma_sales_app/controllers/components/main_header_controller.dart';
 import 'package:kharisma_sales_app/views/home/detail_product_page.dart';
 import 'package:kharisma_sales_app/views/home/home_page.dart';
-import 'package:kharisma_sales_app/views/home/test_page.dart';
 import 'package:kharisma_sales_app/views/login/forgot_password_page.dart';
 import 'package:kharisma_sales_app/views/login/login_customer_page.dart';
 import 'package:kharisma_sales_app/views/login/login_sales_page.dart';
@@ -26,6 +25,7 @@ import 'package:kharisma_sales_app/views/profile/termcondition_page.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/views/success/success_page.dart';
 import 'package:kharisma_sales_app/views/voucher/list_voucher_page.dart';
+import 'package:kharisma_sales_app/widgets/detail_image.dart';
 
 class AppsRoutes{
   static final pages = [
@@ -54,8 +54,6 @@ class AppsRoutes{
     GetPage(name: RoutesName.notifikasiAll, page: () => NotifikasiAllPage()),
     GetPage(name: RoutesName.kebijakanPrivasi, page: () => KebijakanPrivasiPage()),
     GetPage(name: RoutesName.detailAddress, page: () => DetailAddressPage()),
-
-    // test page
-    GetPage(name: RoutesName.testPage, page: () => TestPage())
+    GetPage(name: RoutesName.detailImage, page: () => DetailImage())
   ];
 }

@@ -39,8 +39,7 @@ abstract class RoutesName{
   // sales order detail
   static const salesOrderDetail = '/sales-order-detail-page';
 
-
- // test page
- static const testPage = '/test-page';
+ // detail image
+ static const detailImage = '/detail-image';
 
 }
