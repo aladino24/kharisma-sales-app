@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badge;
 import 'package:kharisma_sales_app/controllers/api/apps/notification_controller.dart';
@@ -69,19 +71,24 @@ class MainHeader extends StatelessWidget {
                 autofocus: false,
                 onSubmitted: (val) {},
                 onChanged: (val) async {
-                  if(Get.currentRoute != RoutesName.home){
-                    await productController.fetchProductByFilter(
-                      productController.searchEditController.text, 
-                      sidebarCategoryController.variantHarga.value, 
-                      categoryController.selectedValue.value
+                   if (productController.searchTimer != null) {
+                      productController.searchTimer!.cancel(); // Cancel the previous timer if exists
+                    }
+                  productController.searchTimer = Timer(Duration(seconds: 3), () async {
+                    if (Get.currentRoute != RoutesName.home) {
+                      await productController.applyFilters(
+                        productController.searchEditController.text,
+                        sidebarCategoryController.variantHarga.value,
+                        categoryController.selectedValue.value,
                       ).then((value) => Get.offAllNamed(RoutesName.home));
-                    }else{
-                      await productController.fetchProductByFilter(
-                      productController.searchEditController.text, 
-                      sidebarCategoryController.variantHarga.value, 
-                      categoryController.selectedValue.value
+                    } else {
+                      await productController.applyFilters(
+                        productController.searchEditController.text,
+                        sidebarCategoryController.variantHarga.value,
+                        categoryController.selectedValue.value,
                       );
                     }
+                  });
                   },
                  
                 decoration: InputDecoration(

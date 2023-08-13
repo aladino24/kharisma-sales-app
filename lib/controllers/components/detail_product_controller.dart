@@ -9,6 +9,7 @@ class DetailProductController extends GetxController{
 
   var quantity = 1.obs;
   var variant = ''.obs;
+  var price = ''.obs;
   var totalStock = 0.obs;
 
 // init variant
@@ -16,6 +17,7 @@ class DetailProductController extends GetxController{
   void onInit() {
     super.onInit();
     variant.value = product!.productUom![0].label!;
+    price.value = product!.productUom![0].productPricelist![0].price!;
   }
 
 void setProductStock(Product product) {
@@ -48,8 +50,9 @@ void setProductStock(Product product) {
     update();
   }
 
-  void setVariant(String variant){
+  void setVariant(String variant, String price){
     this.variant.value = variant;
+    this.price.value = price;
     setProductStock(product!);
     update();
   }

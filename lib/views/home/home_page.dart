@@ -156,7 +156,7 @@ class HomePage extends StatelessWidget {
                                   }
                                   categoryController
                                       .onDropdownValueChanged(newValue);
-                                  await productController.fetchProductByFilter(
+                                  await productController.applyFilters(
                                       productController
                                           .searchEditController.text,
                                       sidebarCategoryController
@@ -634,7 +634,7 @@ class HomePage extends StatelessWidget {
                                   }
                                   categoryController
                                       .onDropdownValueChanged(newValue);
-                                  await productController.fetchProductByFilter(
+                                  await productController.applyFilters(
                                       productController
                                           .searchEditController.text,
                                       sidebarCategoryController
@@ -962,13 +962,7 @@ class HomePage extends StatelessWidget {
                                   ),
                                 );
                                 }else{
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 160,
-                                        bottom: 110
-                                    ),
-                                    child: Center(child: CircularProgressIndicator())
-                                  );
+                                  return Center(child: CircularProgressIndicator());
                                 }
                               }),
                         );

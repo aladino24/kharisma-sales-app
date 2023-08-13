@@ -2,24 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/controllers/api/carts/cart_controller.dart';
+import 'package:kharisma_sales_app/controllers/api/products/category_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/save_product_controller.dart';
+import 'package:kharisma_sales_app/controllers/components/sidebar_category_controller.dart';
 import 'package:kharisma_sales_app/models/product.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../widgets/loading_animation.dart';
 
 class SaveProductPage extends StatelessWidget {
   SaveProductPage({Key? key}) : super(key: key);
 
   final ProductController productController = Get.find<ProductController>();
+  final CategoryController categoryController = Get.find<CategoryController>();
+  final SidebarCategoryController sidebarCategoryController = Get.find<SidebarCategoryController>();
   final SaveProductController saveProductController = Get.put(SaveProductController());
   final CartController cartController = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(child: Scaffold(
+    return WillPopScope(
+      child: Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,7 +321,16 @@ class SaveProductPage extends StatelessWidget {
 
   Future<bool> _onBackPressed() async {
     // Fetch data saat pengguna kembali ke halaman ini
-    // await productController.fetchProduct();
+    cartController.isLoading.value = true;
+    showProgressDialog();
+     await productController.applyFilters(
+                        productController.searchEditController.text,
+                        sidebarCategoryController.variantHarga.value,
+                        categoryController.selectedValue.value,
+                      ).then((value) {
+          cartController.isLoading.value = false;
+          closeProgressDialog();
+    }); 
     return true;
   }
 }

@@ -31,6 +31,26 @@ class ProfileCustomerPage extends StatelessWidget {
     await salesorderController.countCancel;
   }
 
+   Future<void> getRefreshProses() async {
+    await Future.delayed(Duration(seconds: 2));
+    await salesorderController.getSalesOrder(index: 0);
+  }
+
+   Future<void> getRefreshKirim() async {
+    await Future.delayed(Duration(seconds: 2));
+    await salesorderController.getSalesOrder(index: 1);
+  }
+
+   Future<void> getRefreshNilai() async {
+    await Future.delayed(Duration(seconds: 2));
+    await salesorderController.getSalesOrder(index: 2);
+  }
+
+   Future<void> getRefreshCancel() async {
+    await Future.delayed(Duration(seconds: 2));
+    await salesorderController.getSalesOrder(index: 3);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -306,17 +326,175 @@ class ProfileCustomerPage extends StatelessWidget {
                           children: [
                             // konten tab starters
                             Obx(
-                              () => ListView.builder(
-                                shrinkWrap: true,
-                                itemCount:
-                                    salesorderController.salesOrders.length,
-                                itemBuilder: (context, index) {
-                                  var salesOrder = salesorderController.salesOrders[index];
-                                  var updatedAt = DateTime.parse(salesOrder.updatedAt!); // Ubah string timestamp menjadi objek DateTime
-                                  var formattedDate = DateFormat('dd MMM yyyy').format(updatedAt);
-                                  return GestureDetector(
-                                    child: Container(
-                                      margin: EdgeInsets.symmetric(vertical: 5),
+                              () => RefreshIndicator(
+                                onRefresh: getRefreshProses,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      salesorderController.salesOrders.length,
+                                  itemBuilder: (context, index) {
+                                    var salesOrder = salesorderController.salesOrders[index];
+                                    var updatedAt = DateTime.parse(salesOrder.updatedAt!); // Ubah string timestamp menjadi objek DateTime
+                                    var formattedDate = DateFormat('dd MMM yyyy').format(updatedAt);
+                                    return GestureDetector(
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(vertical: 5),
+                                        width: Get.width * 0.9,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.2),
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 0),
+                                            ),
+                                          ],
+                                        ),
+                                        child: ListTile(
+                                          trailing: Column(
+                                            children: [
+                                              Text(
+                                              salesOrder.noInvoice!,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                              Text(
+                                                "Sedang Diproses",
+                                                style: TextStyle(
+                                                  color: Colors.orange,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "${NumberFormat.currency(
+                                                    locale: 'id_ID',
+                                                    symbol: 'Rp ',
+                                                    decimalDigits: 0,
+                                                  ).format(int.parse(salesOrder.totalHarga!))}",
+                                                style: TextStyle(
+                                                  color: AppsColors.loginColorPrimary,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          title: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 70,
+                                                height: 70,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: AppsColors
+                                                      .imageProductBackground,
+                                                ),
+                                                child: Icon(
+                                                  Icons.shopping_bag,
+                                                  size: 40,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                            formattedDate,
+                                                            style: TextStyle(
+                                                              fontSize: 10,
+                                                            ),
+                                                          ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                        children: salesOrder
+                                                            .salesOrderProduct!
+                                                            .map((product) {
+                                                          return Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                product.product!.productName!,
+                                                                style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight.w700,
+                                                                ),
+                                                                overflow:
+                                                                    TextOverflow.ellipsis,
+                                                              ),
+                                                              SizedBox(height: 1),
+                                                              Text(
+                                                                'Satuan : ${product.productUom!.label!}',
+                                                                style: TextStyle(
+                                                                  fontSize: 10,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                "x${product.quantity}",
+                                                                style: TextStyle(
+                                                                  color: AppsColors
+                                                                      .loginColorPrimary,
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                              SizedBox(height: 3),
+                                                            ],
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          // subtitle: Text(
+                                          //   formattedDate,
+                                          //   style: TextStyle(
+                                          //     fontSize: 10,
+                                          //   ),
+                                          // ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 5),
+                                        ),
+                                      ),
+                                      onTap: (){
+                                        Get.toNamed(RoutesName.salesOrderDetail, arguments: salesOrder);
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+              
+                            // konten tab main course
+                            Obx(
+                              () => RefreshIndicator(
+                                onRefresh: getRefreshKirim,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      salesorderController.salesOrders.length,
+                                  itemBuilder: (context, index) {
+                                    var salesOrder = salesorderController.salesOrders[index];
+                                    var updatedAt = DateTime.parse(salesOrder.updatedAt!); // Ubah string timestamp menjadi objek DateTime
+                                    var formattedDate = DateFormat('dd MMM yyyy').format(updatedAt);
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(vertical: 10),
                                       width: Get.width * 0.9,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
@@ -333,14 +511,14 @@ class ProfileCustomerPage extends StatelessWidget {
                                         trailing: Column(
                                           children: [
                                             Text(
-                                            salesOrder.noInvoice!,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 10,
+                                              salesOrder.noInvoice!,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 10,
+                                              ),
                                             ),
-                                          ),
                                             Text(
-                                              "Sedang Diproses",
+                                              "Sedang Dikirim",
                                               style: TextStyle(
                                                 color: Colors.orange,
                                                 fontSize: 10,
@@ -386,475 +564,329 @@ class ProfileCustomerPage extends StatelessWidget {
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                          formattedDate,
-                                                          style: TextStyle(
-                                                            fontSize: 10,
-                                                          ),
-                                                        ),
-                                                    Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: salesOrder.salesOrderProduct != null ? salesOrder
+                                                      .salesOrderProduct!
+                                                      .map((product) {
+                                                    return Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment.start,
-                                                      children: salesOrder
-                                                          .salesOrderProduct!
-                                                          .map((product) {
-                                                        return Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              product.product!.productName!,
-                                                              style: TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight.w700,
-                                                              ),
-                                                              overflow:
-                                                                  TextOverflow.ellipsis,
-                                                            ),
-                                                            SizedBox(height: 1),
-                                                            Text(
-                                                              'Satuan : ${product.productUom!.label!}',
-                                                              style: TextStyle(
-                                                                fontSize: 10,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              "x${product.quantity}",
-                                                              style: TextStyle(
-                                                                color: AppsColors
-                                                                    .loginColorPrimary,
-                                                                fontSize: 14,
-                                                              ),
-                                                            ),
-                                                            SizedBox(height: 3),
-                                                          ],
-                                                        );
-                                                      }).toList(),
-                                                    ),
-                                                  ],
+                                                      children: [
+                                                        product.product != null && product.product!.productName != null ? Text(
+                                                          product.product!
+                                                              .productName!,
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                          ),
+                                                          overflow:
+                                                              TextOverflow.ellipsis,
+                                                        ) : Text(''),
+                                                        SizedBox(height: 5),
+                                                        Text(
+                                                          "x${product.quantity}",
+                                                          style: TextStyle(
+                                                            color: AppsColors
+                                                                .loginColorPrimary,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  }).toList() : [],
                                                 ),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        // subtitle: Text(
-                                        //   formattedDate,
-                                        //   style: TextStyle(
-                                        //     fontSize: 10,
-                                        //   ),
-                                        // ),
+                                        subtitle: Text(
+                                          formattedDate,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
                                         contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 5),
+                                            horizontal: 20, vertical: 10),
+                                            onTap: (){
+                                        Get.toNamed(RoutesName.salesOrderDetail, arguments: salesOrder);
+                                      },
                                       ),
-                                    ),
-                                    onTap: (){
-                                      Get.toNamed(RoutesName.salesOrderDetail, arguments: salesOrder);
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-              
-                            // konten tab main course
-                            Obx(
-                              () => ListView.builder(
-                                shrinkWrap: true,
-                                itemCount:
-                                    salesorderController.salesOrders.length,
-                                itemBuilder: (context, index) {
-                                  var salesOrder = salesorderController.salesOrders[index];
-                                  var updatedAt = DateTime.parse(salesOrder.updatedAt!); // Ubah string timestamp menjadi objek DateTime
-                                  var formattedDate = DateFormat('dd MMM yyyy').format(updatedAt);
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    width: Get.width * 0.9,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          blurRadius: 5,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ],
-                                    ),
-                                    child: ListTile(
-                                      trailing: Column(
-                                        children: [
-                                          Text(
-                                            salesOrder.noInvoice!,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          Text(
-                                            "Sedang Dikirim",
-                                            style: TextStyle(
-                                              color: Colors.orange,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "${NumberFormat.currency(
-                                                locale: 'id_ID',
-                                                symbol: 'Rp ',
-                                                decimalDigits: 0,
-                                              ).format(int.parse(salesOrder.totalHarga!))}",
-                                            style: TextStyle(
-                                              color: AppsColors.loginColorPrimary,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      title: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 70,
-                                            height: 70,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: AppsColors
-                                                  .imageProductBackground,
-                                            ),
-                                            child: Icon(
-                                              Icons.shopping_bag,
-                                              size: 40,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: salesOrder.salesOrderProduct != null ? salesOrder
-                                                    .salesOrderProduct!
-                                                    .map((product) {
-                                                  return Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      product.product != null && product.product!.productName != null ? Text(
-                                                        product.product!
-                                                            .productName!,
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                        ),
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
-                                                      ) : Text(''),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        "x${product.quantity}",
-                                                        style: TextStyle(
-                                                          color: AppsColors
-                                                              .loginColorPrimary,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                }).toList() : [],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      subtitle: Text(
-                                        formattedDate,
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                          onTap: (){
-                                      Get.toNamed(RoutesName.salesOrderDetail, arguments: salesOrder);
-                                    },
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                             // konten tab desserts
                             Obx(
-                              () => ListView.builder(
-                                shrinkWrap: true,
-                                itemCount:
-                                    salesorderController.salesOrders.length,
-                                itemBuilder: (context, index) {
-                                  var salesOrder = salesorderController.salesOrders[index];
-                                  var updatedAt = DateTime.parse(salesOrder.updatedAt!); // Ubah string timestamp menjadi objek DateTime
-                                  var formattedDate = DateFormat('dd MMM yyyy').format(updatedAt);
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    width: Get.width * 0.9,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          blurRadius: 5,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ],
-                                    ),
-                                    child: ListTile(
-                                      trailing: Column(
-                                        children: [
-                                           Text(
-                                            salesOrder.noInvoice!,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          Text(
-                                            "Selesai",
-                                            style: TextStyle(
-                                              color: Colors.green,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "${NumberFormat.currency(
-                                                locale: 'id_ID',
-                                                symbol: 'Rp ',
-                                                decimalDigits: 0,
-                                              ).format(int.parse(salesOrder.totalHarga!))}",
-                                            style: TextStyle(
-                                              color: AppsColors.loginColorPrimary,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                            ),
+                              () => RefreshIndicator(
+                                onRefresh: getRefreshNilai,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      salesorderController.salesOrders.length,
+                                  itemBuilder: (context, index) {
+                                    var salesOrder = salesorderController.salesOrders[index];
+                                    var updatedAt = DateTime.parse(salesOrder.updatedAt!); // Ubah string timestamp menjadi objek DateTime
+                                    var formattedDate = DateFormat('dd MMM yyyy').format(updatedAt);
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(vertical: 10),
+                                      width: Get.width * 0.9,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.2),
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 0),
                                           ),
                                         ],
                                       ),
-                                      title: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 70,
-                                            height: 70,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: AppsColors
-                                                  .imageProductBackground,
-                                            ),
-                                            child: Icon(
-                                              Icons.shopping_bag,
-                                              size: 40,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: salesOrder.salesOrderProduct != null ? salesOrder
-                                                    .salesOrderProduct!
-                                                    .map((product) {
-                                                  return Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      product.product != null && product.product!.productName != null ? Text(
-                                                        product.product!
-                                                            .productName!,
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                        ),
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
-                                                      ) : Text(''),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        "x${product.quantity}",
-                                                        style: TextStyle(
-                                                          color: AppsColors
-                                                              .loginColorPrimary,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                }).toList() : []
+                                      child: ListTile(
+                                        trailing: Column(
+                                          children: [
+                                             Text(
+                                              salesOrder.noInvoice!,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 10,
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      subtitle: Text(
-                                        formattedDate,
-                                        style: TextStyle(
-                                          fontSize: 10,
+                                            Text(
+                                              "Selesai",
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "${NumberFormat.currency(
+                                                  locale: 'id_ID',
+                                                  symbol: 'Rp ',
+                                                  decimalDigits: 0,
+                                                ).format(int.parse(salesOrder.totalHarga!))}",
+                                              style: TextStyle(
+                                                color: AppsColors.loginColorPrimary,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                        title: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: 70,
+                                              height: 70,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: AppsColors
+                                                    .imageProductBackground,
+                                              ),
+                                              child: Icon(
+                                                Icons.shopping_bag,
+                                                size: 40,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: salesOrder.salesOrderProduct != null ? salesOrder
+                                                      .salesOrderProduct!
+                                                      .map((product) {
+                                                    return Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment.start,
+                                                      children: [
+                                                        product.product != null && product.product!.productName != null ? Text(
+                                                          product.product!
+                                                              .productName!,
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                          ),
+                                                          overflow:
+                                                              TextOverflow.ellipsis,
+                                                        ) : Text(''),
+                                                        SizedBox(height: 5),
+                                                        Text(
+                                                          "x${product.quantity}",
+                                                          style: TextStyle(
+                                                            color: AppsColors
+                                                                .loginColorPrimary,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  }).toList() : []
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        subtitle: Text(
+                                          formattedDate,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                            onTap: (){
+                                        Get.toNamed(RoutesName.salesOrderDetail, arguments: salesOrder);
+                                      },
                                       ),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                          onTap: (){
-                                      Get.toNamed(RoutesName.salesOrderDetail, arguments: salesOrder);
-                                    },
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                             Obx(
-                              () => ListView.builder(
-                                shrinkWrap: true,
-                                itemCount:
-                                    salesorderController.salesOrders.length,
-                                itemBuilder: (context, index) {
-                                  var salesOrder = salesorderController.salesOrders[index];
-                                  var updatedAt = DateTime.parse(salesOrder.updatedAt!); // Ubah string timestamp menjadi objek DateTime
-                                  var formattedDate = DateFormat('dd MMM yyyy').format(updatedAt);
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    width: Get.width * 0.9,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          blurRadius: 5,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ],
-                                    ),
-                                    child: ListTile(
-                                      trailing: Column(
-                                        children: [
-                                           Text(
-                                            salesOrder.noInvoice == null ? salesOrder.noInvoice! : '',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          Text(
-                                            "Pesanan Gagal",
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "${NumberFormat.currency(
-                                                locale: 'id_ID',
-                                                symbol: 'Rp ',
-                                                decimalDigits: 0,
-                                              ).format(int.parse(salesOrder.totalHarga!))}",
-                                            style: TextStyle(
-                                              color: AppsColors.loginColorPrimary,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                            ),
+                              () => RefreshIndicator(
+                                onRefresh: getRefreshCancel,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      salesorderController.salesOrders.length,
+                                  itemBuilder: (context, index) {
+                                    var salesOrder = salesorderController.salesOrders[index];
+                                    var updatedAt = DateTime.parse(salesOrder.updatedAt!); // Ubah string timestamp menjadi objek DateTime
+                                    var formattedDate = DateFormat('dd MMM yyyy').format(updatedAt);
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(vertical: 10),
+                                      width: Get.width * 0.9,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.2),
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 0),
                                           ),
                                         ],
                                       ),
-                                      title: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 70,
-                                            height: 70,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: AppsColors
-                                                  .imageProductBackground,
-                                            ),
-                                            child: Icon(
-                                              Icons.shopping_bag,
-                                              size: 40,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: salesOrder.salesOrderProduct!
-                                                    .map((product) {
-                                                  return Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        product.product!.productName!,
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                        ),
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        "x${product.quantity}",
-                                                        style: TextStyle(
-                                                          color: AppsColors
-                                                              .loginColorPrimary,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                }).toList(),
+                                      child: ListTile(
+                                        trailing: Column(
+                                          children: [
+                                             Text(
+                                              salesOrder.noInvoice == null ? salesOrder.noInvoice! : '',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 10,
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      subtitle: Text(
-                                        formattedDate,
-                                        style: TextStyle(
-                                          fontSize: 10,
+                                            Text(
+                                              "Pesanan Gagal",
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "${NumberFormat.currency(
+                                                  locale: 'id_ID',
+                                                  symbol: 'Rp ',
+                                                  decimalDigits: 0,
+                                                ).format(int.parse(salesOrder.totalHarga!))}",
+                                              style: TextStyle(
+                                                color: AppsColors.loginColorPrimary,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                        title: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: 70,
+                                              height: 70,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: AppsColors
+                                                    .imageProductBackground,
+                                              ),
+                                              child: Icon(
+                                                Icons.shopping_bag,
+                                                size: 40,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: salesOrder.salesOrderProduct!
+                                                      .map((product) {
+                                                    return Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          product.product!.productName!,
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                          ),
+                                                          overflow:
+                                                              TextOverflow.ellipsis,
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Text(
+                                                          "x${product.quantity}",
+                                                          style: TextStyle(
+                                                            color: AppsColors
+                                                                .loginColorPrimary,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        subtitle: Text(
+                                          formattedDate,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                          onTap: (){
+                                        Get.toNamed(RoutesName.salesOrderDetail, arguments: salesOrder);
+                                      },
                                       ),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                        onTap: (){
-                                      Get.toNamed(RoutesName.salesOrderDetail, arguments: salesOrder);
-                                    },
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ],

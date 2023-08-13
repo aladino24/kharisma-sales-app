@@ -176,24 +176,24 @@ class DetailProductPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                 Text(
+                                 Obx(() => Text(
                                                   'Price : ${NumberFormat.currency(
                                                     locale: 'id_ID',
                                                     symbol: 'Rp ',
                                                     decimalDigits: 0,
-                                                  ).format(int.parse(product!.priceUtama!))}',
+                                                  ).format(int.parse(detailProductController.price.value))}',
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       color: AppsColors
                                                           .loginFontColorPrimaryDark),
-                                                ),
-                                                Text(
-                                                  'Satuan : ${product!.labelUtama}',
+                                                )),
+                                Obx(() => Text(
+                                                  'Satuan : ${detailProductController.variant.value}',
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       color: Colors.red
                                                     ),
-                                                ),
+                                                )),
                               ],
                             ),
                           ),
@@ -366,6 +366,8 @@ class DetailProductPage extends StatelessWidget {
                                       children: product!.productUom!
                                           .map((productItem) {
                                         final String? label = productItem.label;
+                                        //price
+                                        final String? price = productItem.productPricelist![0].price;
                                         bool isSelected = detailProductController
                                                     .variant.value ==
                                                 label;
@@ -401,7 +403,7 @@ class DetailProductPage extends StatelessWidget {
                                             ),
                                             onTap: () { 
                                               detailProductController
-                                                .setVariant(label);
+                                                .setVariant(label, price!);
                                             },
                                           ),
                                         );

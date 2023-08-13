@@ -204,7 +204,7 @@ class SidebarFilterPage extends StatelessWidget {
                         ),
                       ),
                       onTap: () async {
-                         await productController.fetchProductByFilter(productController.searchEditController.text, sidebarCategoryController.variantHarga.value, categoryController.selectedValue.value);
+                         await productController.applyFilters(productController.searchEditController.text, sidebarCategoryController.variantHarga.value, categoryController.selectedValue.value);
                          // close drawer
                           Navigator.pop(context);
                       },

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +16,7 @@ class ProductController extends GetxController{
   var totalPrice = 0.obs;
   var dataUuid = ''.obs;
   var page = 1;
+   Timer? searchTimer;
 
   List<Product> get products => _products;
   Rx<BuyNowResult> buyNowResponse = BuyNowResult().obs;
@@ -28,7 +30,8 @@ class ProductController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    fetchProductLimit();
+    fetchProductByFilter(
+        searchEditController.text, null, null, page);
     getBuyNow();
     scrollController.addListener(scrollListener);
   } 
@@ -37,7 +40,8 @@ class ProductController extends GetxController{
     if(scrollController.position.pixels == scrollController.position.maxScrollExtent){
       isLoadingMore(true);
       page = page + 1;
-      await fetchProductLimit();
+     await fetchProductByFilter(
+        searchEditController.text, null, null, page);
       print("Scroll Listener Call ${page}");
       isLoadingMore(false);
     }
@@ -45,7 +49,7 @@ class ProductController extends GetxController{
   }
 
   Future<void> fetchProduct() async {
-    String api_product_url = ApiUrl.apiUrl + 'ecom/product?page=1';
+    String api_product_url = ApiUrl.apiUrl + 'ecom/product';
     var response;
 
      try {
@@ -135,67 +139,86 @@ class ProductController extends GetxController{
      }
   }
 
-  Future<void> fetchProductByFilter(String? search, String? filter, String? category) async{
-      String searchQuery = search?.replaceAll(' ', '+') ?? '';
-      String filterQuery = filter?.replaceAll(' ', '+') ?? '';
-      String categoryQuery = category?.replaceAll(' ', '+') ?? '';
+  Future<void> fetchProductByFilter(
+    String? search, String? filter, String? category, int page) async {
+    String searchQuery = search?.replaceAll(' ', '+') ?? '';
+    String filterQuery = filter?.replaceAll(' ', '+') ?? '';
+    String categoryQuery = category?.replaceAll(' ', '+') ?? '';
 
-      String api_product_url = ApiUrl.apiUrl + 'ecom/product';
-      var response;
-      if (searchQuery.isNotEmpty || filterQuery.isNotEmpty || categoryQuery.isNotEmpty) {
-        api_product_url += '?';
+    String api_product_url = ApiUrl.apiUrl + 'ecom/product?page=$page';
+    var response;
 
-        if (searchQuery.isNotEmpty) {
-          api_product_url += 'search=$searchQuery';
-        }
-        if (filterQuery.isNotEmpty) {
-          api_product_url += '&filter=$filterQuery';
-        }
-        if (categoryQuery.isNotEmpty) {
-          api_product_url += '&kategori=$categoryQuery';
-        }
+    if (searchQuery.isNotEmpty || filterQuery.isNotEmpty || categoryQuery.isNotEmpty) {
+      api_product_url += '&';
 
-        print(api_product_url);
-      }else{
-        fetchProduct();
+      if (searchQuery.isNotEmpty) {
+        api_product_url += 'search=$searchQuery';
+      }
+      if (filterQuery.isNotEmpty) {
+        api_product_url += '&filter=$filterQuery';
+      }
+      if (categoryQuery.isNotEmpty) {
+        api_product_url += '&kategori=$categoryQuery';
       }
 
-      try {
-        isLoading(true);
+      print(api_product_url);
+    }
 
-       // jika await getToken() tidak sama dengan null  maka kirimkan header bearer token
-       if(await loginController.getToken() != null){
-          response = await http.get(
-            Uri.parse(api_product_url),
-            headers: {
-              'Authorization': 'Bearer ${await loginController.getToken()}',
-            },
-          );
-       }
-        // jika await getToken() sama dengan null  maka kirimkan header bearer token
-        if(await loginController.getToken() == null){
-            response = await http.get(
-              Uri.parse(api_product_url),
-            );
-        }
-
-        if(response.statusCode == 200){
-          // perbarui _product dengan data yang baru
-          isLoading(false);
-          final data = jsonDecode(response.body)['data'];
-          _products.assignAll(List<Product>.from(data.map((product) => Product.fromJson(product))));
+    try {
+      if(_products.isEmpty){
+          isLoading(true);
         }else{
           isLoading(false);
-          throw Exception('Failed to load data');
         }
-      } catch (e) {
-        isLoading(false);
-        print(e);
-      } finally{
-        isLoading(false);
-     }
 
-  }
+      if (await loginController.getToken() != null) {
+        response = await http.get(
+          Uri.parse(api_product_url),
+          headers: {
+            'Authorization': 'Bearer ${await loginController.getToken()}',
+          },
+        );
+      }
+      if (await loginController.getToken() == null) {
+        response = await http.get(
+          Uri.parse(api_product_url),
+        );
+      }
+
+      if (response.statusCode == 200) {
+        isLoading(false);
+        final data = jsonDecode(response.body)['data'];
+
+        final newProducts = List<Product>.from(data.map((product) => Product.fromJson(product)));
+        final existingIds = _products.map((product) => product.id).toSet();
+        final filteredProducts = newProducts.where((product) => !existingIds.contains(product.id));
+
+        if (_products.isEmpty) {
+          print('assign all');
+          _products.assignAll(filteredProducts);
+        } else {
+          print('add all');
+          _products.addAll(filteredProducts);
+        }
+      } else {
+        isLoading(false);
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      isLoading(false);
+      print(e);
+    } finally {
+      isLoading(false);
+    }
+}
+
+Future<void> applyFilters(String? search, String? filter, String? category) async {
+  page = 1; 
+  _products.clear();
+  await fetchProductByFilter(search, filter, category, page);
+}
+
+
 
   Future<void> buyNow(
     String? product_id, 
