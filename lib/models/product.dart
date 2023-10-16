@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class ProductResult {
   int? code;
   List<Product>? data;
@@ -35,7 +37,7 @@ class Product {
   String? unit;
   String? weight;
   String? stock;
-  int? isWishlist;
+  RxInt? isWishlist;
   String? priceUtama;
   String? labelUtama;
   ProductTag? productTag;
@@ -83,7 +85,7 @@ class Product {
     unit = json['unit'];
     weight = json['weight'];
     stock = json['stock'];
-    isWishlist = json['is_wishlist'];
+    isWishlist = RxInt(json['is_wishlist']);
     priceUtama = json['price_utama'];
     labelUtama = json['label_utama'];
     productTag = json['product_tag'] != null

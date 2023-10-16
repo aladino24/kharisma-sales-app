@@ -174,15 +174,18 @@ class LoginController extends GetxController {
 
     try {
       isLoading(true);
+        String? token = await getToken();
       final response = await http.get(Uri.parse(apiUrl), headers: {
         'Authorization': 'Bearer ${await getToken()}',
       });
-
+      print(json.decode(response.body));
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body)['data'];
         print(data);
         userModelData.value = UserModel.fromJson(data);
         return userModelData.value;
+      } else if(json.decode(response.body)['code'] == 401 && token != null){
+        await logout();
       } else {
         throw Exception(json.decode(response.body)['message']);
       }

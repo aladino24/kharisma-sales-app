@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class CartProductResult {
   int? code;
   List<CartProduct>? data;
@@ -15,7 +17,6 @@ class CartProductResult {
     }
     message = json['message'];
   }
-
 }
 
 class CartProduct {
@@ -29,7 +30,7 @@ class CartProduct {
   String? satuanStock;
   String? quantity;
   bool isSelected = false;
-  String? price;
+  RxString? price;
   String? totalPrice;
   String? status;
   String? isBuyNow;
@@ -69,7 +70,7 @@ class CartProduct {
     satuan = json['satuan'];
     satuanStock = json['satuan_stock'];
     quantity = json['quantity'];
-    price = json['price'];
+    price = RxString(json['price']);
     totalPrice = json['total_price'];
     status = json['status'];
     isBuyNow = json['is_buy_now'];
@@ -80,7 +81,6 @@ class CartProduct {
     product =
         json['product'] != null ? new Product.fromJson(json['product']) : null;
   }
-
 }
 
 class Product {
@@ -104,6 +104,7 @@ class Product {
   int? isWishlist;
   String? priceUtama;
   String? labelUtama;
+  List<ProductUom>? productUom;
   ProductTag? productTag;
 
   Product(
@@ -127,7 +128,8 @@ class Product {
       this.isWishlist,
       this.priceUtama,
       this.labelUtama,
-      this.productTag});
+      this.productTag,
+      this.productUom});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -150,11 +152,73 @@ class Product {
     isWishlist = json['is_wishlist'];
     priceUtama = json['price_utama'];
     labelUtama = json['label_utama'];
+    if (json['product_uom'] != null) {
+      productUom = <ProductUom>[];
+      json['product_uom'].forEach((v) {
+        productUom!.add(new ProductUom.fromJson(v));
+      });
+    }
     productTag = json['product_tag'] != null
         ? new ProductTag.fromJson(json['product_tag'])
         : null;
   }
+}
 
+class ProductUom {
+  int? id;
+  String? productTmplId;
+  String? productUomId;
+  String? label;
+  String? stock;
+  String? type;
+  List<ProductPricelist>? productPricelist;
+
+  ProductUom(
+      {this.id,
+      this.productTmplId,
+      this.productUomId,
+      this.label,
+      this.stock,
+      this.type,
+      this.productPricelist});
+
+  ProductUom.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
+    label = json['label'];
+    stock = json['stock'];
+    type = json['type'];
+    if (json['product_pricelist'] != null) {
+      productPricelist = <ProductPricelist>[];
+      json['product_pricelist'].forEach((v) {
+        productPricelist!.add(new ProductPricelist.fromJson(v));
+      });
+    }
+  }
+}
+
+class ProductPricelist {
+  int? id;
+  String? productTmplId;
+  String? productUomId;
+  String? price;
+  String? minQuantity;
+
+  ProductPricelist(
+      {this.id,
+      this.productTmplId,
+      this.productUomId,
+      this.price,
+      this.minQuantity});
+
+  ProductPricelist.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productTmplId = json['product_tmpl_id'];
+    productUomId = json['product_uom_id'];
+    price = json['price'];
+    minQuantity = json['min_quantity'];
+  }
 }
 
 class ProductTag {
@@ -167,5 +231,4 @@ class ProductTag {
     productTagId = json['product_tag_id'];
     name = json['name'];
   }
-
 }

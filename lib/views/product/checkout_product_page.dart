@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kharisma_sales_app/constants/apps_colors.dart';
@@ -7,7 +8,6 @@ import 'package:kharisma_sales_app/controllers/api/address/ongkos_kirim_controll
 import 'package:kharisma_sales_app/controllers/api/orders/salesoder_controller.dart';
 import 'package:kharisma_sales_app/controllers/api/products/product_controller.dart';
 import 'package:kharisma_sales_app/models/buy_now.dart';
-import 'package:kharisma_sales_app/models/ongkos_kirim.dart';
 import 'package:kharisma_sales_app/routes/routes_name.dart';
 import 'package:kharisma_sales_app/widgets/main_header.dart';
 
@@ -16,6 +16,7 @@ class CheckoutProductPage extends StatelessWidget {
   CheckoutProductPage({super.key});
 
   final TextEditingController claimController = TextEditingController();
+  final TextEditingController inputBiayaKirimController = TextEditingController();
 
   final OngkosKirimController ongkosKirimController =
       Get.put(OngkosKirimController());
@@ -29,7 +30,7 @@ class CheckoutProductPage extends StatelessWidget {
 
   RxInt biayaPengiriman = 0.obs;
   RxString estimasi = 'Not Available'.obs;
-  RxString nama = ''.obs;
+  RxString nama = 'STAF KHARISMA'.obs;
   //
   RxInt subTotal = 0.obs;
   RxInt total = 0.obs;
@@ -326,114 +327,115 @@ class CheckoutProductPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Jenis Pengiriman",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            FormField<String>(
-                              builder: (FormFieldState<String> state) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: AppsColors.loginColorPrimary, // Replace this with your desired border color
-                                    width: 1.0,
-                                  ),
-                                  ),
-                                  child: InputDecorator(
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            EdgeInsets.symmetric(vertical: 5.0),
-                                        errorStyle: TextStyle(
-                                            color: Colors.redAccent,
-                                            fontSize: 16.0),
-                                        hintText: 'Pilih jenis pengiriman',
-                                        border:  InputBorder.none ),
-                                    isEmpty: false,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: DropdownButtonHideUnderline(
-                                          child: Obx(() {
-                                        if (ongkosKirimController
-                                            .listOngkosKirim.isEmpty) {
-                                          ongkosKirimController.fetchOngkosKirim(
-                                              alamatKirimController
-                                                  .alamatPengiriman
-                                                  .value
-                                                  .kecamatanId,
-                                              weight);
-                                        }
-                                        return DropdownButtonFormField(
-                                          hint: ongkosKirimController
-                                                  .isLoading.value
-                                              ? Text("Loading...")
-                                              : Text('Pilih jenis pengiriman'),
-                                          // value: 'COD',
-                                          isDense: true,
-                                          items: ongkosKirimController
-                                                  .listOngkosKirim.isNotEmpty
-                                              ? List.generate(
-                                                  ongkosKirimController
-                                                      .listOngkosKirim.length,
-                                                  (index) => DropdownMenuItem(
-                                                        child: Text(
-                                                          ongkosKirimController
-                                                              .listOngkosKirim[
-                                                                  index]
-                                                              .nama!,
-                                                          style: TextStyle(
-                                                              fontSize: 12),
-                                                        ),
-                                                        value:
-                                                            ongkosKirimController
-                                                                .listOngkosKirim[
-                                                                    index]
-                                                                .nama,
-                                                      ))
-                                              : null,
-                                          onChanged: (value) {
-                                            String selectedValue = value
-                                                as String; // Ubah tipe value ke String
-                                            OngkosKirim selectedOngkosKirim =
-                                                ongkosKirimController
-                                                    .listOngkosKirim
-                                                    .firstWhere(
-                                                        (element) =>
-                                                            element.nama ==
-                                                            selectedValue,
-                                                        orElse: () =>
-                                                            OngkosKirim()); // Menggunakan properti 'nama' sebagai nilai yang dicocokkan
-                                            ongkosKirimController
-                                                .selectedOngkosKirim
-                                                .value = selectedOngkosKirim;
-                                            biayaPengiriman.value =
-                                                selectedOngkosKirim.harga ?? 0;
-                                            estimasi.value =
-                                                selectedOngkosKirim.estimasi!;
-                                            nama.value =
-                                                selectedOngkosKirim.nama!;
-                                          },
-                                          value: ongkosKirimController
-                                                  .selectedOngkosKirim
-                                                  .value
-                                                  ?.nama ??
-                                              null,
-                                          decoration: InputDecoration(
-                                            border: InputBorder
-                                                .none, // Menghilangkan underline
-                                          ),
-                                        );
-                                      })),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                            // Text(
+                            //   "Jenis Pengiriman",
+                            //   style: TextStyle(
+                            //       fontSize: 18, fontWeight: FontWeight.bold),
+                            // ),
+                            // SizedBox(
+                            //   height: 10,
+                            // ),
+                            // Jenis Pengiriman
+                            // FormField<String>(
+                            //   builder: (FormFieldState<String> state) {
+                            //     return Container(
+                            //       decoration: BoxDecoration(
+                            //       borderRadius: BorderRadius.circular(10),
+                            //       border: Border.all(
+                            //         color: AppsColors.loginColorPrimary, // Replace this with your desired border color
+                            //         width: 1.0,
+                            //       ),
+                            //       ),
+                            //       child: InputDecorator(
+                            //         decoration: InputDecoration(
+                            //             contentPadding:
+                            //                 EdgeInsets.symmetric(vertical: 5.0),
+                            //             errorStyle: TextStyle(
+                            //                 color: Colors.redAccent,
+                            //                 fontSize: 16.0),
+                            //             hintText: 'Pilih jenis pengiriman',
+                            //             border:  InputBorder.none ),
+                            //         isEmpty: false,
+                            //         child: Padding(
+                            //           padding: const EdgeInsets.symmetric(
+                            //               horizontal: 8.0),
+                            //           child: DropdownButtonHideUnderline(
+                            //               child: Obx(() {
+                            //             if (ongkosKirimController
+                            //                 .listOngkosKirim.isEmpty) {
+                            //               ongkosKirimController.fetchOngkosKirim(
+                            //                   alamatKirimController
+                            //                       .alamatPengiriman
+                            //                       .value
+                            //                       .kecamatanId,
+                            //                   weight);
+                            //             }
+                            //             return DropdownButtonFormField(
+                            //               hint: ongkosKirimController
+                            //                       .isLoading.value
+                            //                   ? Text("Loading...")
+                            //                   : Text('Pilih jenis pengiriman'),
+                            //               // value: 'COD',
+                            //               isDense: true,
+                            //               items: ongkosKirimController
+                            //                       .listOngkosKirim.isNotEmpty
+                            //                   ? List.generate(
+                            //                       ongkosKirimController
+                            //                           .listOngkosKirim.length,
+                            //                       (index) => DropdownMenuItem(
+                            //                             child: Text(
+                            //                               ongkosKirimController
+                            //                                   .listOngkosKirim[
+                            //                                       index]
+                            //                                   .nama!,
+                            //                               style: TextStyle(
+                            //                                   fontSize: 12),
+                            //                             ),
+                            //                             value:
+                            //                                 ongkosKirimController
+                            //                                     .listOngkosKirim[
+                            //                                         index]
+                            //                                     .nama,
+                            //                           ))
+                            //                   : null,
+                            //               onChanged: (value) {
+                            //                 String selectedValue = value
+                            //                     as String; // Ubah tipe value ke String
+                            //                 OngkosKirim selectedOngkosKirim =
+                            //                     ongkosKirimController
+                            //                         .listOngkosKirim
+                            //                         .firstWhere(
+                            //                             (element) =>
+                            //                                 element.nama ==
+                            //                                 selectedValue,
+                            //                             orElse: () =>
+                            //                                 OngkosKirim()); // Menggunakan properti 'nama' sebagai nilai yang dicocokkan
+                            //                 ongkosKirimController
+                            //                     .selectedOngkosKirim
+                            //                     .value = selectedOngkosKirim;
+                            //                 biayaPengiriman.value =
+                            //                     selectedOngkosKirim.harga ?? 0;
+                            //                 estimasi.value =
+                            //                     selectedOngkosKirim.estimasi!;
+                            //                 nama.value =
+                            //                     selectedOngkosKirim.nama!;
+                            //               },
+                            //               value: ongkosKirimController
+                            //                       .selectedOngkosKirim
+                            //                       .value
+                            //                       ?.nama ??
+                            //                   null,
+                            //               decoration: InputDecoration(
+                            //                 border: InputBorder
+                            //                     .none, // Menghilangkan underline
+                            //               ),
+                            //             );
+                            //           })),
+                            //         ),
+                            //       ),
+                            //     );
+                            //   },
+                            // ),
                             // SizedBox(
                             //   height: 20,
                             // ),
@@ -442,6 +444,46 @@ class CheckoutProductPage extends StatelessWidget {
                             //   style: TextStyle(
                             //       fontSize: 18, fontWeight: FontWeight.bold),
                             // ),
+
+                            // textformfield biaya pengiriman
+                          //   Text(
+                          //       "Biaya Pengiriman",
+                          //       style: TextStyle(
+                          //         fontSize: 18,
+                          //         fontWeight: FontWeight.bold,
+                          //       ),
+                          //     ),
+                          //     SizedBox(
+                          //       height: 10,
+                          //     ),
+                          //   TextFormField(
+                          //   controller: inputBiayaKirimController,
+                          //   keyboardType: TextInputType.numberWithOptions(decimal: true),
+                          //   inputFormatters: [
+                          //     FilteringTextInputFormatter.allow(RegExp(r'^\d+(\.\d{0,2})?$')),
+                          //   ],
+                          //   decoration: InputDecoration(
+                          //     prefixText: "Rp ",
+                          //     prefixStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                          //     hintText: "Masukkan Biaya Pengiriman",
+                          //     hintStyle: TextStyle(
+                          //       fontSize: 12,
+                          //     ),
+                          //     border: OutlineInputBorder(
+                          //       borderRadius: BorderRadius.circular(10),
+                          //     ),
+                          //   ),
+                          //   onChanged: (value) {
+                          //     if (value.isEmpty) {
+                          //       biayaPengiriman.value = 0;
+                          //     } else {
+                          //       // Jika nilai tidak kosong dan bukan nol, atur nilai biayaPengiriman
+                          //       biayaPengiriman.value = int.parse(value);
+                          //     }
+                          //   },
+                            
+                          // ),
+
                             SizedBox(
                               height: 10,
                             ),
@@ -457,16 +499,22 @@ class CheckoutProductPage extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            Obx(
-                              () => Row(
+                            // Obx(
+                            //   () => Row(
+                            //     children: [
+                            //       Icon(Icons.calendar_month),
+                            //       estimasi.value == ''
+                            //           ? Text('Not Available')
+                            //           : Text(estimasi.value)
+                            //     ],
+                            //   ),
+                            // ),
+                            Row(
                                 children: [
                                   Icon(Icons.calendar_month),
-                                  estimasi.value == ''
-                                      ? Text('Not Available')
-                                      : Text(estimasi.value)
+                                  Text('2 Hari')
                                 ],
                               ),
-                            ),
                             SizedBox(
                               height: 20,
                             ),
@@ -630,7 +678,7 @@ class CheckoutProductPage extends StatelessWidget {
                                                 backgroundColor: Colors.red,
                                                 colorText: Colors.white,
                                               );
-                                            } else {
+                                            }else {
                                               if (!salesOrderController.isLoading.value) {
                                                 showDialog(
                                                   context: context, 
@@ -672,10 +720,11 @@ class CheckoutProductPage extends StatelessWidget {
                                                           } else {
                                                             Get.snackbar(
                                                               "Failed",
-                                                              "Your order has failed",
+                                                              status,
                                                               backgroundColor: Colors.red,
                                                               colorText: Colors.white,
                                                             );
+                                                            //  print(status + "ini status");
                                                           }
                                                          },
                                                         )

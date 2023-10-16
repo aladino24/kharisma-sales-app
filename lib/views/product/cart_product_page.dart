@@ -220,18 +220,19 @@ class _CartProductPageState extends State<CartProductPage> {
                                                         ),
                                                       ),
                                                       SizedBox(height: 5),
-                                                      Text(
+                                                      Obx(() {
+                                                        return Text(
                                                         NumberFormat.currency(
                                                           locale: 'id_ID',
                                                           symbol: 'Rp ',
                                                           decimalDigits: 0,
                                                         ).format(int.parse(
-                                                            cartProduct.price ??
-                                                                '0')),
+                                                            cartProduct.price!.value)),
                                                         style: TextStyle(
                                                           fontSize: 14,
                                                         ),
-                                                      ),
+                                                      );
+                                                      }),
                                                       SizedBox(height: 5),
                                                       Row(
                                                         children: [
@@ -246,7 +247,7 @@ class _CartProductPageState extends State<CartProductPage> {
                                                             quantity: int.parse(cartProduct.quantity!).obs,
                                                             stock: cartProduct.product!.stock!,
                                                             totalPrice:cartProduct.totalPrice!,
-                                                            price: cartProduct.price!,
+                                                            price: cartProduct.price!.value,
                                                             uuid:cartProduct.uuid!,
                                                             totalCart:cartController.total_bayar,
                                                             index: index,

@@ -254,14 +254,20 @@ class DetailSalesorderPage extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              productList.product!.productName
-                                                  .toString(),
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
+                                             Container(
+                                                width: Get.width * 0.58,
+                                                child: Flexible(
+                                                  child: Text(
+                                                    productList.product!.productName
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                    overflow: TextOverflow.visible,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
                                             SizedBox(height: 2),
                                             Text// satuan dari productUom
                                               .rich(
@@ -328,17 +334,50 @@ class DetailSalesorderPage extends StatelessWidget {
                             TextFormField(
                               enabled: false, // Menjadikan nilai readonly
                               initialValue: arguments.jasaPengiriman, // Menampilkan nilai dari arguments.jasaPengiriman
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54
+                              ),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                                hintText: 'Pilih jenis pengiriman',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                                hintText: "Masukkan Jenis Pengiriman",
+                                hintStyle: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                               ),
                             ),
-                            // SizedBox(
-                            //   height: 20,
-                            // ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                             Text(
+                              "Biaya Pengiriman",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              enabled: false, // Menjadikan nilai readonly
+                              initialValue: arguments.ongkosKirim, // Menampilkan nilai dari arguments.jasaPengiriman
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54
+                              ),
+                              decoration: InputDecoration(
+                                prefixText: "Rp ",
+                                prefixStyle: TextStyle(color: Colors.black, fontSize: 17),
+                                hintText: "Masukkan Biaya Pengiriman",
+                                hintStyle: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                              ),
+                            ),
                             // Text(
                             //   "Voucher",
                             //   style: TextStyle(

@@ -80,7 +80,8 @@ class SalesorderController extends GetxController{
         Map<String, String> body = {
           'total_berat': total_berat.toString(),
           'ongkos_kirim': ongkos_kirim!,
-          'jasa_pengiriman': jasa_pengiriman!,
+          // 'jasa_pengiriman': jasa_pengiriman!,
+          'jasa_pengiriman': 'STAF KHARISMA',
         };
         for (var i = 0; i < cartProductList.length; i++) {
           String cartId = cartProductList[i].uuid!;

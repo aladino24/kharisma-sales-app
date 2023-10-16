@@ -83,6 +83,11 @@ class SaveProductController extends GetxController{
             // );
             fetchProduct();
             mainHeaderController.getWishlistCount();
+          }else if(jsonDecode(response.body)['code'] == 401){
+            isLoading(false);
+            Get.offAllNamed(
+              RoutesName.loginCustomer
+            );
           }else{
             isLoading(false);
             throw Exception(jsonDecode(response.body)['message']);

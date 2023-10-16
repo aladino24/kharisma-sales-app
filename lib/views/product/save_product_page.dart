@@ -207,7 +207,8 @@ class SaveProductPage extends StatelessWidget {
                                     },
                                   ),
                                 ),
-                                Container(
+                                Obx((){
+                                  return Container(
                                   padding: EdgeInsets.only(
                                       left: 10, right: 10, bottom: 10),
                                   child: Row(
@@ -235,15 +236,17 @@ class SaveProductPage extends StatelessWidget {
                                                   )),
                                               child: GestureDetector(
                                                 child: Icon(Icons.favorite,
-                                                    color: product.isWishlist == 1 ? Colors.red : Colors.grey,
+                                                    color: product.isWishlist!.value == 1 ? Colors.red : Colors.grey,
                                                     size: 18),
                                                   onTap: () async{
                                                      Get.lazyPut(() => SaveProductController());
                                                     final saveProductController = Get.find<SaveProductController>();
-                                                    if(product.isWishlist == 0){ 
-                                                      await saveProductController.saveProduct(int.parse(product.productId!));                                                          
+                                                    if(product.isWishlist!.value == 0){ 
+                                                      await saveProductController.saveProduct(int.parse(product.productId!)); 
+                                                      // product.isWishlist!.value == 1;                                                         
                                                     }else{
                                                       await saveProductController.deleteProduct(product.productId!);
+                                                      // product.isWishlist!.value == 0;
                                                     }
 
                                                     productController.fetchProduct();
@@ -286,7 +289,8 @@ class SaveProductPage extends StatelessWidget {
                                       )
                                     ],
                                   ),
-                                ),
+                                );
+                                })
                               ],
                             ),
                           ),

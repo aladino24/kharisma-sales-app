@@ -23,6 +23,7 @@ class HomePage extends StatelessWidget {
   final MainHeaderController myController = Get.put(MainHeaderController());
   final CategoryController categoryController = Get.put(CategoryController());
   final ProductController productController = Get.put(ProductController());
+  // profile controller
   final SidebarCategoryController sidebarCategoryController = Get.put(SidebarCategoryController());
   //cart controller
   final CartController cartController = Get.put(CartController());
@@ -403,7 +404,7 @@ class HomePage extends StatelessWidget {
                                               child: GestureDetector(
                                                 child: Icon(Icons.favorite,
                                                     color:
-                                                        product.isWishlist == 1
+                                                        product.isWishlist!.value == 1
                                                             ? Colors.red
                                                             : Colors.grey,
                                                     size: 18),
@@ -414,7 +415,7 @@ class HomePage extends StatelessWidget {
                                                   final saveProductController =
                                                       Get.find<
                                                           SaveProductController>();
-                                                  if (product.isWishlist == 0) {
+                                                  if (product.isWishlist!.value == 0) {
                                                     await saveProductController
                                                         .saveProduct(int.parse(
                                                             product
@@ -799,10 +800,13 @@ class HomePage extends StatelessWidget {
                                                 topRight: Radius.circular(15.0),
                                               )),
                                           child: product.gdImagePath != null
-                                              ? Image.network(
-                                                  product.gdImagePath!,
-                                                  fit: BoxFit.cover,
-                                                )
+                                              ? FadeInImage(
+                                                placeholder: AssetImage('assets/images/image.png'), 
+                                                image: NetworkImage(
+                                                    product.gdImagePath!,
+                                                ),
+                                                fit: BoxFit.cover,
+                                              )
                                               : Image.asset(
                                                   'assets/images/image.png',
                                                   fit: BoxFit.cover,
@@ -861,7 +865,8 @@ class HomePage extends StatelessWidget {
                                           },
                                         ),
                                       ),
-                                      Container(
+                                      Obx(() {
+                                        return Container(
                                         padding: EdgeInsets.only(
                                             left: 10, right: 10, bottom: 8.5),
                                         child: Row(
@@ -881,7 +886,7 @@ class HomePage extends StatelessWidget {
                                               child: GestureDetector(
                                                 child: Icon(Icons.favorite,
                                                     color:
-                                                        product.isWishlist == 1
+                                                        product.isWishlist!.value == 1
                                                             ? Colors.red
                                                             : Colors.grey,
                                                     size: 18),
@@ -892,19 +897,21 @@ class HomePage extends StatelessWidget {
                                                   final saveProductController =
                                                       Get.find<
                                                           SaveProductController>();
-                                                  if (product.isWishlist == 0) {
+                                                  if (product.isWishlist!.value == 0) {
                                                     await saveProductController
                                                         .saveProduct(int.parse(
                                                             product
                                                                 .productId!));
+                                                      product.isWishlist!.value = 1;
                                                   } else {
                                                     await saveProductController
                                                         .deleteProduct(
                                                             product.productId!);
+                                                          product.isWishlist!.value = 0;
                                                   }
 
-                                                  productController
-                                                      .fetchProduct();
+                                                  // productController
+                                                  //     .fetchProduct();
                                                   saveProductController
                                                       .fetchProduct();
                                                 },
@@ -957,7 +964,8 @@ class HomePage extends StatelessWidget {
                                             )
                                           ],
                                         ),
-                                      ),
+                                      );
+                                      })
                                     ],
                                   ),
                                 );
